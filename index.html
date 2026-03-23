@@ -9,14 +9,21 @@
     font-family: "Courier New", Courier, monospace; 
     text-align: center;
     background-image: url('BA1CK.png'); 
-    background-position: center top; /* Pins it to the top middle */
-    background-repeat: no-repeat;    /* Stops the tiling */
-    background-attachment: fixed;
+    
+    /* Stretch image to fit */
+    background-size: cover;       
+    background-repeat: no-repeat; 
+    background-position: center;  
+    background-attachment: fixed; 
   }
   .container {
     width: 80%;
     margin: 20px auto;
-    background-color: #111;
+    
+    /* THE FIX: rgb(17,17,17) is the same dark grey as #111. 
+       The 0.8 at the end is the transparency (0 is invisible, 1 is solid) */
+    background-color: rgba(17, 17, 17, 0.8); 
+    
     border: 5px ridge #ff00ff;
     padding: 20px;
   }
