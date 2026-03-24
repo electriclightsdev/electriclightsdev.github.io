@@ -3,48 +3,119 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Transmission: ASCIIMATION</title>
+  <title>Transmission: ORBITAL TRAJECTORY</title>
+  <link rel="icon" type="image/png" href="assets/icon2.gif">
   
   <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/asciinema-player@3.7.1/dist/bundle/asciinema-player.css" />
 
   <style>
-    /* Pure minimalist black background */
+    /* --- GLOBAL BACKGROUND --- */
     body {
       background-color: #000000;
-      color: #00ff00;
+      background-image: url('assets/bg/spacebg.png'); 
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      color: #ffffff;
       margin: 0;
-      padding: 0;
+      padding: 40px 20px; /* Forces breathing room on the top and bottom */
+      box-sizing: border-box; /* Keeps the padding math inside the screen bounds */
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100vh; /* Fills the whole screen */
+      min-height: 100vh; /* Changed from fixed height so the void can stretch */
       font-family: "Courier New", Courier, monospace;
     }
 
-    /* Keeps your pixel art sharp */
+    /* --- TERMINAL SCREEN --- */
+    .terminal-window {
+      background-color: rgba(0, 0, 0, 0.85); 
+      padding: 20px 30px;
+      border: 2px solid #333;
+      border-radius: 8px;
+      box-shadow: 0px 0px 20px rgba(0, 255, 255, 0.15); 
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Preformatted text ensures exact grid spacing */
+    pre {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.2;
+      letter-spacing: 1px;
+      text-shadow: 1px 1px 2px #000; 
+    }
+
+    /* --- COLOR UTILITY CLASSES --- */
+    .grey    { color: #aaaaaa; }
+    .blue    { color: #5555ff; text-shadow: 0 0 5px #5555ff; }
+    .green   { color: #00ff00; text-shadow: 0 0 5px #00ff00; }
+    .red     { color: #ff5555; text-shadow: 0 0 5px #ff5555; }
+    .yellow  { color: #ffff55; text-shadow: 0 0 5px #ffff55; }
+    .cyan    { color: #55ffff; text-shadow: 0 0 5px #55ffff; }
+    .magenta { color: #ff55ff; text-shadow: 0 0 5px #ff55ff; }
+    
+    /* --- PLAYER INTEGRATION --- */
+    .video-frame {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      padding: 10px 0;
+      /* Adds a subtle side border to connect the top and bottom asterisks */
+      border-left: 2px dashed #444; 
+      border-right: 2px dashed #444;
+      margin: 2px 0;
+    }
+
+    /* Overrides Asciinema to make its background transparent */
+    .asciinema-player-wrapper, .asciinema-terminal {
+      background: transparent !important;
+    }
+
+    #star-wars-player {
+      width: 67ch; /* Exactly matches the 67-column width of the Star Wars file */
+    }
+
+    /* Navigation Button */
     .home-btn {
       width: 88px;
       height: 31px;
       image-rendering: pixelated;
-      border: 1px solid #00ff00;
-      margin-top: 30px;
+      border: 1px solid #555;
+      margin-top: 20px;
+      transition: border 0.2s;
     }
 
     .home-btn:hover {
-      border: 1px solid #ffffff;
-    }
-
-    /* Seamless player container */
-    #star-wars-player {
-      width: 95vw; 
-      max-width: 750px; 
+      border: 1px solid #00ff00;
     }
   </style>
 </head>
 <body>
 
-  <div id="star-wars-player"></div>
+  <div class="terminal-window">
+    
+    <pre>
+<span class="yellow">L[w]/[a]:</span><span class="grey">-xxx:</span> <span class="white">R[s]/[a]:</span><span class="grey">-xxx:</span> <span class="white">C[d]:</span><span class="red">+</span><span class="green">xxxx:</span> <span class="grey">PT-POW:-xxxx: SUM-POW:=xxxx:</span>
+********************************************************************************
+* <span class="grey">Bot Message [                                                            ]</span> *</pre>
+
+    <div class="video-frame">
+      <div id="star-wars-player"></div>
+    </div>
+
+    <pre>
+* <span class="white">high E: xl MOLs: </span><span class="red">03</span>                               <span class="cyan">cargo !x! orbit !x!</span>        *
+********************************************************************************
+  <span class="red">L: 0190:</span>  <span class="green">L: 0239:</span>  <span class="red">C: 0468:</span>  <span class="green">C: 0513:</span>  <span class="red">R: 0190:</span>  <span class="green">R: 0239:</span>  <span class="magenta">B: 0429:</span>
+  <span class="yellow">Ux: >>>>>>>>¦2    V-Cr: >>>>>>>>¦2    V-Or: >>>>>>>>¦4    V3: >>>>>>>>¦7</span>
+  <span class="white">Travel T:</span> <span class="cyan">00:03:24:</span> <span class="white">D from TER:</span> <span class="cyan">000002U:</span> <span class="white">SUM of E in Red eq.:</span> <span class="cyan">0001844:</span>
+</pre>
+
+  </div>
 
   <a href="index.html">
     <img src="88x31/anihome112g.gif" alt="Return to Cave" class="home-btn">
@@ -53,14 +124,11 @@
   <script src="https://cdn.jsdelivr.net/npm/asciinema-player@3.7.1/dist/bundle/asciinema-player.min.js"></script>
   
   <script>
-    // Initialize the player
-    // IMPORTANT: Make sure your downloaded file is named 'starwars.cast' and is inside your 'assets' folder!
     AsciinemaPlayer.create('assets/starwars.cast', document.getElementById('star-wars-player'), {
       autoplay: true,
       loop: true,
-      theme: 'monokai',
-      cols: 67, // Typical width for the ASCII Star Wars formatting
-      rows: 20, // Typical height to prevent awkward scrolling
+      cols: 67, 
+      rows: 20, 
       fit: 'width' 
     });
   </script>
