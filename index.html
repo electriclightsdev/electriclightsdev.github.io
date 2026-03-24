@@ -14,10 +14,10 @@
     background-repeat: no-repeat; 
     background-position: center;  
     background-attachment: fixed; 
-    cursor: url('mouse.png'), auto; 
+    cursor: url('assets/mouse.png'), auto; 
   }
   a {
-    cursor: url('mouse.png'), pointer; 
+    cursor: url('assets/mouse.png'), pointer; 
   }
   .container {
     width: 80%;
@@ -56,32 +56,12 @@
     display: block;
   }
 
-  /* --- BUTTONS & LINKS --- */
-  .download-button {
-    background-color: #ff0000;
-    color: #ffff00;
-    font-weight: bold;
-    padding: 10px 20px;
-    text-decoration: none;
-    border: 3px outset #fff;
-    font-size: 18px;
-    display: inline-block;
-    margin: 10px;
-  }
-  .download-button:active {
-    border-style: inset;
-  }
-
   /* --- WEBRING FOOTER --- */
   .webring-container {
     margin: 40px auto;
     padding: 10px;
     border-top: 3px dashed #ff00ff;
     width: 80%;
-  }
-  .webring-container h3 {
-    color: #ffff00;
-    text-shadow: 1px 1px #ff0000;
   }
   .eighty-eight {
     width: 88px;
@@ -170,23 +150,20 @@
 <body>
   <div class="container">
     <h1>>>> Welcome to The Cave <<<</h1>    
+
+    <div style="height: 120px; width: 80%; margin: 15px auto; background: url('assets/K3QC5HKUYNGPBM2EIMEC6SLC6SHSWGFV.gif') repeat-x center; border: 3px solid #ff00ff; image-rendering: pixelated;"></div>
+
     <p><b>WARNING:</b> You have stumbled into my digital brain. No algorithms, no corporate streaming. Just pure, uncompressed audio and raw pixels.</p>
     
     <hr size="5" width="80%" color="#ff00ff">
 
     <h2>+++ AUDIO TRANSMISSIONS +++</h2>
-    <p><i>Right-click and "Save As" to download the MP3s to your hard drive.</i></p>
     
-    <div style="background: #000; border: 2px solid #00ff00; padding: 15px; width: 60%; margin: 0 auto; text-align: left;">
-      <p>&#9658; TRACK 01: <a href="#" style="color: #00ffff;">PLACE HOLDER.mp3</a> (4.2 MB)</p>
-      <center><a href="#" class="download-button">DOWNLOAD FULL EP (.ZIP)</a></center>
-    </div>
-
     <div class="walkman">
       <h3 class="branding">SOUND-BOY 2000</h3>
       
       <div class="tape-deck">
-        <img src="assets/spinning-tape.gif" id="cassette-gif" alt="Spinning Cassette">
+        <img src="spinning-tape.gif" id="cassette-gif" alt="Spinning Cassette">
         <p id="status-text">TAPE STOPPED</p>
       </div>
 
@@ -240,7 +217,8 @@
     </p>
 
     <div class="webring-container">
-      <h3>+++ スポンサーになる +++</h3>
+      
+      <img src="assets/MQE7JUBYYUU2HCDIKY5H7DD765UJ7OJT.gif" alt="Webring Header Blast" style="display: block; margin: 0 auto 20px auto;">
       
       <a href="#"><img src="88x31/anihome112g.gif" alt="Link 1" class="eighty-eight"></a>
       <a href="#"><img src="88x31/anybrowser3.gif" alt="Link 2" class="eighty-eight"></a>
