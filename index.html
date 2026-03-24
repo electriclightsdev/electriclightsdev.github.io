@@ -1,157 +1,327 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>+++ I Love the Fucking Beatles +++</title>
-<style>
-  /* --- BASE PAGE STYLES --- */
-  body {
-    background-color: #000000; 
-    color: #00ff00; 
-    font-family: "Courier New", Courier, monospace; 
-    text-align: center;
-    background-image: url('BA1CK.png'); 
-    background-size: 100% 100%;   
-    background-repeat: no-repeat; 
-    background-position: center;  
-    background-attachment: fixed; 
-    cursor: url('assets/mouse.png'), auto; 
-  }
-  a {
-    cursor: url('assets/mouse.png'), pointer; 
-  }
-  .container {
-    width: 80%;
-    margin: 20px auto;
-    background-color: rgba(17, 17, 17, 0.8); 
-    border: 5px ridge #ff00ff;
-    padding: 20px;
-  }
-  h1 { 
-    color: #00ffff; 
-    text-shadow: 2px 2px #ff00ff;
-  }
-  h2 {
-    background-color: #000080;
-    color: #ffffff;
-    border: 2px solid #fff;
-    padding: 5px;
-    display: inline-block;
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>· · · ● · · ● · · · · · · · · ●  · · · · · · · · ●</title>
+  <link rel="icon" type="image/png" href="assets/icon2.gif">
+  
+  <style>
+    /* =========================================
+       1. GLOBAL & BASE STYLES
+       ========================================= */
+    body {
+      background-color: #000000; 
+      color: #00ff00; 
+      font-family: "Courier New", Courier, monospace; 
+      text-align: center;
+      background-image: url('BA1CK.png'); 
+      background-size: 100% 100%;   
+      background-repeat: no-repeat; 
+      background-position: center;  
+      background-attachment: fixed; 
+      cursor: url('assets/mouse.png'), auto; 
+      margin: 0;
+      padding: 0;
+    }
 
-  /* --- DIGITAL CANVASES (ART GALLERY) --- */
-  .art-gallery {
-    margin: 0 auto;
-    border-collapse: separate;
-    border-spacing: 15px;
-  }
-  .art-gallery td {
-    border: 3px inset #c0c0c0;
-    padding: 10px;
-    background-color: #222;
-  }
-  .art-gallery img {
-    width: 200px;
-    height: 200px;
-    background-color: #333; 
-    display: block;
-  }
+    a {
+      cursor: url('assets/mouse.png'), pointer; 
+    }
 
-  /* --- WEBRING FOOTER --- */
-  .webring-container {
-    margin: 40px auto;
-    padding: 10px;
-    border-top: 3px dashed #ff00ff;
-    width: 80%;
-  }
-  .eighty-eight {
-    width: 88px;
-    height: 31px;
-    border: 1px solid #00ff00;
-    margin: 5px;
-    image-rendering: pixelated; 
-  }
-  .eighty-eight:hover {
-    border: 1px solid #ffffff;
-  }
+    /* =========================================
+       2. CUSTOM CYBER SCROLLBARS
+       ========================================= */
+    html {
+      scrollbar-width: auto;
+      scrollbar-color: #ff00ff #111;
+    }
 
-  /* --- PORTABLE AUDIO UNIT HARDWARE --- */
-  .walkman {
-    width: 350px;
-    margin: 40px auto 10px auto;
-    background-color: #c0c0c0; 
-    padding: 25px;
-    border-top: 5px solid #ffffff;
-    border-left: 5px solid #ffffff;
-    border-bottom: 5px solid #808080;
-    border-right: 5px solid #808080;
-    text-align: center;
-    font-family: "Courier New", Courier, monospace;
-  }
-  .branding {
-    color: #000080;
-    font-family: "Arial Black", sans-serif;
-    font-style: italic;
-    font-size: 24px;
-    text-align: left;
-    margin-top: 0;
-    margin-bottom: 10px;
-    letter-spacing: -1px;
-    text-shadow: none; 
-  }
-  .tape-deck {
-    background-color: #111;
-    border: 5px inset #808080;
-    height: 120px;
-    margin-bottom: 25px;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-  .tape-deck p {
-    color: #ff0000;
-    font-size: 14px;
-    font-weight: bold;
-    margin: 5px 0;
-    text-shadow: 0px 0px 5px #ff0000;
-  }
-  .tape-deck img {
-    height: 60px; 
-    visibility: hidden; 
-  }  
-  .controls {
-    display: flex;
-    justify-content: space-between;
-  }
-  .mech-button {
-    background-color: #c0c0c0;
-    border-top: 4px solid #ffffff;
-    border-left: 4px solid #ffffff;
-    border-bottom: 4px solid #808080;
-    border-right: 4px solid #808080;
-    padding: 15px 20px;
-    font-size: 20px;
-    font-weight: bold;
-    color: #000;
-    cursor: pointer; 
-  }
-  .mech-button:active {
-    border-top: 4px solid #808080;
-    border-left: 4px solid #808080;
-    border-bottom: 4px solid #ffffff;
-    border-right: 4px solid #ffffff;
-    background-color: #b0b0b0;
-  }
-  .play-btn { color: #008000; }
-  .stop-btn { color: #ff0000; }
-</style>
+    ::-webkit-scrollbar {
+      width: 20px; 
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: #111;
+      border-left: 3px inset #808080; 
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background-color: #ff00ff; 
+      border-top: 3px solid #ffccff;
+      border-left: 3px solid #ffccff;
+      border-bottom: 3px solid #800080;
+      border-right: 3px solid #800080;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background-color: #00ffff; 
+      border-top: 3px solid #ccffff;
+      border-left: 3px solid #ccffff;
+      border-bottom: 3px solid #008080;
+      border-right: 3px solid #008080;
+    }
+
+    ::-webkit-scrollbar-button {
+      background-color: #c0c0c0;
+      height: 20px;
+      border-top: 3px solid #ffffff;
+      border-left: 3px solid #ffffff;
+      border-bottom: 3px solid #808080;
+      border-right: 3px solid #808080;
+    }
+    
+    ::-webkit-scrollbar-button:active {
+      border-top: 3px solid #808080;
+      border-left: 3px solid #808080;
+      border-bottom: 3px solid #ffffff;
+      border-right: 3px solid #ffffff;
+      background-color: #a0a0a0;
+    }
+
+    /* =========================================
+       3. SCANLINE OVERLAY
+       ========================================= */
+    .scanlines {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0),
+        rgba(255, 255, 255, 0) 2px,
+        rgba(0, 0, 0, 0.3) 2px,
+        rgba(0, 0, 0, 0.3) 4px
+      );
+      z-index: 9999; 
+      pointer-events: none; 
+    }
+
+    /* =========================================
+       4. TYPOGRAPHY & LAYOUT
+       ========================================= */
+    .container {
+      width: 80%;
+      max-width: 1000px;
+      margin: 20px auto;
+      background-color: rgba(17, 17, 17, 0.8); 
+      border: 5px ridge #ff00ff;
+      padding: 20px;
+    }
+
+    h1 { 
+      color: #00ffff; 
+      text-shadow: 2px 2px #ff00ff;
+      margin-top: 10px;
+    }
+
+    h2 {
+      background-color: #000080;
+      color: #ffffff;
+      border: 2px solid #fff;
+      padding: 5px;
+      display: inline-block;
+    }
+
+    .divider-gif {
+      height: 120px; 
+      width: 80%; 
+      margin: 15px auto; 
+      background: url('assets/K3QC5HKUYNGPBM2EIMEC6SLC6SHSWGFV.gif') repeat-x center; 
+      border: 3px solid #ff00ff; 
+      image-rendering: pixelated;
+    }
+
+    /* =========================================
+       5. AUDIO PLAYER (SOUND-BOY 2000)
+       ========================================= */
+    .walkman {
+      width: 350px;
+      margin: 40px auto 10px auto;
+      background-color: #c0c0c0; 
+      padding: 25px;
+      border-top: 5px solid #ffffff;
+      border-left: 5px solid #ffffff;
+      border-bottom: 5px solid #808080;
+      border-right: 5px solid #808080;
+      text-align: center;
+      font-family: "Courier New", Courier, monospace;
+    }
+
+    .branding {
+      color: #000080;
+      font-family: "Arial Black", sans-serif;
+      font-style: italic;
+      font-size: 24px;
+      text-align: left;
+      margin-top: 0;
+      margin-bottom: 10px;
+      letter-spacing: -1px;
+    }
+
+    .tape-deck {
+      background-color: #111;
+      border: 5px inset #808080;
+      height: 120px;
+      margin-bottom: 25px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .tape-deck p {
+      color: #ff0000;
+      font-size: 14px;
+      font-weight: bold;
+      margin: 5px 0;
+      text-shadow: 0px 0px 5px #ff0000;
+    }
+
+    .tape-deck img {
+      height: 60px; 
+      visibility: hidden; 
+    }  
+
+    .controls {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .mech-button {
+      background-color: #c0c0c0;
+      border-top: 4px solid #ffffff;
+      border-left: 4px solid #ffffff;
+      border-bottom: 4px solid #808080;
+      border-right: 4px solid #808080;
+      padding: 15px 20px;
+      font-size: 20px;
+      font-weight: bold;
+      color: #000;
+      cursor: pointer; 
+    }
+
+    .mech-button:active {
+      border-top: 4px solid #808080;
+      border-left: 4px solid #808080;
+      border-bottom: 4px solid #ffffff;
+      border-right: 4px solid #ffffff;
+      background-color: #b0b0b0;
+    }
+
+    .play-btn { color: #008000; }
+    .stop-btn { color: #ff0000; }
+
+    /* =========================================
+       6. DIGITAL CANVASES (ART GALLERY)
+       ========================================= */
+    .art-gallery {
+      margin: 0 auto;
+      border-collapse: separate;
+      border-spacing: 15px;
+    }
+
+    .art-gallery td {
+      border: 3px inset #c0c0c0;
+      padding: 10px;
+      background-color: #222;
+    }
+    
+    .art-gallery img {
+      width: 200px;
+      height: 200px;
+      background-color: #333; 
+      display: block;
+      box-shadow: 0 0 10px #00ffff, 0 0 20px #ff00ff;
+      filter: contrast(1.4) saturate(1.2);
+      animation: crt-flicker 3s infinite;
+      image-rendering: pixelated; 
+      transition: all 0.1s ease-in-out;
+    }
+
+    .art-gallery img:hover {
+      animation: glitch-spasm 0.2s infinite;
+      cursor: crosshair; 
+      box-shadow: -3px 0 15px #ff0000, 3px 0 15px #0000ff;
+    }
+
+    /* =========================================
+       7. WEBRING & FOOTER
+       ========================================= */
+    .webring-container {
+      margin: 40px auto;
+      padding: 10px;
+      border-top: 3px dashed #ff00ff;
+      width: 80%;
+    }
+
+    .webring-header {
+      display: block; 
+      margin: 0 auto 20px auto; 
+      max-width: 100%; 
+      height: auto;
+    }
+
+    .eighty-eight {
+      width: 88px;
+      height: 31px;
+      border: 1px solid #00ff00;
+      margin: 5px;
+      image-rendering: pixelated; 
+    }
+
+    .eighty-eight:hover {
+      border: 1px solid #ffffff;
+    }
+
+    /* =========================================
+       8. MOUSE SPARKLES
+       ========================================= */
+    .sparkle {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background-color: #00ff00; 
+      box-shadow: 0 0 5px #00ff00; 
+      pointer-events: none; 
+      z-index: 10000; 
+      border-radius: 50%; 
+    }
+
+    /* =========================================
+       9. KEYFRAME ANIMATIONS
+       ========================================= */
+    @keyframes crt-flicker {
+      0%   { opacity: 1;   filter: contrast(1.4) brightness(1); }
+      5%   { opacity: 0.8; filter: contrast(1.8) brightness(1.3); }
+      10%  { opacity: 1;   filter: contrast(1.4) brightness(1); }
+      95%  { opacity: 1;   filter: contrast(1.4) brightness(1); }
+      96%  { opacity: 0.9; filter: contrast(2.0) brightness(0.8); }
+      100% { opacity: 1;   filter: contrast(1.4) brightness(1); }
+    }
+
+    @keyframes glitch-spasm {
+      0%   { transform: translate(0); filter: hue-rotate(0deg) contrast(2); }
+      20%  { transform: translate(-2px, 1px); filter: hue-rotate(90deg) invert(10%); }
+      40%  { transform: translate(2px, -1px); filter: hue-rotate(0deg) contrast(1.5); }
+      60%  { transform: translate(-1px, -2px); filter: hue-rotate(-90deg) invert(20%); }
+      80%  { transform: translate(1px, 2px); filter: hue-rotate(0deg) contrast(2); }
+      100% { transform: translate(0); filter: hue-rotate(0deg); }
+    }
+  </style>
 </head>
 <body>
+
+  <div class="scanlines"></div>
+
   <div class="container">
+    
     <h1>>>> Welcome to The Cave <<<</h1>    
 
-    <div style="height: 120px; width: 80%; margin: 15px auto; background: url('assets/K3QC5HKUYNGPBM2EIMEC6SLC6SHSWGFV.gif') repeat-x center; border: 3px solid #ff00ff; image-rendering: pixelated;"></div>
+    <div class="divider-gif"></div>
 
     <p><b>WARNING:</b> You have stumbled into my digital brain. No algorithms, no corporate streaming. Just pure, uncompressed audio and raw pixels.</p>
     
@@ -218,7 +388,7 @@
 
     <div class="webring-container">
       
-      <img src="assets/MQE7JUBYYUU2HCDIKY5H7DD765UJ7OJT.gif" alt="Webring Header Blast" style="display: block; margin: 0 auto 20px auto;">
+      <img src="assets/MQE7JUBYYUU2HCDIKY5H7DD765UJ7OJT.gif" alt="Webring Header Blast" class="webring-header">
       
       <a href="#"><img src="88x31/anihome112g.gif" alt="Link 1" class="eighty-eight"></a>
       <a href="#"><img src="88x31/anybrowser3.gif" alt="Link 2" class="eighty-eight"></a>
@@ -232,25 +402,28 @@
     <footer>
       <p><small>&copy; 2026 The Artist. Do not steal my bandwidth.</small></p>
     </footer>
+
   </div>
 
   <script>
-    var tape = document.getElementById("tape-audio");
-    var statusText = document.getElementById("status-text");
-    var cassetteGif = document.getElementById("cassette-gif");
+    // --- Walkman Variables ---
+    const tape = document.getElementById("tape-audio");
+    const statusText = document.getElementById("status-text");
+    const cassetteGif = document.getElementById("cassette-gif");
 
-    // TYPE YOUR EXACT FILE NAMES HERE (Without the .mp3 extension)
-    var playlist = [
+    // --- Playlist Array ---
+    const playlist = [
       "NEON_VOID",
       "SYSTEM_CRASH_REMIX",
       "VIRTUAL_TEARS"
     ];
     
-    var currentTrack = 0;
+    let currentTrack = 0;
     
     // Load the first track on standby
     tape.src = playlist[currentTrack] + ".mp3";
 
+    // --- Walkman Controls ---
     function playTape() {
       tape.play();
       statusText.innerText = ">> PLAYING: " + playlist[currentTrack] + ".mp3 >>";
@@ -273,17 +446,65 @@
       cassetteGif.style.visibility = "hidden"; 
     }
 
-    // Automatically load and play the next song
+    // Automatically load and play the next song when current finishes
     tape.onended = function() {
       currentTrack++; 
-      
       if (currentTrack >= playlist.length) {
         currentTrack = 0; 
       }
-      
       tape.src = playlist[currentTrack] + ".mp3";
       playTape();
     };
+
+    // --- Mouse Sparkle Trail Script ---
+    const trailLength = 12; 
+    const trailElements = [];
+    let mouseX = 0;
+    let mouseY = 0;
+
+    // Create the HTML elements dynamically
+    for (let i = 0; i < trailLength; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'sparkle';
+      document.body.appendChild(dot);
+      trailElements.push({
+        element: dot,
+        x: window.innerWidth / 2, 
+        y: window.innerHeight / 2
+      });
+    }
+
+    // Track the mouse coordinates
+    document.addEventListener('mousemove', function(e) {
+      mouseX = e.pageX;
+      mouseY = e.pageY;
+    });
+
+    // Animate the trail
+    function animateTrail() {
+      let targetX = mouseX;
+      let targetY = mouseY;
+      
+      trailElements.forEach(function(dot, index) {
+        dot.x += (targetX - dot.x) * 0.3; 
+        dot.y += (targetY - dot.y) * 0.3;
+        
+        dot.element.style.left = (dot.x + 5) + 'px';
+        dot.element.style.top = (dot.y + 10) + 'px';
+        
+        const scale = (trailLength - index) / trailLength;
+        dot.element.style.transform = `scale(${scale})`;
+        
+        targetX = dot.x;
+        targetY = dot.y;
+      });
+      
+      requestAnimationFrame(animateTrail);
+    }
+    
+    // Kick off the animation
+    animateTrail();
   </script>
+
 </body>
 </html>
