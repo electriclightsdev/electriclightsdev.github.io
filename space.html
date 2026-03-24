@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transmission: ASCIIMATION</title>
+  
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/asciinema-player@3.7.1/dist/bundle/asciinema-player.css" />
+
+  <style>
+    /* Pure minimalist black background */
+    body {
+      background-color: #000000;
+      color: #00ff00;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh; /* Fills the whole screen */
+      font-family: "Courier New", Courier, monospace;
+    }
+
+    /* Keeps your pixel art sharp */
+    .home-btn {
+      width: 88px;
+      height: 31px;
+      image-rendering: pixelated;
+      border: 1px solid #00ff00;
+      margin-top: 30px;
+    }
+
+    .home-btn:hover {
+      border: 1px solid #ffffff;
+    }
+
+    /* Optional: Customizes the player container slightly */
+    #star-wars-player {
+      box-shadow: 0px 0px 15px #00ff00; /* Subtle green hacker glow */
+    }
+  </style>
+</head>
+<body>
+
+  <div id="star-wars-player"></div>
+
+  <a href="index.html">
+    <img src="88x31/anihome112g.gif" alt="Return to Cave" class="home-btn">
+  </a>
+
+  <script src="https://cdn.jsdelivr.net/npm/asciinema-player@3.7.1/dist/bundle/asciinema-player.min.js"></script>
+  
+  <script>
+    // Initialize the player
+    // IMPORTANT: Make sure your downloaded file is named 'starwars.cast' and is inside your 'assets' folder!
+    AsciinemaPlayer.create('assets/starwars.cast', document.getElementById('star-wars-player'), {
+      autoplay: true,
+      loop: true,
+      theme: 'monokai',
+      cols: 67, // Typical width for the ASCII Star Wars formatting
+      rows: 20, // Typical height to prevent awkward scrolling
+      fit: 'width' 
+    });
+  </script>
+
+</body>
+</html>

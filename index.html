@@ -152,6 +152,7 @@
       display: inline-block;
       text-decoration: none;
       transition: all 0.2s ease-in-out;
+      position: relative; /* Added for tooltip anchoring */
     }
 
     .gif-portals img {
@@ -163,6 +164,34 @@
     .gif-portals a:hover {
       transform: scale(1.1) translateY(-5px);
       filter: drop-shadow(0px 0px 10px #ff00ff);
+    }
+
+    /* --- NEW HOVER SUBTITLES --- */
+    .gif-portals a::after {
+      content: attr(data-title);
+      position: absolute;
+      bottom: -30px; 
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #000080; 
+      color: #00ff00; 
+      border: 1px ridge #ff00ff; 
+      padding: 3px 6px;
+      font-size: 12px;
+      font-weight: bold;
+      white-space: nowrap;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.2s ease-in-out;
+      pointer-events: none; 
+      z-index: 10;
+      box-shadow: 2px 2px #000; 
+    }
+
+    .gif-portals a:hover::after {
+      opacity: 1;
+      visibility: visible;
+      bottom: -20px; 
     }
 
     /* =========================================
@@ -209,7 +238,7 @@
       font-size: 11px;
       font-weight: bold;
       padding: 1px 5px;
-      cursor: inherit; /* Keeps the custom retro cursor */
+      cursor: inherit;
       color: black;
       min-width: 20px;
     }
@@ -220,7 +249,7 @@
       border-right: 1px solid #ffffff;
       border-bottom: 1px solid #ffffff;
       box-shadow: inset 1px 1px #808080;
-      padding: 2px 4px 0px 6px; /* Shifts text down-right to simulate pressing */
+      padding: 2px 4px 0px 6px; 
     }
 
     .win95-content {
@@ -244,7 +273,7 @@
       margin-bottom: 0;
       font-family: "Courier New", Courier, monospace; 
       font-weight: bold;
-      color: #000080; /* Dark blue to match the title bar */
+      color: #000080; 
     }
 
     /* =========================================
@@ -391,7 +420,7 @@
       80%  { transform: translate(1px, 2px); filter: hue-rotate(0deg) contrast(2); }
       100% { transform: translate(0); filter: hue-rotate(0deg); }
     }
-	/* --- THE ODOMETER HIT COUNTER --- */
+    /* --- THE ODOMETER HIT COUNTER --- */
     .hit-counter {
       background-color: #000;
       border: 3px inset #808080;
@@ -459,13 +488,13 @@
 
     <h2>+++ CYBER PORTALS +++</h2>
     <div class="gif-portals">
-      <a href="#"><img src="assets/source-ezgif.com-resize.gif" alt="Nyan Cat Portal"></a>
-      <a href="#"><img src="assets/4shx-transparent-gif-ezgif.com-resize.gif" alt="Guitar Cat Portal"></a>
-      <a href="#"><img src="assets/93533501-53aa0d80-f943-11ea-90d1-e6e70eca2e29-ezgif.com-resize.gif" alt="Retro Sun Portal"></a>
-      <a href="#"><img src="assets/f5baef4b6b6677020ab8d091ef78a3bc-ezgif.com-resize.gif" alt="Duck Portal"></a>
-      <a href="#"><img src="assets/giphy-ezgif.com-resize.gif" alt="Monkey Portal"></a>
-      <a href="#"><img src="assets/huh-cat-ezgif.com-crop.gif" alt="Huh Cat Portal"></a>
-      <a href="#"><img src="assets/napoleon-dynamite-dance-ezgif.com-resize.gif" alt="Napoleon Portal"></a>
+      <a href="#" data-title="ARCADE"><img src="assets/source-ezgif.com-resize.gif" alt="Nyan Cat Portal"></a>
+      <a href="#" data-title="STREAM"><img src="assets/4shx-transparent-gif-ezgif.com-resize.gif" alt="Guitar Cat Portal"></a>
+      <a href="space.html" data-title="SPACE"><img src="assets/93533501-53aa0d80-f943-11ea-90d1-e6e70eca2e29-ezgif.com-resize.gif" alt="Retro Sun Portal"></a>
+      <a href="#" data-title="LA GALERIE"><img src="assets/f5baef4b6b6677020ab8d091ef78a3bc-ezgif.com-resize.gif" alt="Duck Portal"></a>
+      <a href="#" data-title="MERCH"><img src="assets/giphy-ezgif.com-resize.gif" alt="Monkey Portal"></a>
+      <a href="#" data-title="ME ME"><img src="assets/huh-cat-ezgif.com-crop.gif" alt="Huh Cat Portal"></a>
+      <a href="#" data-title="VOD"><img src="assets/napoleon-dynamite-dance-ezgif.com-resize.gif" alt="Napoleon Portal"></a>
     </div>
 
     <br><br>
@@ -634,19 +663,19 @@
     animateTrail();
 	
 	// --- AUTO-DATE SCRIPT ---
-function updateMemeDate() {
-  const dateElement = document.getElementById('meme-log-date');
-  const now = new Date();
-  
-  // Formats to: Weekday, Month DD, YYYY
-  const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
-  const dateString = now.toLocaleDateString('en-US', options).toUpperCase();
-  
-  dateElement.innerText = "LOGGED: " + dateString;
-}
+    function updateMemeDate() {
+      const dateElement = document.getElementById('meme-log-date');
+      const now = new Date();
+      
+      // Formats to: Weekday, Month DD, YYYY
+      const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
+      const dateString = now.toLocaleDateString('en-US', options).toUpperCase();
+      
+      dateElement.innerText = "LOGGED: " + dateString;
+    }
 
-// Run the function immediately on page load
-updateMemeDate();
+    // Run the function immediately on page load
+    updateMemeDate();
   </script>
 
 </body>
