@@ -87,13 +87,19 @@
       background-color: #c0c0c0;
     }
 
+    /* Animation to make the 4k background pan up and down */
+    @keyframes pan-background {
+      0% { background-position: center 0%; }
+      50% { background-position: center 100%; }
+      100% { background-position: center 0%; }
+    }
+
     .gallery-grid {
-      /* Added your custom 4K background image here */
       background-color: #000000;
       background-image: url('assets/bg/VvNhMb0.jpg');
-      background-size: cover; 
-      background-position: center;
-      background-attachment: local; /* Ensures background scrolls with the GIFs if needed */
+      /* Removed background-size: cover so it stays at its native, un-stretched resolution */
+      background-repeat: repeat; 
+      animation: pan-background 60s linear infinite; /* Smooth 60-second panning loop */
       
       border-top: 2px solid #808080;
       border-left: 2px solid #808080;
@@ -113,18 +119,16 @@
 
     .gallery-grid img {
       max-width: 100%; 
-      border: 1px solid #c0c0c0; 
-      background-color: rgba(0, 0, 0, 0.5); /* Adds a slight dark box behind GIFs if your BG image is bright */
+      /* Removed the grey transparent background color and the border */
       image-rendering: pixelated;
       transition: transform 0.1s;
-      /* The custom magnifying glass cursor */
       cursor: url('assets/magnify.png'), zoom-in; 
     }
 
     .gallery-grid img:hover {
       transform: scale(1.05);
-      border: 1px dotted #00ffff;
-      box-shadow: 0px 0px 10px #00ffff; /* Added a neon glow on hover so they stand out against the background */
+      /* Kept the neon glow to help them pop against the moving background */
+      box-shadow: 0px 0px 15px #00ffff; 
     }
 
     .gallery-grid::-webkit-scrollbar { width: 16px; }
@@ -135,7 +139,7 @@
        4. POP-UP IMAGE VIEWER (MODAL)
        ========================================= */
     .modal-overlay {
-      display: none; /* Hidden by default */
+      display: none; 
       position: fixed;
       top: 0;
       left: 0;
@@ -203,7 +207,7 @@
   </div>
 
   <script>
-    // 1. The GIF Vault Array
+    // 1. The Full GIF Vault Array
     const gifVault = [
       "4shx-transparent-gif-ezgif.com-resize.gif",
       "93533501-53aa0d80-f943-11ea-90d1-e6e70eca2e29-ezgif.com-resize.gif",
@@ -216,7 +220,97 @@
       "MQE7JUBYYUU2HCDIKY5H7DD765UJ7OJT.gif",
       "napoleon-dynamite-dance-ezgif.com-resize.gif",
       "source-ezgif.com-resize.gif",
-      "spinning-tape.gif"
+      "spinning-tape.gif",
+      "2AGVRENGK6V2EPUFGA4YBRQWGBPBOJBV.gif",
+      "2DIG6UOSVLMG66VQXHWECDHUSHROLLAU.gif",
+      "2QSAMDOGIQJ7HZVBHFXWB6UO7EMQ6M7P.gif",
+      "34XGTZ3CIBYF4QL73QNVLTGRG64CCVUY.gif",
+      "37HGWIOSOO2H6WSTF6SY2ZBTHGXRMVKN.gif",
+      "3ASU2ZZCILEHDFALDRXIFR5PO4RVWZI6.gif",
+      "3PRIQPL23YC3SIBJZNIORDE6PVQYWCQV.gif",
+      "3TKRGNHW53AMQ6UT5WMDUJMMV5DCMS2S.gif",
+      "3VQ4IRJAHLMV6Z7NHE5GGFQNBQBQ3Q2C.gif",
+      "3WJ2Y75MBXYZGGMELFTTYHO4CNUCGGOX.gif",
+      "3ZSGSI65KH3V62SIQF46EUAOYVR275ON.gif",
+      "44TZP2V7EPQAGUAXFBDRMCEUBCLDCETQ.gif",
+      "44V3VKFVLYH2PZ7A42GCTXM4JB5URBNB.gif",
+      "47S6T36WYSZZSR77M2N3BFWDZCERL23S.gif",
+      "4GHJPO5APPOXIKP3DEOYGUEBQXE3E2HE.gif",
+      "4MAZUWF522OK23JR5KHWQQHZOJMYJDYG.gif",
+      "4RUWWAJVF5F7SQ5HUUYJ5HSVDGOJMXWZ.gif",
+      "4ZPT6PJPRNEZ6QWXOYEZDX4A23SRHAEZ.gif",
+      "53KTNHNZQK3CBEQ56G7LQXP3QAXDESV4.gif",
+      "56A4GNTUOCGZUOUYMNNKZFFUSB6E562W.gif",
+      "5J4QCWQPW2RPN3P4YM36TJCSU7EP5UV2.gif",
+      "5KVUS7RNX6PWPXKDOJJYU7USXXQU3JJI.gif",
+      "62IT3VUZ3642V7FS6W2Y65V644XX3GAB.gif",
+      "6AV4P3ZQQJQRTMO64GSRSDSDA2DFWYWG.gif",
+      "6GPTDZQARTR33ZSTTH6NNTA4YXKLYL7B.gif",
+      "6IODCMX67YN2IDXP4A67LIEX52I3JETL.gif",
+      "6JWEPTZ6R4IDIII6TDP24Q3XBSBAFPVH.gif",
+      "75QWGYALJL5ULRJWI3CYGUUNGCARJR56.gif",
+      "7HZ7TOPVEPXZ3U2JQQH76SLDCNTWQATB.gif",
+      "7IOA27O36NJWN4MOEZ63LEY6XRJZD2EZ.gif",
+      "7OHBXU4JEFTA4IQ57F3IDUR55WESV6KT.gif",
+      "7RH5RAOFOTY52ETJ6ZV4KPR56CTEY647.gif",
+      "7YD52HI4UB7C7UNSKG555ZCKFPDFXTRA.gif",
+      "A6XP3WM6LYXIM3RJW7MSFAGERO4DEPJW.gif",
+      "AHULLBAGUQC7LZHOVMV6D764UABCQNGM.gif",
+      "AVEHFMWPQ6DWVVAVNQMWS47IBO6SVV2A.gif",
+      "AWNUVMJQ6KZXKOHJFFKZA5PG6XPB3VUJ.gif",
+      "AYQ53TE6P2P7MHHGTMYWQZFP552G4XQX.gif",
+      "BBVHEJHOQUN7UQSBZ6MRDNFAXUMIAH2H.gif",
+      "BG4MP64B4A3UF37UJVURHEE5XXXZVJH6.gif",
+      "BTNWTR4O5BFCIW42ZXC3VBM2JJJWECC2.gif",
+      "BX3QSDGSQKRMSNARFCQHYLAA6GC5GWQJ.gif",
+      "C3YO4UURF4ECLHQRAIZO6H7T2DLG4LSC.gif",
+      "C6UD5BR5XOMANBOR5BD632HALQOAA5GO.gif",
+      "CTZJFOGZNSOL4HI3O3P55NMVRFDCDPY2.gif",
+      "DUCPTSFD45ELMIY4S5TOTA7NRWCMSHAJ.gif",
+      "EAXKMT4RGPGYDG66ZNVK53L4EPYPMF6R.gif",
+      "F2HQ5KKLRWVGDWGJP7FBTWPFZTHRLTKA.gif",
+      "FLFL6HCP2UWSFOLU42MMDH3URCYDGS3A.gif",
+      "FLGMOVEQ7BEUODVYJUQNV5UI4KRHBVFN.gif",
+      "FROJBSMKX3EOFE277QB4VSO3KGCQ5ZAE.gif",
+      "FZXECTY22JDUWGIHD5PXGHSYE6SWHVQI.gif",
+      "GHDI53C6NKNWWUOWLM26TURXNHV5S5SG.gif",
+      "HAS2X7MCZOZLZYMJTR4F2KY2C7AT5A2S.gif",
+      "HUEMTZVBWNKMQQ6N57QP5HI44XA3XV5M.gif",
+      "IFJRWCO4SMEMOQLL7HFWZA3PMNG2C5VZ.gif",
+      "IT4NZ3G6XVJLJHBKYFQLY6S7M4BA5E42.gif",
+      "IWLKIWKNBGUU2RXFIWE2TJGLHBCDHDMA.gif",
+      "IXRM3625JKHF4M62IFV4U2JA7BGPBDAR.gif",
+      "KLUHWSTRLTM2XXMNTZ46AEGQBVQBN5NB.gif",
+      "L4WT3BZ3EBIXJKJXC2ERNDS2IEWAI6H2.gif",
+      "LCC4X6DV6XJ7ZCU6XUANNQT5HYHGTWSY.gif",
+      "LE5BXYVFAC5FTODB2ZNBXMTQTL6SCYQF.gif",
+      "LHICE3AJSQRQEVYPSLBV7A46HETVUSFB.gif",
+      "LURFXDP2IFDV7EEBFCW5ZQXHZKEJWQO3.gif",
+      "MBFNX3UUWVQB5ECJ7EBBHC7ZMASSLARP.gif",
+      "NMRIAA7TZYECMCV5RU63WYXGCHQCPYTS.gif",
+      "NYAOUSAZBAATHZFBU343D4SGXNSAMBWS.gif",
+      "P2H35ADGBQWNC2NINDRUBWT27WNPA3PM.gif",
+      "PZ7PI7WTL5EOR3OGIWIRK4O4CK3RJDQA.gif",
+      "RO22W236HOFIM7HORLR2P7GRAPNCE6NI.gif",
+      "RQ43PASP6GR6H3JHJ7QJMX6IRR4VWG6Q.gif",
+      "RY55QZ5NELGWUOFMIZQVKJFNKRBXNPII.gif",
+      "SBDSHRSEJDMITTC3RXKTP4Y2OK7PUKJW.gif",
+      "TD3NTQCPYMMLU6GHIHOIDCJEWCVP6A7I.gif",
+      "U3YVKUVCC2UQEK2VNN2OIOTDLU4G6AD4.gif",
+      "UDWOSA7X25HBFFLBDKJFMNJRIZDGCQR2.gif",
+      "UEDSICF7C52IRQFNK7H7F67XAIEMDZQB.gif",
+      "VM45PSTKYVHOANGH7U6YUXNYNALRHV3D.gif",
+      "VYYMNTP53QPISIO36VXZCLNDPTCXZJCW.gif",
+      "WIEOVSKXVUJCBYRRDNA3UVU4VQ6YLAI6.gif",
+      "WLULI6DDWZGK2GP5H7YGLPNLBEGWVJMC.gif",
+      "WMMNXQDXERW6Z74243YZZJHT6N3MUH2M.gif",
+      "XAHM3MLGPSDVEXFBDOBIUQEUUCJDOYU4.gif",
+      "YBUG4K3LBEY6P4GXVWS2HGGCJAV5ZDZB.gif",
+      "YGCSVHBKH2W6SRNA3KLKODUBZGC5UXS6.gif",
+      "YJOE426IRPRJ4NUE7CKPAVBUGRQMSXWN.gif",
+      "YMBLKZIROCNHTY36LCUJEQJKXXSMIVFQ.gif",
+      "ZQ5WC4AHQXZ63F5KJVGHNSXYOKTLPFAG.gif",
+      "ZXWEPWQH5KZCYRZJLY4PTVEA62CX6MH7.gif"
     ];
 
     const container = document.getElementById("gif-container");
@@ -230,23 +324,20 @@
       imgElement.src = "assets/" + fileName;
       imgElement.alt = "Retro GIF";
       
-      // When a GIF is clicked, open the pop-up viewer
       imgElement.addEventListener("click", function() {
-        modalImg.src = this.src; // Copies the clicked image's source to the pop-up
-        modal.style.display = "flex"; // Shows the pop-up
+        modalImg.src = this.src; 
+        modal.style.display = "flex"; 
       });
       
       container.appendChild(imgElement);
     });
 
     // 3. Close Modal Logic
-    // Closes when clicking the Win95 'X' button
     closeModalBtn.addEventListener("click", function() {
       modal.style.display = "none";
-      modalImg.src = ""; // Clears the image to stop playback while hidden
+      modalImg.src = ""; 
     });
 
-    // Closes when clicking anywhere in the black background outside the window
     modal.addEventListener("click", function(event) {
       if (event.target === modal) {
         modal.style.display = "none";
