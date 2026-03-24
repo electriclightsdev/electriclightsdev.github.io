@@ -311,6 +311,45 @@
       80%  { transform: translate(1px, 2px); filter: hue-rotate(0deg) contrast(2); }
       100% { transform: translate(0); filter: hue-rotate(0deg); }
     }
+
+    /* =========================================
+       10. MOBILE RESPONSIVENESS (THE Y2K PATCH)
+       ========================================= */
+    @media (max-width: 768px) {
+      .container {
+        width: 95%;
+        padding: 10px;
+      }
+      
+      .walkman {
+        width: 90%;
+        max-width: 350px;
+        box-sizing: border-box;
+        padding: 15px;
+      }
+      
+      .mech-button {
+        padding: 10px 15px;
+      }
+
+      .art-gallery, .art-gallery tbody, .art-gallery tr, .art-gallery td {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      
+      .art-gallery td {
+        margin-bottom: 20px;
+      }
+      
+      .art-gallery img {
+        margin: 0 auto;
+      }
+
+      .sparkle {
+        display: none !important;
+      }
+    }
   </style>
 </head>
 <body>
