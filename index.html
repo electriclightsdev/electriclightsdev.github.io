@@ -3,19 +3,17 @@
 <head>
 <title>+++ I Love the Fucking Beatles +++</title>
 <style>
-body {
+  /* --- BASE PAGE STYLES --- */
+  body {
     background-color: #000000; 
     color: #00ff00; 
     font-family: "Courier New", Courier, monospace; 
     text-align: center;
-    
-    /* background image settings */
     background-image: url('BA1CK.png'); 
     background-size: 100% 100%;   
     background-repeat: no-repeat; 
     background-position: center;  
     background-attachment: fixed; 
-    /* cursor here */
     cursor: url('mouse.png'), auto; 
   }
   a {
@@ -24,10 +22,7 @@ body {
   .container {
     width: 80%;
     margin: 20px auto;
-    
-    /* The 0.8 at the end is the transparency (0 is invisible, 1 is solid) */
     background-color: rgba(17, 17, 17, 0.8); 
-    
     border: 5px ridge #ff00ff;
     padding: 20px;
   }
@@ -42,6 +37,8 @@ body {
     padding: 5px;
     display: inline-block;
   }
+
+  /* --- DIGITAL CANVASES (ART GALLERY) --- */
   .art-gallery {
     margin: 0 auto;
     border-collapse: separate;
@@ -55,9 +52,11 @@ body {
   .art-gallery img {
     width: 200px;
     height: 200px;
-    background-color: #333; /* Placeholder for actual art */
+    background-color: #333; 
     display: block;
   }
+
+  /* --- BUTTONS & LINKS --- */
   .download-button {
     background-color: #ff0000;
     color: #ffff00;
@@ -72,7 +71,9 @@ body {
   .download-button:active {
     border-style: inset;
   }
-.webring-container {
+
+  /* --- WEBRING FOOTER --- */
+  .webring-container {
     margin: 40px auto;
     padding: 10px;
     border-top: 3px dashed #ff00ff;
@@ -87,11 +88,83 @@ body {
     height: 31px;
     border: 1px solid #00ff00;
     margin: 5px;
-    image-rendering: pixelated; /* Keeps the buttons crunchy */
+    image-rendering: pixelated; 
   }
   .eighty-eight:hover {
     border: 1px solid #ffffff;
   }
+
+  /* --- PORTABLE AUDIO UNIT HARDWARE --- */
+  .walkman {
+    width: 350px;
+    margin: 40px auto 10px auto;
+    background-color: #c0c0c0; 
+    padding: 25px;
+    border-top: 5px solid #ffffff;
+    border-left: 5px solid #ffffff;
+    border-bottom: 5px solid #808080;
+    border-right: 5px solid #808080;
+    text-align: center;
+    font-family: "Courier New", Courier, monospace;
+  }
+  .branding {
+    color: #000080;
+    font-family: "Arial Black", sans-serif;
+    font-style: italic;
+    font-size: 24px;
+    text-align: left;
+    margin-top: 0;
+    margin-bottom: 10px;
+    letter-spacing: -1px;
+    text-shadow: none; 
+  }
+  .tape-deck {
+    background-color: #111;
+    border: 5px inset #808080;
+    height: 120px;
+    margin-bottom: 25px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .tape-deck p {
+    color: #ff0000;
+    font-size: 14px;
+    font-weight: bold;
+    margin: 5px 0;
+    text-shadow: 0px 0px 5px #ff0000;
+  }
+  .tape-deck img {
+    height: 60px; 
+    visibility: hidden; 
+  }  
+  .controls {
+    display: flex;
+    justify-content: space-between;
+  }
+  .mech-button {
+    background-color: #c0c0c0;
+    border-top: 4px solid #ffffff;
+    border-left: 4px solid #ffffff;
+    border-bottom: 4px solid #808080;
+    border-right: 4px solid #808080;
+    padding: 15px 20px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #000;
+    cursor: pointer; 
+  }
+  .mech-button:active {
+    border-top: 4px solid #808080;
+    border-left: 4px solid #808080;
+    border-bottom: 4px solid #ffffff;
+    border-right: 4px solid #ffffff;
+    background-color: #b0b0b0;
+  }
+  .play-btn { color: #008000; }
+  .stop-btn { color: #ff0000; }
 </style>
 </head>
 <body>
@@ -106,9 +179,24 @@ body {
     
     <div style="background: #000; border: 2px solid #00ff00; padding: 15px; width: 60%; margin: 0 auto; text-align: left;">
       <p>&#9658; TRACK 01: <a href="#" style="color: #00ffff;">PLACE HOLDER.mp3</a> (4.2 MB)</p>
-<!--      <p>&#9658; TRACK 02: <a href="#" style="color: #00ffff;">SYSTEM_CRASH_REMIX.mp3</a> (5.1 MB)</p>
-      <p>&#9658; TRACK 03: <a href="#" style="color: #00ffff;">VIRTUAL_TEARS.mp3</a> (3.8 MB)</p> -->
       <center><a href="#" class="download-button">DOWNLOAD FULL EP (.ZIP)</a></center>
+    </div>
+
+    <div class="walkman">
+      <h3 class="branding">SOUND-BOY 2000</h3>
+      
+      <div class="tape-deck">
+        <img src="assets/spinning-tape.gif" id="cassette-gif" alt="Spinning Cassette">
+        <p id="status-text">TAPE STOPPED</p>
+      </div>
+
+      <audio id="tape-audio"></audio>
+
+      <div class="controls">
+        <button class="mech-button play-btn" onclick="playTape()">&#9658;</button>
+        <button class="mech-button" onclick="pauseTape()">&#10074;&#10074;</button>
+        <button class="mech-button stop-btn" onclick="stopTape()">&#9632;</button>
+      </div>
     </div>
 
     <br><br>
@@ -150,6 +238,7 @@ body {
       &nbsp;&nbsp;&nbsp; 
       <i>[Insert "Best viewed in 800x600" button here]</i>
     </p>
+
     <div class="webring-container">
       <h3>+++ スポンサーになる +++</h3>
       
@@ -161,9 +250,62 @@ body {
       <a href="#"><img src="88x31/coke.gif" alt="Link 6" class="eighty-eight"></a>
       <a href="#"><img src="88x31/frank.gif" alt="Link 7" class="eighty-eight"></a>
     </div>
+
     <footer>
       <p><small>&copy; 2026 The Artist. Do not steal my bandwidth.</small></p>
     </footer>
   </div>
+
+  <script>
+    var tape = document.getElementById("tape-audio");
+    var statusText = document.getElementById("status-text");
+    var cassetteGif = document.getElementById("cassette-gif");
+
+    // TYPE YOUR EXACT FILE NAMES HERE (Without the .mp3 extension)
+    var playlist = [
+      "NEON_VOID",
+      "SYSTEM_CRASH_REMIX",
+      "VIRTUAL_TEARS"
+    ];
+    
+    var currentTrack = 0;
+    
+    // Load the first track on standby
+    tape.src = playlist[currentTrack] + ".mp3";
+
+    function playTape() {
+      tape.play();
+      statusText.innerText = ">> PLAYING: " + playlist[currentTrack] + ".mp3 >>";
+      statusText.style.color = "#00ff00"; 
+      cassetteGif.style.visibility = "visible"; 
+    }
+
+    function pauseTape() {
+      tape.pause();
+      statusText.innerText = "|| PAUSED: " + playlist[currentTrack] + ".mp3 ||";
+      statusText.style.color = "#ffff00"; 
+      cassetteGif.style.visibility = "hidden"; 
+    }
+
+    function stopTape() {
+      tape.pause();
+      tape.currentTime = 0; 
+      statusText.innerText = "TAPE STOPPED";
+      statusText.style.color = "#ff0000"; 
+      cassetteGif.style.visibility = "hidden"; 
+    }
+
+    // Automatically load and play the next song
+    tape.onended = function() {
+      currentTrack++; 
+      
+      if (currentTrack >= playlist.length) {
+        currentTrack = 0; 
+      }
+      
+      tape.src = playlist[currentTrack] + ".mp3";
+      playTape();
+    };
+  </script>
 </body>
 </html>
