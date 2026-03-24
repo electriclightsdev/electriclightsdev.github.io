@@ -18,13 +18,13 @@
       background-attachment: fixed;
       color: #ffffff;
       margin: 0;
-      padding: 40px 20px; /* Forces breathing room on the top and bottom */
-      box-sizing: border-box; /* Keeps the padding math inside the screen bounds */
+      padding: 40px 20px; 
+      box-sizing: border-box; 
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-height: 100vh; /* Changed from fixed height so the void can stretch */
+      min-height: 100vh; 
       font-family: "Courier New", Courier, monospace;
     }
 
@@ -38,6 +38,8 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      max-width: 100%;
+      box-sizing: border-box;
     }
 
     /* Preformatted text ensures exact grid spacing */
@@ -64,7 +66,6 @@
       display: flex;
       justify-content: center;
       padding: 10px 0;
-      /* Adds a subtle side border to connect the top and bottom asterisks */
       border-left: 2px dashed #444; 
       border-right: 2px dashed #444;
       margin: 2px 0;
@@ -76,7 +77,8 @@
     }
 
     #star-wars-player {
-      width: 67ch; /* Exactly matches the 67-column width of the Star Wars file */
+      width: 67ch; 
+      max-width: 100%;
     }
 
     /* Navigation Button */
@@ -91,6 +93,25 @@
 
     .home-btn:hover {
       border: 1px solid #00ff00;
+    }
+
+    /* --- MOBILE OVERRIDE (THE Y2K PATCH) --- */
+    @media (max-width: 768px) {
+      pre {
+        display: none; /* Strips out the text HUD entirely */
+      }
+      .terminal-window {
+        padding: 10px;
+        width: 95vw;
+        border: 1px solid #333;
+      }
+      .video-frame {
+        border: none; /* Removes the dashed connecting lines */
+        padding: 0;
+      }
+      #star-wars-player {
+        width: 100%; /* Lets the player fill the mobile screen naturally */
+      }
     }
   </style>
 </head>
