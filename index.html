@@ -3,25 +3,29 @@
 <head>
 <title>+++ I Love the Fucking Beatles +++</title>
 <style>
-  body {
+body {
     background-color: #000000; 
     color: #00ff00; 
     font-family: "Courier New", Courier, monospace; 
     text-align: center;
-    background-image: url('BA1CK.png'); 
     
-    /* Stretch image to fit */
-    background-size: cover;       
+    /* background image settings */
+    background-image: url('BA1CK.png'); 
+    background-size: 100% 100%;   
     background-repeat: no-repeat; 
     background-position: center;  
     background-attachment: fixed; 
+    /* cursor here */
+    cursor: url('mouse.png'), auto; 
+  }
+  a {
+    cursor: url('mouse.png'), pointer; 
   }
   .container {
     width: 80%;
     margin: 20px auto;
     
-    /* THE FIX: rgb(17,17,17) is the same dark grey as #111. 
-       The 0.8 at the end is the transparency (0 is invisible, 1 is solid) */
+    /* The 0.8 at the end is the transparency (0 is invisible, 1 is solid) */
     background-color: rgba(17, 17, 17, 0.8); 
     
     border: 5px ridge #ff00ff;
@@ -67,6 +71,26 @@
   }
   .download-button:active {
     border-style: inset;
+  }
+.webring-container {
+    margin: 40px auto;
+    padding: 10px;
+    border-top: 3px dashed #ff00ff;
+    width: 80%;
+  }
+  .webring-container h3 {
+    color: #ffff00;
+    text-shadow: 1px 1px #ff0000;
+  }
+  .eighty-eight {
+    width: 88px;
+    height: 31px;
+    border: 1px solid #00ff00;
+    margin: 5px;
+    image-rendering: pixelated; /* Keeps the buttons crunchy */
+  }
+  .eighty-eight:hover {
+    border: 1px solid #ffffff;
   }
 </style>
 </head>
@@ -126,7 +150,17 @@
       &nbsp;&nbsp;&nbsp; 
       <i>[Insert "Best viewed in 800x600" button here]</i>
     </p>
-    
+    <div class="webring-container">
+      <h3>+++ スポンサーになる +++</h3>
+      
+      <a href="#"><img src="88x31/anihome112g.gif" alt="Link 1" class="eighty-eight"></a>
+      <a href="#"><img src="88x31/anybrowser3.gif" alt="Link 2" class="eighty-eight"></a>
+      <a href="#"><img src="88x31/ban-button.gif" alt="Link 3" class="eighty-eight"></a>
+      <a href="#"><img src="88x31/bikobatanari.gif" alt="Link 4" class="eighty-eight"></a>
+      <a href="#"><img src="88x31/blog.gif" alt="Link 5" class="eighty-eight"></a>
+      <a href="#"><img src="88x31/coke.gif" alt="Link 6" class="eighty-eight"></a>
+      <a href="#"><img src="88x31/frank.gif" alt="Link 7" class="eighty-eight"></a>
+    </div>
     <footer>
       <p><small>&copy; 2026 The Artist. Do not steal my bandwidth.</small></p>
     </footer>
