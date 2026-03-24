@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GIF_VAULT.EXE</title>
+  <link rel="icon" type="image/png" href="assets/icon2.gif">
+  
+  <style>
+    /* =========================================
+       1. WIN95 DESKTOP BACKGROUND
+       ========================================= */
+    body {
+      margin: 0;
+      padding: 30px 20px;
+      font-family: "Arial", sans-serif;
+      background-color: #008080; 
+      cursor: url('assets/mouse.png'), auto; 
+    }
+
+    a {
+      cursor: url('assets/mouse.png'), pointer; 
+    }
+
+    /* =========================================
+       2. WIN95 GALLERY BOX
+       ========================================= */
+    .win95-window {
+      background-color: #c0c0c0;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #000000;
+      border-bottom: 2px solid #000000;
+      box-shadow: inset -1px -1px #808080, inset 1px 1px #dfdfdf;
+      width: 95%;
+      max-width: 1400px; 
+      margin: 0 auto;
+      padding: 2px;
+    }
+
+    .win95-titlebar {
+      background: linear-gradient(to right, #000080, #1084d0);
+      padding: 3px 3px 3px 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: white;
+      font-weight: bold;
+      font-size: 14px;
+      letter-spacing: 1px;
+    }
+
+    .win95-controls {
+      display: flex;
+      gap: 2px;
+    }
+
+    .win95-btn {
+      background-color: #c0c0c0;
+      border-top: 1px solid #ffffff;
+      border-left: 1px solid #ffffff;
+      border-right: 1px solid #000000;
+      border-bottom: 1px solid #000000;
+      box-shadow: inset -1px -1px #808080;
+      font-size: 11px;
+      font-weight: bold;
+      padding: 1px 5px;
+      cursor: inherit; 
+      color: black;
+      min-width: 20px;
+    }
+
+    .win95-btn:active {
+      border-top: 1px solid #000000;
+      border-left: 1px solid #000000;
+      border-right: 1px solid #ffffff;
+      border-bottom: 1px solid #ffffff;
+      box-shadow: inset 1px 1px #808080;
+      padding: 2px 4px 0px 6px; 
+    }
+
+    /* =========================================
+       3. THE INNER GALLERY & LAYOUT
+       ========================================= */
+    .win95-content {
+      padding: 10px;
+      background-color: #c0c0c0;
+    }
+
+    .gallery-grid {
+      /* Added your custom 4K background image here */
+      background-color: #000000;
+      background-image: url('assets/bg/VvNhMb0.jpg');
+      background-size: cover; 
+      background-position: center;
+      background-attachment: local; /* Ensures background scrolls with the GIFs if needed */
+      
+      border-top: 2px solid #808080;
+      border-left: 2px solid #808080;
+      border-right: 2px solid #ffffff;
+      border-bottom: 2px solid #ffffff;
+      padding: 15px;
+      
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      
+      height: 82vh; 
+      overflow-y: auto; 
+    }
+
+    .gallery-grid img {
+      max-width: 100%; 
+      border: 1px solid #c0c0c0; 
+      background-color: rgba(0, 0, 0, 0.5); /* Adds a slight dark box behind GIFs if your BG image is bright */
+      image-rendering: pixelated;
+      transition: transform 0.1s;
+      /* The custom magnifying glass cursor */
+      cursor: url('assets/magnify.png'), zoom-in; 
+    }
+
+    .gallery-grid img:hover {
+      transform: scale(1.05);
+      border: 1px dotted #00ffff;
+      box-shadow: 0px 0px 10px #00ffff; /* Added a neon glow on hover so they stand out against the background */
+    }
+
+    .gallery-grid::-webkit-scrollbar { width: 16px; }
+    .gallery-grid::-webkit-scrollbar-track { background: #dfdfdf; border-left: 1px solid #808080; }
+    .gallery-grid::-webkit-scrollbar-thumb { background-color: #c0c0c0; border: 1px solid #ffffff; box-shadow: inset -1px -1px #000, inset 1px 1px #fff; }
+
+    /* =========================================
+       4. POP-UP IMAGE VIEWER (MODAL)
+       ========================================= */
+    .modal-overlay {
+      display: none; /* Hidden by default */
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 10000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-window {
+      width: auto;
+      max-width: 90vw;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-content-inner {
+      padding: 15px;
+      background-color: #c0c0c0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content-inner img {
+      max-width: 100%;
+      max-height: 75vh;
+      border: 2px inset #808080;
+      image-rendering: pixelated;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="win95-window">
+    <div class="win95-titlebar">
+      <span class="win95-title">C:\WINDOWS\DESKTOP\GIF_VAULT.EXE</span>
+      <div class="win95-controls">
+        <button class="win95-btn">_</button>
+        <button class="win95-btn">[]</button>
+        <a href="index.html" style="text-decoration: none;"><button class="win95-btn">X</button></a>
+      </div>
+    </div>
+    
+    <div class="win95-content">
+      <div class="gallery-grid" id="gif-container"></div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="image-modal">
+    <div class="win95-window modal-window">
+      <div class="win95-titlebar">
+        <span class="win95-title">IMAGE_PREVIEW.EXE</span>
+        <div class="win95-controls">
+          <button class="win95-btn" id="close-modal">X</button>
+        </div>
+      </div>
+      <div class="modal-content-inner">
+        <img id="modal-image" src="" alt="Enlarged GIF">
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 1. The GIF Vault Array
+    const gifVault = [
+      "4shx-transparent-gif-ezgif.com-resize.gif",
+      "93533501-53aa0d80-f943-11ea-90d1-e6e70eca2e29-ezgif.com-resize.gif",
+      "f5baef4b6b6677020ab8d091ef78a3bc-ezgif.com-resize.gif",
+      "giphy-ezgif.com-resize.gif",
+      "huh-cat-ezgif.com-crop.gif",
+      "icon2.gif",
+      "K3QC5HKUYNGPBM2EIMEC6SLC6SHSWGFV.gif",
+      "KA4SLU44TVPZWYTYGN4AB6CIJI65IW5O.gif",
+      "MQE7JUBYYUU2HCDIKY5H7DD765UJ7OJT.gif",
+      "napoleon-dynamite-dance-ezgif.com-resize.gif",
+      "source-ezgif.com-resize.gif",
+      "spinning-tape.gif"
+    ];
+
+    const container = document.getElementById("gif-container");
+    const modal = document.getElementById("image-modal");
+    const modalImg = document.getElementById("modal-image");
+    const closeModalBtn = document.getElementById("close-modal");
+
+    // 2. Generate Images & Add Click Listeners
+    gifVault.forEach(function(fileName) {
+      const imgElement = document.createElement("img");
+      imgElement.src = "assets/" + fileName;
+      imgElement.alt = "Retro GIF";
+      
+      // When a GIF is clicked, open the pop-up viewer
+      imgElement.addEventListener("click", function() {
+        modalImg.src = this.src; // Copies the clicked image's source to the pop-up
+        modal.style.display = "flex"; // Shows the pop-up
+      });
+      
+      container.appendChild(imgElement);
+    });
+
+    // 3. Close Modal Logic
+    // Closes when clicking the Win95 'X' button
+    closeModalBtn.addEventListener("click", function() {
+      modal.style.display = "none";
+      modalImg.src = ""; // Clears the image to stop playback while hidden
+    });
+
+    // Closes when clicking anywhere in the black background outside the window
+    modal.addEventListener("click", function(event) {
+      if (event.target === modal) {
+        modal.style.display = "none";
+        modalImg.src = "";
+      }
+    });
+  </script>
+
+</body>
+</html>

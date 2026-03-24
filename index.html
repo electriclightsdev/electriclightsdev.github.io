@@ -123,6 +123,7 @@
       border: 2px solid #fff;
       padding: 5px;
       display: inline-block;
+      margin-top: 30px;
     }
 
     .divider-gif {
@@ -135,11 +136,123 @@
     }
 
     /* =========================================
-       5. AUDIO PLAYER (SOUND-BOY 2000)
+       5. CYBER PORTALS (GIF BUTTONS)
+       ========================================= */
+    .gif-portals {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 25px;
+      margin: 20px auto;
+      width: 90%;
+    }
+
+    .gif-portals a {
+      display: inline-block;
+      text-decoration: none;
+      transition: all 0.2s ease-in-out;
+    }
+
+    .gif-portals img {
+      max-height: 110px; 
+      width: auto;
+      image-rendering: pixelated; 
+    }
+
+    .gif-portals a:hover {
+      transform: scale(1.1) translateY(-5px);
+      filter: drop-shadow(0px 0px 10px #ff00ff);
+    }
+
+    /* =========================================
+       6. MEME OF THE DAY (WIN95 STYLE)
+       ========================================= */
+    .win95-window {
+      margin: 20px auto;
+      background-color: #c0c0c0;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #000000;
+      border-bottom: 2px solid #000000;
+      box-shadow: inset -1px -1px #808080, inset 1px 1px #dfdfdf;
+      width: 80%;
+      max-width: 500px;
+      padding: 2px;
+      font-family: "Arial", sans-serif;
+    }
+
+    .win95-titlebar {
+      background: linear-gradient(to right, #000080, #1084d0);
+      padding: 3px 3px 3px 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: white;
+      font-weight: bold;
+      font-size: 14px;
+      letter-spacing: 1px;
+    }
+
+    .win95-controls {
+      display: flex;
+      gap: 2px;
+    }
+
+    .win95-btn {
+      background-color: #c0c0c0;
+      border-top: 1px solid #ffffff;
+      border-left: 1px solid #ffffff;
+      border-right: 1px solid #000000;
+      border-bottom: 1px solid #000000;
+      box-shadow: inset -1px -1px #808080;
+      font-size: 11px;
+      font-weight: bold;
+      padding: 1px 5px;
+      cursor: inherit; /* Keeps the custom retro cursor */
+      color: black;
+      min-width: 20px;
+    }
+
+    .win95-btn:active {
+      border-top: 1px solid #000000;
+      border-left: 1px solid #000000;
+      border-right: 1px solid #ffffff;
+      border-bottom: 1px solid #ffffff;
+      box-shadow: inset 1px 1px #808080;
+      padding: 2px 4px 0px 6px; /* Shifts text down-right to simulate pressing */
+    }
+
+    .win95-content {
+      padding: 12px;
+      background-color: #c0c0c0;
+    }
+
+    .win95-content img {
+      width: 100%;
+      height: auto;
+      border-top: 2px solid #808080;
+      border-left: 2px solid #808080;
+      border-right: 2px solid #ffffff;
+      border-bottom: 2px solid #ffffff;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .win95-content p {
+      margin-top: 10px;
+      margin-bottom: 0;
+      font-family: "Courier New", Courier, monospace; 
+      font-weight: bold;
+      color: #000080; /* Dark blue to match the title bar */
+    }
+
+    /* =========================================
+       7. AUDIO PLAYER (SOUND-BOY 2000)
        ========================================= */
     .walkman {
       width: 350px;
-      margin: 40px auto 10px auto;
+      margin: 20px auto 40px auto;
       background-color: #c0c0c0; 
       padding: 25px;
       border-top: 5px solid #ffffff;
@@ -216,40 +329,7 @@
     .stop-btn { color: #ff0000; }
 
     /* =========================================
-       6. DIGITAL CANVASES (ART GALLERY)
-       ========================================= */
-    .art-gallery {
-      margin: 0 auto;
-      border-collapse: separate;
-      border-spacing: 15px;
-    }
-
-    .art-gallery td {
-      border: 3px inset #c0c0c0;
-      padding: 10px;
-      background-color: #222;
-    }
-    
-    .art-gallery img {
-      width: 200px;
-      height: 200px;
-      background-color: #333; 
-      display: block;
-      box-shadow: 0 0 10px #00ffff, 0 0 20px #ff00ff;
-      filter: contrast(1.4) saturate(1.2);
-      animation: crt-flicker 3s infinite;
-      image-rendering: pixelated; 
-      transition: all 0.1s ease-in-out;
-    }
-
-    .art-gallery img:hover {
-      animation: glitch-spasm 0.2s infinite;
-      cursor: crosshair; 
-      box-shadow: -3px 0 15px #ff0000, 3px 0 15px #0000ff;
-    }
-
-    /* =========================================
-       7. WEBRING & FOOTER
+       8. WEBRING & FOOTER
        ========================================= */
     .webring-container {
       margin: 40px auto;
@@ -278,7 +358,7 @@
     }
 
     /* =========================================
-       8. MOUSE SPARKLES
+       9. MOUSE SPARKLES
        ========================================= */
     .sparkle {
       position: absolute;
@@ -292,7 +372,7 @@
     }
 
     /* =========================================
-       9. KEYFRAME ANIMATIONS
+       10. KEYFRAME ANIMATIONS
        ========================================= */
     @keyframes crt-flicker {
       0%   { opacity: 1;   filter: contrast(1.4) brightness(1); }
@@ -311,9 +391,25 @@
       80%  { transform: translate(1px, 2px); filter: hue-rotate(0deg) contrast(2); }
       100% { transform: translate(0); filter: hue-rotate(0deg); }
     }
+	/* --- THE ODOMETER HIT COUNTER --- */
+    .hit-counter {
+      background-color: #000;
+      border: 3px inset #808080;
+      display: inline-block;
+      padding: 5px 10px;
+      margin: 10px 0;
+      font-family: 'Courier New', Courier, monospace;
+    }
+    .hit-number {
+      color: #00ff00;
+      font-size: 20px;
+      font-weight: bold;
+      letter-spacing: 4px;
+      text-shadow: 0 0 5px #00ff00;
+    }
 
     /* =========================================
-       10. MOBILE RESPONSIVENESS (THE Y2K PATCH)
+       11. MOBILE RESPONSIVENESS (THE Y2K PATCH)
        ========================================= */
     @media (max-width: 768px) {
       .container {
@@ -321,6 +417,15 @@
         padding: 10px;
       }
       
+      .gif-portals img {
+        max-height: 80px;
+      }
+      
+      .win95-window {
+        width: 95%;
+        box-sizing: border-box;
+      }
+
       .walkman {
         width: 90%;
         max-width: 350px;
@@ -330,20 +435,6 @@
       
       .mech-button {
         padding: 10px 15px;
-      }
-
-      .art-gallery, .art-gallery tbody, .art-gallery tr, .art-gallery td {
-        display: block;
-        width: 100%;
-        box-sizing: border-box;
-      }
-      
-      .art-gallery td {
-        margin-bottom: 20px;
-      }
-      
-      .art-gallery img {
-        margin: 0 auto;
       }
 
       .sparkle {
@@ -366,8 +457,38 @@
     
     <hr size="5" width="80%" color="#ff00ff">
 
+    <h2>+++ CYBER PORTALS +++</h2>
+    <div class="gif-portals">
+      <a href="#"><img src="assets/source-ezgif.com-resize.gif" alt="Nyan Cat Portal"></a>
+      <a href="#"><img src="assets/4shx-transparent-gif-ezgif.com-resize.gif" alt="Guitar Cat Portal"></a>
+      <a href="#"><img src="assets/93533501-53aa0d80-f943-11ea-90d1-e6e70eca2e29-ezgif.com-resize.gif" alt="Retro Sun Portal"></a>
+      <a href="#"><img src="assets/f5baef4b6b6677020ab8d091ef78a3bc-ezgif.com-resize.gif" alt="Duck Portal"></a>
+      <a href="#"><img src="assets/giphy-ezgif.com-resize.gif" alt="Monkey Portal"></a>
+      <a href="#"><img src="assets/huh-cat-ezgif.com-crop.gif" alt="Huh Cat Portal"></a>
+      <a href="#"><img src="assets/napoleon-dynamite-dance-ezgif.com-resize.gif" alt="Napoleon Portal"></a>
+    </div>
+
+    <br><br>
+
+    <h2>+++ MOTD +++</h2>
+    <div class="win95-window">
+      <div class="win95-titlebar">
+        <span class="win95-title">MEME_VIEWER.EXE</span>
+        <div class="win95-controls">
+          <button class="win95-btn">_</button>
+          <button class="win95-btn">[]</button>
+          <button class="win95-btn">X</button>
+        </div>
+      </div>
+      <div class="win95-content">
+        <img src="assets/motd/meme1.png" alt="Meme of the Day">
+        <p><small id="meme-log-date">LOGGED: LOADING...</small></p>
+      </div>
+    </div>
+
+    <br><br>
+
     <h2>+++ AUDIO TRANSMISSIONS +++</h2>
-    
     <div class="walkman">
       <h3 class="branding">SOUND-BOY 2000</h3>
       
@@ -385,37 +506,6 @@
       </div>
     </div>
 
-    <br><br>
-
-    <h2>+++ DIGITAL CANVASES +++</h2>
-    
-    <table class="art-gallery">
-      <tr>
-        <td>
-          <i>[Replace with art]</i>
-          <img src="placeholder1.jpg" alt="Art Piece 1">
-          <p><small>"Cyber Entity #4"</small></p>
-        </td>
-        <td>
-          <i>[Replace with art]</i>
-          <img src="placeholder2.jpg" alt="Art Piece 2">
-          <p><small>"Grid Collapse"</small></p>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <i>[Replace with art]</i>
-          <img src="placeholder3.jpg" alt="Art Piece 3">
-          <p><small>"Wireframe Dreams"</small></p>
-        </td>
-        <td>
-          <i>[Replace with art]</i>
-          <img src="placeholder4.jpg" alt="Art Piece 4">
-          <p><small>"Render_Error_09"</small></p>
-        </td>
-      </tr>
-    </table>
-
     <br>
     <hr size="5" width="80%" color="#ff00ff">
     
@@ -426,11 +516,10 @@
     </p>
 
     <div class="webring-container">
-      
       <img src="assets/MQE7JUBYYUU2HCDIKY5H7DD765UJ7OJT.gif" alt="Webring Header Blast" class="webring-header">
       
-      <a href="#"><img src="88x31/anihome112g.gif" alt="Link 1" class="eighty-eight"></a>
-      <a href="#"><img src="88x31/anybrowser3.gif" alt="Link 2" class="eighty-eight"></a>
+      <a href="index.html"><img src="88x31/anihome112g.gif" alt="Link 1" class="eighty-eight"></a>
+      <a href="gallery.html"><img src="88x31/anybrowser3.gif" alt="Link 2" class="eighty-eight"></a>
       <a href="#"><img src="88x31/ban-button.gif" alt="Link 3" class="eighty-eight"></a>
       <a href="#"><img src="88x31/bikobatanari.gif" alt="Link 4" class="eighty-eight"></a>
       <a href="#"><img src="88x31/blog.gif" alt="Link 5" class="eighty-eight"></a>
@@ -543,6 +632,21 @@
     
     // Kick off the animation
     animateTrail();
+	
+	// --- AUTO-DATE SCRIPT ---
+function updateMemeDate() {
+  const dateElement = document.getElementById('meme-log-date');
+  const now = new Date();
+  
+  // Formats to: Weekday, Month DD, YYYY
+  const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
+  const dateString = now.toLocaleDateString('en-US', options).toUpperCase();
+  
+  dateElement.innerText = "LOGGED: " + dateString;
+}
+
+// Run the function immediately on page load
+updateMemeDate();
   </script>
 
 </body>
