@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AUDIO TERMINAL // STREAM</title>
+  
+  <style>
+    /* --- GLOBAL BACKGROUND --- */
+    body {
+      background-color: #050505;
+      background-image: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        #111 2px,
+        #111 4px
+      );
+      color: #c0c0c0;
+      font-family: 'Verdana', 'Arial', sans-serif;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+
+    /* --- THE MEDIA PLAYER --- */
+    .player-container {
+      background: #333;
+      border-top: 3px solid #777;
+      border-left: 3px solid #777;
+      border-bottom: 3px solid #111;
+      border-right: 3px solid #111;
+      max-width: 500px;
+      margin: 30px auto;
+      padding: 15px;
+      box-shadow: 10px 10px 0px rgba(0, 0, 0, 0.8);
+    }
+
+    .player-header {
+      background: linear-gradient(to right, #000080, #1084d0);
+      color: white;
+      padding: 5px 10px;
+      font-weight: bold;
+      text-align: left;
+      font-size: 14px;
+      font-family: 'Trebuchet MS', sans-serif;
+      letter-spacing: 1px;
+      margin-bottom: 15px;
+      border: 1px inset #555;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* --- LCD SCREEN --- */
+    .lcd-screen {
+      background-color: #000;
+      border: 3px inset #555;
+      padding: 10px;
+      margin-bottom: 15px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .eq-visualizer {
+      width: 40px;
+      height: 30px;
+      border: 1px solid #333;
+      image-rendering: pixelated;
+    }
+
+    .lcd-text-container {
+      flex-grow: 1;
+      overflow: hidden;
+      padding-bottom: 15px; /* Space for the kbps text */
+    }
+
+    .lcd-text {
+      color: #00ff00;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 14px;
+      text-shadow: 0px 0px 5px #00ff00;
+      white-space: nowrap;
+    }
+
+    .kbps {
+      position: absolute;
+      bottom: 5px;
+      right: 10px;
+      color: #00aa00;
+      font-size: 10px;
+      font-family: 'Verdana', sans-serif;
+    }
+
+    /* --- HARDWARE BUTTONS --- */
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .hw-btn {
+      background: #bfbfbf;
+      border-top: 2px solid #fff;
+      border-left: 2px solid #fff;
+      border-bottom: 2px solid #555;
+      border-right: 2px solid #555;
+      padding: 8px 15px;
+      font-weight: bold;
+      font-size: 16px;
+      color: #000;
+      cursor: pointer;
+    }
+
+    .hw-btn:active {
+      border-top: 2px solid #555;
+      border-left: 2px solid #555;
+      border-bottom: 2px solid #fff;
+      border-right: 2px solid #fff;
+      background: #a0a0a0;
+    }
+
+    /* --- TRACKLIST DIRECTORY --- */
+    .tracklist-box {
+      background: #000;
+      border: 2px inset #777;
+      padding: 5px;
+      text-align: left;
+      height: 150px;
+      overflow-y: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 12px;
+    }
+
+    th {
+      background: #000080;
+      color: white;
+      text-align: left;
+      padding: 4px;
+      position: sticky;
+      top: 0;
+    }
+
+    td {
+      padding: 4px;
+      color: #ffaa00;
+      border-bottom: 1px dotted #333;
+    }
+
+    tr.track-row {
+      cursor: crosshair;
+    }
+
+    tr.track-row:hover td {
+      background: #333;
+      color: #fff;
+    }
+
+    /* Used dynamically via Javascript */
+    .status-playing {
+      color: #00ff00 !important;
+      font-weight: bold;
+    }
+
+    /* --- PAGE HEADER & FOOTER --- */
+    h1 {
+      color: #fff;
+      text-shadow: 2px 2px 0px #000080;
+      font-family: 'Arial Black', Impact, sans-serif;
+      letter-spacing: 3px;
+    }
+
+    .subtitle {
+      color: #aaaaaa;
+      font-size: 12px;
+      margin-top: -10px;
+    }
+
+    .footer-zone {
+      margin-top: 40px;
+      border-top: 1px dashed #333;
+      padding-top: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .hit-counter p {
+      font-size: 10px;
+      color: #777;
+      margin: 0 0 5px 0;
+      letter-spacing: 1px;
+    }
+    
+    .badges {
+      display: flex;
+      gap: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>// AUDIO ARCHIVE //</h1>
+  <p class="subtitle">STREAMING PROTOCOL: ACTIVE</p>
+
+  <div class="player-container">
+    <div class="player-header">
+      <span>[+] SPACE_AMP v1.4</span>
+      <span>_ □ X</span>
+    </div>
+
+    <div class="lcd-screen">
+      <img src="assets/eq.gif" alt="EQ" class="eq-visualizer">
+      
+      <div class="lcd-text-container">
+        <div class="lcd-text">
+          <marquee id="now-playing-marquee" scrollamount="4">*** SYSTEM READY *** SELECT A TRACK FROM THE DIRECTORY ***</marquee>
+        </div>
+      </div>
+      
+      <div class="kbps">1411 kbps / 44.1 kHz</div> </div>
+
+    <audio id="main-audio-player" style="display: none;"></audio>
+
+    <div class="controls">
+      <button class="hw-btn" id="btn-play" title="Play">▶</button>
+      <button class="hw-btn" id="btn-pause" title="Pause">||</button>
+      <button class="hw-btn" id="btn-stop" title="Stop">■</button>
+    </div>
+
+    <div class="tracklist-box">
+      <table id="playlist-table">
+        <thead>
+          <tr>
+            <th style="width: 15%;">TRK</th>
+            <th style="width: 65%;">TITLE</th>
+            <th style="width: 20%;">SIZE</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="track-row" data-src="assets/audio/music/DAY JOB (FINISHED).wav">
+            <td class="track-num">01</td>
+            <td class="track-title">DAY JOB (FINISHED).wav</td>
+            <td>4.2 MB</td>
+          </tr>
+          <tr class="track-row" data-src="assets/audio/music/Empty courage (OFFICIAL EDIT) (14).wav">
+            <td class="track-num">02</td>
+            <td class="track-title">Empty courage (OFFICIAL EDIT) (14).wav</td>
+            <td>3.8 MB</td>
+          </tr>
+          <tr class="track-row" data-src="assets/audio/music/Give It A Shot (FINISHED).wav">
+            <td class="track-num">03</td>
+            <td class="track-title">Give It A Shot (FINISHED).wav</td>
+            <td>5.1 MB</td>
+          </tr>
+          <tr class="track-row" data-src="assets/audio/music/Radio (FINISHED).wav">
+            <td class="track-num">04</td>
+            <td class="track-title">Radio (FINISHED).wav</td>
+            <td>2.9 MB</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="footer-zone">
+    <div class="badges">
+      <img src="assets/netscape.gif" alt="Best Viewed in Netscape" style="image-rendering: pixelated;">
+      <img src="assets/winamp.gif" alt="Get Winamp" style="image-rendering: pixelated;">
+    </div>
+
+    <div class="hit-counter">
+      <p>UNIQUE VISITORS:</p>
+      <img src="assets/counter.gif" alt="001337" style="border: 2px inset #555; image-rendering: pixelated;">
+    </div>
+
+    <a href="index.html">
+      <img src="88x31/anihome112g.gif" alt="Return to Index" style="image-rendering: pixelated; border: 1px solid #555;">
+    </a>
+  </div>
+
+  <script>
+    const audioPlayer = document.getElementById('main-audio-player');
+    const marquee = document.getElementById('now-playing-marquee');
+    const playBtn = document.getElementById('btn-play');
+    const pauseBtn = document.getElementById('btn-pause');
+    const stopBtn = document.getElementById('btn-stop');
+    const trackRows = document.querySelectorAll('.track-row');
+
+    // Function to handle playing a specific track from the table
+    function loadAndPlayTrack(rowElement) {
+      // 1. Remove the 'playing' green text from all rows
+      trackRows.forEach(r => {
+        r.querySelectorAll('td').forEach(td => td.classList.remove('status-playing'));
+        // Reset the little arrow if it exists
+        const numCell = r.querySelector('.track-num');
+        numCell.textContent = numCell.textContent.replace('▶ ', ''); 
+      });
+
+      // 2. Add the 'playing' green text to the clicked row
+      rowElement.querySelectorAll('td').forEach(td => td.classList.add('status-playing'));
+      
+      // 3. Add the play arrow to the track number
+      const currentNumCell = rowElement.querySelector('.track-num');
+      currentNumCell.textContent = '▶ ' + currentNumCell.textContent;
+
+      // 4. Update the Audio source and play
+      const trackSrc = rowElement.getAttribute('data-src');
+      audioPlayer.src = trackSrc;
+      audioPlayer.play();
+
+      // 5. Update the marquee text
+      const trackTitle = rowElement.querySelector('.track-title').textContent;
+      marquee.textContent = `▶ NOW PLAYING: ${trackTitle} -- ENJOY THE AUDIO ARCHIVE --`;
+    }
+
+    // Add click event listeners to every row in the table
+    trackRows.forEach(row => {
+      row.addEventListener('click', function() {
+        loadAndPlayTrack(this);
+      });
+    });
+
+    // Hardware Buttons Logic
+    playBtn.addEventListener('click', () => {
+      if(audioPlayer.src) {
+        audioPlayer.play();
+      } else if (trackRows.length > 0) {
+        // If nothing is loaded, play the first track
+        loadAndPlayTrack(trackRows[0]);
+      }
+    });
+
+    pauseBtn.addEventListener('click', () => {
+      audioPlayer.pause();
+    });
+
+    stopBtn.addEventListener('click', () => {
+      audioPlayer.pause();
+      audioPlayer.currentTime = 0; // Rewind to beginning
+      marquee.textContent = `*** PLAYBACK STOPPED *** SELECT A TRACK ***`;
+    });
+
+    // When the song ends, automatically play the next one
+    audioPlayer.addEventListener('ended', () => {
+        let nextRow = null;
+        for(let i = 0; i < trackRows.length; i++) {
+            // Find which row is currently green
+            if(trackRows[i].querySelector('.status-playing')) {
+                // Select the next row in the list, or loop back to the first
+                nextRow = trackRows[i + 1] || trackRows[0];
+                break;
+            }
+        }
+        if(nextRow) {
+            loadAndPlayTrack(nextRow);
+        }
+    });
+  </script>
+
+</body>
+</html>
