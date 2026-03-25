@@ -20,35 +20,52 @@
       margin: 0;
       padding: 40px 20px; 
       box-sizing: border-box; 
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh; 
       font-family: "Courier New", Courier, monospace;
+      text-align: center;
     }
 
-    /* --- TERMINAL SCREEN --- */
+    /* --- DASHBOARD GRID --- */
+    .dashboard-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      max-width: 1600px;
+      margin: 0 auto;
+      align-items: flex-start;
+    }
+
+    /* --- TERMINAL PANELS --- */
     .terminal-window {
       background-color: rgba(0, 0, 0, 0.85); 
-      padding: 20px 30px;
+      padding: 20px 25px;
       border: 2px solid #333;
       border-radius: 8px;
-      box-shadow: 0px 0px 20px rgba(0, 255, 255, 0.15); 
+      box-shadow: 0px 0px 15px rgba(0, 255, 255, 0.1); 
       display: flex;
       flex-direction: column;
-      align-items: center;
-      max-width: 100%;
-      box-sizing: border-box;
+      text-align: left;
     }
 
-    /* Preformatted text ensures exact grid spacing */
+    .panel-title {
+      color: #55ffff;
+      border-bottom: 1px dashed #555;
+      margin-top: 0;
+      padding-bottom: 10px;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+      font-weight: bold;
+      letter-spacing: 2px;
+      font-size: 14px;
+    }
+
     pre {
       margin: 0;
-      font-size: 16px;
+      font-size: 14px;
       line-height: 1.2;
       letter-spacing: 1px;
       text-shadow: 1px 1px 2px #000; 
+      overflow-x: auto;
     }
 
     /* --- COLOR UTILITY CLASSES --- */
@@ -71,76 +88,276 @@
       margin: 2px 0;
     }
 
-    /* Overrides Asciinema to make its background transparent */
     .asciinema-player-wrapper, .asciinema-terminal {
       background: transparent !important;
     }
 
-    #star-wars-player {
-      width: 67ch; 
-      max-width: 100%;
+    #star-wars-player { width: 67ch; }
+
+    /* --- Y2K CHROME MODULE --- */
+    .chrome-panel {
+      background: linear-gradient(135deg, #f2f2f2 0%, #a1a1a1 40%, #707070 50%, #9e9e9e 60%, #ffffff 100%);
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #444444;
+      border-bottom: 2px solid #444444;
+      border-radius: 15px; 
+      box-shadow: inset 1px 1px 5px rgba(255,255,255,0.8), inset -1px -1px 5px rgba(0,0,0,0.5), 5px 5px 15px rgba(0,0,0,0.9);
+      padding: 15px;
+      color: #000;
+      font-family: 'Arial Black', Impact, sans-serif;
+      text-align: center;
     }
 
-    /* Navigation Button */
-    .home-btn {
-      width: 88px;
-      height: 31px;
-      image-rendering: pixelated;
+    .chrome-title {
+      font-size: 16px;
+      letter-spacing: 2px;
+      text-shadow: 1px 1px 0px #fff, -1px -1px 0px #888;
+      margin: 0 0 15px 0;
+      border-bottom: 2px groove #ccc;
+      padding-bottom: 5px;
+    }
+
+    .digital-screen {
+      background-color: #051105;
+      border-top: 3px solid #000;
+      border-left: 3px solid #000;
+      border-right: 2px solid #aaa;
+      border-bottom: 2px solid #aaa;
+      border-radius: 5px;
+      padding: 10px;
+      color: #00ff00;
+      font-family: "Courier New", Courier, monospace;
+      text-shadow: 0px 0px 5px #00ff00;
+      position: relative;
+      margin-bottom: 15px;
+    }
+
+    /* Radar Animation */
+    .radar-container {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      border: 2px solid #00ff00;
+      margin: 10px auto;
+      position: relative;
+      background: repeating-radial-gradient(circle at center, transparent 0, transparent 20px, rgba(0,255,0,0.2) 21px);
+      overflow: hidden;
+    }
+
+    .radar-sweep {
+      width: 50%;
+      height: 50%;
+      background: linear-gradient(to right, transparent, rgba(0, 255, 0, 0.8));
+      position: absolute;
+      top: 0;
+      right: 0;
+      transform-origin: bottom left;
+      animation: sweep 3s linear infinite;
+    }
+
+    @keyframes sweep {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .chrome-btn {
+      background: linear-gradient(to bottom, #ffffff 0%, #aaaaaa 48%, #777777 50%, #cccccc 100%);
+      border: 2px outset #dddddd;
+      border-radius: 20px;
+      padding: 5px 15px;
+      font-weight: bold;
+      color: #000;
+      text-shadow: 1px 1px 0px #fff;
+      cursor: pointer;
+      box-shadow: 0px 3px 5px rgba(0,0,0,0.5);
+      font-size: 12px;
+    }
+
+    .chrome-btn:active {
+      border: 2px inset #dddddd;
+      background: linear-gradient(to bottom, #cccccc 0%, #777777 48%, #aaaaaa 50%, #ffffff 100%);
+      box-shadow: inset 0px 2px 5px rgba(0,0,0,0.5);
+      transform: translateY(2px);
+    }
+
+    .led-light {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: #ff0000; 
+      box-shadow: inset -2px -2px 4px rgba(0,0,0,0.5), 0px 0px 10px #ff0000;
+      border: 1px solid #333;
+      vertical-align: middle;
+      margin-right: 5px;
+      animation: blink 2s infinite;
+    }
+
+    @keyframes blink {
+      0%, 49% { background-color: #ff0000; box-shadow: inset -2px -2px 4px rgba(0,0,0,0.5), 0px 0px 10px #ff0000; }
+      50%, 100% { background-color: #440000; box-shadow: none; }
+    }
+
+    /* --- GALACTIC MARKET TICKER --- */
+    .ticker-box {
+      background-color: #000;
+      border: 1px solid #333;
+      padding: 5px;
+      margin-bottom: 15px;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .ticker-text {
+      display: inline-block;
+      color: #00ff00;
+      animation: scrollTicker 20s linear infinite;
+    }
+
+    @keyframes scrollTicker {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+
+    /* Diagnostics Progress Bars */
+    .progress-bar {
+      width: 100%;
+      background-color: #222;
       border: 1px solid #555;
-      margin-top: 20px;
-      transition: border 0.2s;
+      height: 14px;
+      margin: 5px 0 10px 0;
+      position: relative;
     }
 
-    .home-btn:hover {
-      border: 1px solid #00ff00;
+    .progress-fill {
+      height: 100%;
+      background-color: #00ff00;
+      box-shadow: 0px 0px 10px #00ff00;
     }
 
-    /* --- MOBILE OVERRIDE (THE Y2K PATCH) --- */
-    @media (max-width: 768px) {
-      pre {
-        display: none; /* Strips out the text HUD entirely */
-      }
-      .terminal-window {
-        padding: 10px;
-        width: 95vw;
-        border: 1px solid #333;
-      }
-      .video-frame {
-        border: none; /* Removes the dashed connecting lines */
-        padding: 0;
-      }
-      #star-wars-player {
-        width: 100%; /* Lets the player fill the mobile screen naturally */
-      }
-    }
+    /* Panel specific sizing for a complex grid */
+    .main-feed { flex: 2 1 650px; max-width: 800px; align-items: center; }
+    .side-panel { flex: 1 1 300px; max-width: 380px; text-align: left; }
+    .wide-panel { flex: 1 1 100%; max-width: 1220px; }
+    
+    p { margin: 8px 0; line-height: 1.4; font-size: 14px; }
   </style>
 </head>
 <body>
 
-  <div class="terminal-window">
-    
-    <pre>
+  <div class="dashboard-container">
+
+    <div class="chrome-panel side-panel">
+      <h3 class="chrome-title">NAV-COM ARRAY v2.0</h3>
+      <div class="digital-screen">
+        <div style="font-size: 12px; margin-bottom: 5px;">LONG RANGE SCANNER</div>
+        <div class="radar-container">
+          <div class="radar-sweep"></div>
+        </div>
+        <div style="font-size: 10px; text-align: left; margin-top: 10px;">
+          > PING: 402ms<br>
+          > TRAJECTORY: LOCKED<br>
+          > <span class="led-light"></span> WARNING: PROXIMITY
+        </div>
+      </div>
+      <div style="display: flex; justify-content: space-around;">
+        <button class="chrome-btn">ENGAGE</button>
+        <button class="chrome-btn">JETTISON</button>
+      </div>
+    </div>
+
+    <div class="terminal-window main-feed">
+      <div class="panel-title">[ SECTOR 01 : SURVEILLANCE FEED ]</div>
+<pre>
 <span class="yellow">L[w]/[a]:</span><span class="grey">-xxx:</span> <span class="white">R[s]/[a]:</span><span class="grey">-xxx:</span> <span class="white">C[d]:</span><span class="red">+</span><span class="green">xxxx:</span> <span class="grey">PT-POW:-xxxx: SUM-POW:=xxxx:</span>
 ********************************************************************************
 * <span class="grey">Bot Message [                                                            ]</span> *</pre>
-
-    <div class="video-frame">
-      <div id="star-wars-player"></div>
-    </div>
-
-    <pre>
+      <div class="video-frame">
+        <div id="star-wars-player"></div>
+      </div>
+<pre>
 * <span class="white">high E: xl MOLs: </span><span class="red">03</span>                               <span class="cyan">cargo !x! orbit !x!</span>        *
 ********************************************************************************
   <span class="red">L: 0190:</span>  <span class="green">L: 0239:</span>  <span class="red">C: 0468:</span>  <span class="green">C: 0513:</span>  <span class="red">R: 0190:</span>  <span class="green">R: 0239:</span>  <span class="magenta">B: 0429:</span>
   <span class="yellow">Ux: >>>>>>>>¦2    V-Cr: >>>>>>>>¦2    V-Or: >>>>>>>>¦4    V3: >>>>>>>>¦7</span>
-  <span class="white">Travel T:</span> <span class="cyan">00:03:24:</span> <span class="white">D from TER:</span> <span class="cyan">000002U:</span> <span class="white">SUM of E in Red eq.:</span> <span class="cyan">0001844:</span>
 </pre>
+    </div>
+
+    <div class="terminal-window side-panel">
+      <div class="panel-title">[ SECTOR 02 : BIOMETRICS ]</div>
+      <p><span class="cyan">> RIGHT_ARM_ACTUATORS:</span></p>
+      <div class="progress-bar"><div class="progress-fill" style="width: 100%;"></div></div>
+      <p class="green" style="font-size: 12px; margin-top: -5px;">STATUS: QUICK-DRAW CAPABLE. SERVO MOTORS AT PEAK EFFICIENCY.</p>
+
+      <p><span class="cyan">> RESPIRATORY_VENTILATOR:</span></p>
+      <div class="progress-bar"><div class="progress-fill" style="width: 82%; background-color: #ffff55; box-shadow: 0px 0px 10px #ffff55;"></div></div>
+      <p class="yellow" style="font-size: 12px; margin-top: -5px;">STATUS: FLOW STABLE. HIGH-PRESSURE O2 RESERVES AT 82%.</p>
+
+      <p><span class="cyan">> CHASSIS_INTEGRITY:</span></p>
+      <p class="grey">>> OUTER SHELL: NOMINAL</p>
+      <p class="grey">>> ENVIRONMENTAL RATING: DEEP-SPACE VACUUM</p>
+      <p class="grey">>> APPAREL DETECTED: ATMOSPHERIC CAPE (DEPLOYED), WIDE-BRIM STETSON (SECURE)</p>
+    </div>
+
+    <div class="chrome-panel side-panel" style="text-align: left;">
+      <h3 class="chrome-title">ARMORY UPLINK</h3>
+      <div class="digital-screen" style="height: 150px; overflow-y: auto;">
+        <p class="yellow">> PRIMARY WEAPON:</p>
+        <p>Custom-Tooled Futuristic Revolver.</p>
+        <p class="cyan">> AMMO COUNTER:</p>
+<pre style="color: #ff5555; text-shadow: none;">
+  ( ) ( )
+ ( )   ( )
+  (X) ( )
+</pre>
+        <p class="red">> WARNING: CHAMBER 5 EXPENDED.</p>
+      </div>
+      <button class="chrome-btn" style="width: 100%;">INITIATE RELOAD CYCLE</button>
+    </div>
+
+    <div class="terminal-window side-panel">
+      <div class="panel-title">[ SECTOR 03 : LOCAL SPACE ]</div>
+<pre class="green">
+    +---+---+---+---+---+---+
+    |   |   |<span class="red"> x </span>|   |   |   |
+    +---+---+---+---+---+---+
+    |   |   |   |   |   |   |
+    +---+---+---+---+---+---+
+    |   |<span class="yellow"> o </span>|   | <span class="cyan">@</span> |   |   |
+    +---+---+---+---+---+---+
+    |   |   |   |   |   |   |
+    +---+---+---+---+---+---+
+    |   |   |   |   |<span class="grey"> ? </span>|   |
+    +---+---+---+---+---+---+
+  
+  <span class="cyan">@</span> = YOUR SHIP
+  <span class="yellow">o</span> = WAYPOINT ALPHA
+  <span class="red">x</span> = HOSTILE SIGNATURE
+</pre>
+    </div>
+
+    <div class="terminal-window wide-panel">
+      <div class="panel-title">[ SECTOR 04 : COMMS & ARCHIVES ]</div>
+      
+      <div class="ticker-box">
+        <div class="ticker-text">
+          MARKETWATCH: HELIUM-3 +4.2% || NEODYMIUM -1.5% || SCRAP METAL +0.8% || INCOMING TRANSMISSION: BOUNTY POSTED FOR SECTOR 7... 
+        </div>
+      </div>
+
+      <p><span class="green">LOG_01 [SECURE]:</span> Target acquired. Last seen exiting the atmosphere of a non-aligned mining colony. Prepare the mag-revolver. They won't go quietly.</p>
+      <hr style="border: 1px dashed #333; width: 100%;">
+      <p><span class="grey">LOG_02 [STATISTICS]:</span> Survival probability of a quick-draw engagement against a fully mechanical right arm: <span class="red">0.003%</span>.</p>
+    </div>
 
   </div>
 
-  <a href="index.html">
-    <img src="88x31/anihome112g.gif" alt="Return to Cave" class="home-btn">
-  </a>
+  <div style="margin-top: 30px;">
+    <a href="index.html">
+      <img src="88x31/anihome112g.gif" alt="Return to Cave" style="image-rendering: pixelated; border: 1px solid #555;">
+    </a>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/asciinema-player@3.7.1/dist/bundle/asciinema-player.min.js"></script>
   
