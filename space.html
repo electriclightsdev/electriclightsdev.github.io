@@ -219,6 +219,9 @@
     
     p { margin: 8px 0; line-height: 1.4; font-size: 14px; }
 
+    /* Hide the mobile elements by default on desktop */
+    .show-mobile { display: none; }
+
 
     /* =========================================
        MOBILE OVERRIDES (MAX-WIDTH: 800px)
@@ -229,43 +232,22 @@
         font-size: 11px;
       }
 
-      /* Switch from Flexbox to a rigid 2-column Grid */
       .dashboard-container {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 6px; 
       }
 
-      /* Shrink padding and text inside panels */
-      .terminal-window {
-        padding: 8px;
-        border-width: 1px;
-        box-shadow: 0px 0px 8px rgba(0, 255, 255, 0.15); 
-      }
-
-      .panel-title {
-        padding-bottom: 4px;
-        margin-bottom: 6px;
-        font-size: 10px;
-        letter-spacing: 1px;
-      }
+      .terminal-window { padding: 8px; border-width: 1px; box-shadow: 0px 0px 8px rgba(0, 255, 255, 0.15); }
+      .panel-title { padding-bottom: 4px; margin-bottom: 6px; font-size: 10px; letter-spacing: 1px; }
 
       pre { font-size: 9px; line-height: 1.1; letter-spacing: 0; }
       p { margin: 4px 0; line-height: 1.2; font-size: 10px; }
 
-      .chrome-panel {
-        padding: 6px;
-        border-radius: 8px; 
-        border-width: 2px;
-      }
-
+      .chrome-panel { padding: 6px; border-radius: 8px; border-width: 2px; }
       .chrome-title { font-size: 11px; margin-bottom: 6px; padding-bottom: 2px; }
       
-      .digital-screen {
-        padding: 5px;
-        border-width: 2px;
-        margin-bottom: 6px;
-      }
+      .digital-screen { padding: 5px; border-width: 2px; margin-bottom: 6px; }
 
       .radar-container { width: 60px; height: 60px; margin: 5px auto; }
       .radar-container { background: repeating-radial-gradient(circle at center, transparent 0, transparent 10px, rgba(0,255,0,0.2) 11px); }
@@ -279,27 +261,15 @@
       .progress-bar { height: 8px; margin: 2px 0 4px 0; }
 
       .video-frame {
-        padding: 5px 0;
-        border-width: 1px;
-        border-left: none;
-        border-right: none;
-        border-top: 1px dashed #444;
-        border-bottom: 1px dashed #444;
+        padding: 5px 0; border-width: 1px; border-left: none; border-right: none; border-top: 1px dashed #444; border-bottom: 1px dashed #444;
       }
 
-      /* Grid placement rules to force the layout */
-      .main-feed, .wide-panel {
-        grid-column: span 2;
-        max-width: 100%;
-      }
+      .main-feed, .wide-panel { grid-column: span 2; max-width: 100%; }
+      .side-panel { grid-column: span 1; max-width: 100%; }
 
-      .side-panel {
-        grid-column: span 1;
-        max-width: 100%;
-      }
-
-      /* Utility class to hide clutter on mobile to save space */
-      .hide-mobile { display: none; }
+      /* The switch! Hide the desktop elements, show the mobile ones */
+      .hide-mobile { display: none !important; }
+      .show-mobile { display: block !important; }
     }
   </style>
 </head>
@@ -332,9 +302,17 @@
 <span class="yellow">L[w]/[a]:</span><span class="grey">-xxx:</span> <span class="white">R[s]/[a]:</span><span class="grey">-xxx:</span> <span class="white">C[d]:</span><span class="red">+</span><span class="green">xxxx:</span> <span class="grey">PT-POW:-xxxx: SUM-POW:=xxxx:</span>
 ********************************************************************************
 * <span class="grey">Bot Message [                                                            ]</span> *</pre>
+      
       <div class="video-frame">
-        <div id="star-wars-player" style="width: 100%;"></div>
+        <div id="star-wars-player" class="hide-mobile" style="width: 100%;"></div>
+
+        <div class="show-mobile" style="text-align: center; padding: 10px 0;">
+            <p class="red" style="font-weight: bold; font-size: 12px; margin-top: 0;">>> ERROR: VIEWPORT INSUFFICIENT <<</p>
+            <img src="assets/nostarwars.gif" alt="Surveillance Offline" style="width: 100%; max-width: 250px; border: 1px dashed #555; margin: 8px 0;">
+            <p class="yellow" style="font-size: 10px; margin-bottom: 0;">What is this, a PDA? High-res surveillance requires a CRT monitor. Come back when you aren't flying a micro-ship, space cowboy.</p>
+        </div>
       </div>
+
 <pre style="text-align: center; margin-top: 2px;">
 <span class="hide-mobile">* <span class="white">high E: xl MOLs: </span><span class="red">03</span>                               <span class="cyan">cargo !x! orbit !x!</span>        *
 ********************************************************************************</span>
@@ -424,14 +402,16 @@
     // Check if the user's screen is 800px or less
     const isMobile = window.matchMedia("(max-width: 800px)").matches;
 
-    AsciinemaPlayer.create('assets/starwars.cast', document.getElementById('star-wars-player'), {
-      autoplay: true,
-      loop: true,
-      // Pass fewer columns for mobile so it fits in the grid
-      cols: isMobile ? 40 : 67, 
-      rows: isMobile ? 15 : 20, 
-      fit: 'width' 
-    });
+    // Only load the heavy ASCII player if we are NOT on a mobile screen
+    if (!isMobile) {
+      AsciinemaPlayer.create('assets/starwars.cast', document.getElementById('star-wars-player'), {
+        autoplay: true,
+        loop: true,
+        cols: 67, 
+        rows: 20, 
+        fit: 'width' 
+      });
+    }
   </script>
 
 </body>
