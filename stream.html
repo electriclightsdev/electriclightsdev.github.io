@@ -3,287 +3,505 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AUDIO TERMINAL // STREAM</title>
+  <title>VAPORWAVE AUDIO ARCHIVE // 1999 EXPO</title>
   
   <style>
-    /* --- GLOBAL BACKGROUND --- */
+    /* =========================================
+       GLOBAL VAPORWAVE BACKGROUND
+       ========================================= */
     body {
-      background-color: #050505;
-      background-image: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        #111 2px,
-        #111 4px
-      );
-      color: #c0c0c0;
-      font-family: 'Verdana', 'Arial', sans-serif;
+      background-color: #0d0016;
+      background-image: linear-gradient(0deg, rgba(255, 0, 255, 0.1) 0%, rgba(0, 255, 255, 0.1) 100%), 
+                        url('assets/bg/streambg.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      color: #ffffff;
       margin: 0;
       padding: 20px;
-      text-align: center;
+      font-family: 'Verdana', 'Arial', sans-serif;
+      overflow-x: hidden;
     }
 
-    /* --- THE MEDIA PLAYER --- */
-    .player-container {
-      background: #333;
-      border-top: 3px solid #777;
-      border-left: 3px solid #777;
-      border-bottom: 3px solid #111;
-      border-right: 3px solid #111;
-      max-width: 500px;
-      margin: 30px auto;
-      padding: 15px;
-      box-shadow: 10px 10px 0px rgba(0, 0, 0, 0.8);
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-image: 
+        repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(0,255,255,0.03) 1px, rgba(0,255,255,0.03) 2px),
+        repeating-linear-gradient(90deg, transparent, transparent 1px, rgba(255,0,255,0.03) 1px, rgba(255,0,255,0.03) 2px);
+      z-index: -1;
+      pointer-events: none;
     }
 
-    .player-header {
-      background: linear-gradient(to right, #000080, #1084d0);
-      color: white;
-      padding: 5px 10px;
-      font-weight: bold;
-      text-align: left;
-      font-size: 14px;
-      font-family: 'Trebuchet MS', sans-serif;
-      letter-spacing: 1px;
-      margin-bottom: 15px;
-      border: 1px inset #555;
+    /* =========================================
+       FLOATING DASHBOARD (TITLE + PLAYER)
+       ========================================= */
+    .floating-dashboard {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      width: 320px;
+      z-index: 100;
       display: flex;
-      justify-content: space-between;
-    }
-
-    /* --- LCD SCREEN --- */
-    .lcd-screen {
-      background-color: #000;
-      border: 3px inset #555;
-      padding: 10px;
-      margin-bottom: 15px;
-      position: relative;
-      display: flex;
-      align-items: center;
+      flex-direction: column;
       gap: 15px;
     }
 
-    .eq-visualizer {
-      width: 40px;
-      height: 30px;
-      border: 1px solid #333;
-      image-rendering: pixelated;
+    .header-container {
+      background: rgba(10, 0, 20, 0.95);
+      padding: 10px 20px;
+      border-left: 4px solid #00ffff;
+      box-shadow: 5px 5px 0px rgba(255, 0, 255, 0.4);
+      box-sizing: border-box;
+      width: 100%;
+      text-align: left;
     }
 
-    .lcd-text-container {
-      flex-grow: 1;
-      overflow: hidden;
-      padding-bottom: 15px; /* Space for the kbps text */
+    h1.vapor-title {
+      font-family: 'Arial Black', Impact, sans-serif;
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: #fff;
+      text-shadow: 2px 2px 0px #ff00ff, -2px -2px 0px #00ffff;
+      margin: 0 0 5px 0;
+      animation: glitch 3s infinite;
     }
 
-    .lcd-text {
-      color: #00ff00;
+    h1.vapor-title::after {
+        content: " // ア イ ウ エ オ"; 
+        font-size: 10px;
+        color: #00ffff;
+        font-family: 'Verdana', sans-serif;
+        text-shadow: none;
+    }
+
+    @keyframes glitch {
+      0%, 100% { text-shadow: 1px 1px 0px #ff00ff, -1px -1px 0px #00ffff; }
+      2% { text-shadow: 2px -1px 0px #ff00ff, -2px 1px 0px #00ffff; }
+      4% { text-shadow: -1px 1px 0px #ff00ff, 1px -1px 0px #00ffff; }
+      5% { text-shadow: 1px -1px 0px #ff00ff, -1px 1px 0px #00ffff; }
+    }
+
+    p.subtitle {
+      color: #ff00ff;
       font-family: "Courier New", Courier, monospace;
-      font-size: 14px;
-      text-shadow: 0px 0px 5px #00ff00;
+      font-size: 10px;
+      margin: 0;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      text-shadow: 0 0 3px #ff00ff;
+    }
+
+    /* =========================================
+       MASTER CONTROLS (THE NEON DECK)
+       ========================================= */
+    .master-controls {
+      background: rgba(20, 5, 30, 0.85);
+      border: 2px solid #ff00ff;
+      border-radius: 8px;
+      width: 100%;
+      padding: 15px;
+      box-shadow: 0px 0px 25px rgba(255, 0, 255, 0.3), inset 0px 0px 15px rgba(0, 255, 255, 0.1);
+      backdrop-filter: blur(8px);
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      box-sizing: border-box;
+    }
+
+    .lcd-screen {
+      background-color: #050010;
+      border: 2px solid #00ffff;
+      box-shadow: inset 0 0 10px rgba(0,255,255,0.4);
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-radius: 4px;
+    }
+
+    .eq-visualizer { width: 30px; height: 20px; border: 1px solid #ff00ff; image-rendering: pixelated; opacity: 0.8; }
+    .lcd-text-container { flex-grow: 1; overflow: hidden; }
+    
+    .lcd-text {
+      color: #00ffff;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 12px;
+      text-shadow: 0px 0px 6px #00ffff;
       white-space: nowrap;
     }
 
-    .kbps {
-      position: absolute;
-      bottom: 5px;
-      right: 10px;
-      color: #00aa00;
-      font-size: 10px;
-      font-family: 'Verdana', sans-serif;
-    }
-
-    /* --- HARDWARE BUTTONS --- */
-    .controls {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
+    .hw-buttons { display: flex; justify-content: space-between; gap: 8px; }
 
     .hw-btn {
-      background: #bfbfbf;
-      border-top: 2px solid #fff;
-      border-left: 2px solid #fff;
-      border-bottom: 2px solid #555;
-      border-right: 2px solid #555;
-      padding: 8px 15px;
+      flex: 1;
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid #00ffff;
+      border-radius: 4px;
+      padding: 6px 10px;
       font-weight: bold;
-      font-size: 16px;
-      color: #000;
+      font-size: 12px;
+      color: #00ffff;
       cursor: pointer;
+      font-family: 'Verdana', sans-serif;
+      box-shadow: 0 0 8px rgba(0, 255, 255, 0.3);
+      transition: all 0.1s ease-in-out;
     }
 
-    .hw-btn:active {
-      border-top: 2px solid #555;
-      border-left: 2px solid #555;
-      border-bottom: 2px solid #fff;
-      border-right: 2px solid #fff;
-      background: #a0a0a0;
+    .hw-btn:hover { background: rgba(0, 255, 255, 0.1); box-shadow: 0 0 12px rgba(0, 255, 255, 0.6); }
+    .hw-btn:active { background: #00ffff; color: #000; box-shadow: 0 0 20px #00ffff; transform: translateY(2px); }
+
+    #btn-stop { border-color: #ff00ff; color: #ff00ff; box-shadow: 0 0 8px rgba(255, 0, 255, 0.3); }
+    #btn-stop:hover { background: rgba(255, 0, 255, 0.1); box-shadow: 0 0 12px rgba(255, 0, 255, 0.6); }
+    #btn-stop:active { background: #ff00ff; color: #000; box-shadow: 0 0 20px #ff00ff; }
+
+    /* =========================================
+       CASSETTE STACK SYSTEM
+       ========================================= */
+    .deck-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 50px;
+      /* Shift the tapes to the right to make room for the floating player */
+      margin: 0 auto 40px 360px;
+      max-width: 550px;
     }
 
-    /* --- TRACKLIST DIRECTORY --- */
-    .tracklist-box {
+    .cassette {
+      position: relative;
+      width: 100%;
+      height: 300px; 
+      background: #111;
+      border-radius: 15px;
+      box-shadow: inset 0 0 10px rgba(255,255,255,0.1), 10px 10px 20px rgba(0,0,0,0.8);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 15px;
+      box-sizing: border-box;
+      border: 1px solid #333;
+    }
+
+    .screw {
+      position: absolute;
+      width: 12px; height: 12px;
+      background: radial-gradient(circle, #555 30%, #222 80%);
+      border-radius: 50%;
+      box-shadow: inset 1px 1px 2px #000, 1px 1px 1px rgba(255,255,255,0.2);
+    }
+    .screw::after {
+      content: "";
+      position: absolute;
+      top: 5px; left: 2px;
+      width: 8px; height: 2px;
+      background: #111;
+      transform: rotate(45deg);
+    }
+    .top-left { top: 10px; left: 10px; }
+    .top-right { top: 10px; right: 10px; transform: rotate(20deg); }
+    .bottom-left { bottom: 10px; left: 10px; transform: rotate(70deg); }
+    .bottom-right { bottom: 10px; right: 10px; transform: rotate(-10deg); }
+
+    .bridge {
+      position: absolute;
+      bottom: -1px;
+      width: 70%;
+      height: 40px;
+      background: #161616;
+      clip-path: polygon(5% 0%, 95% 0%, 100% 100%, 0% 100%);
+      border-top: 1px solid #333;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 40px;
+      box-sizing: border-box;
+    }
+    .bridge-hole {
+      width: 16px; height: 16px;
       background: #000;
-      border: 2px inset #777;
-      padding: 5px;
-      text-align: left;
-      height: 150px;
-      overflow-y: auto;
+      border-radius: 50%;
+      box-shadow: inset 0 2px 5px #000;
     }
 
-    table {
+    /* Cassette Labels */
+    .label {
+      width: 90%;
+      height: 200px;
+      border-radius: 8px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: inset 0 0 5px rgba(0,0,0,0.8);
+      padding: 10px;
+      box-sizing: border-box;
+      background-size: cover;
+      background-position: center;
+    }
+
+    #tape-1 .label {
+      background-image: url('assets/beetle.jpg');
+      background-blend-mode: overlay;
+      background-color: rgba(0, 255, 255, 0.6);
+      border: 2px solid #00ffff;
+    }
+
+    #tape-2 .label {
+      background-image: url('assets/lemons.jpg');
+      background-blend-mode: overlay;
+      background-color: rgba(255, 0, 255, 0.6);
+      border: 2px solid #ff00ff;
+    }
+
+    .tape-title {
+      background: rgba(0,0,0,0.8);
+      padding: 2px 10px;
+      border-radius: 3px;
+      font-family: 'Arial Black', sans-serif;
+      font-size: 14px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    #tape-1 .tape-title { color: #00ffff; box-shadow: 0 0 5px #00ffff; }
+    #tape-2 .tape-title { color: #ff00ff; box-shadow: 0 0 5px #ff00ff; }
+
+    /* The Tape Window & Spools */
+    .window {
+      width: 60%;
+      height: 60px;
+      background: rgba(10, 10, 10, 0.9);
+      border: 2px solid #000;
+      border-radius: 5px;
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 15px;
+      box-sizing: border-box;
+      box-shadow: inset 0 5px 10px rgba(0,0,0,0.9);
+      margin-bottom: 10px;
+    }
+
+    .tape-roll {
+      width: 50px; height: 50px;
+      background: radial-gradient(circle, #050505 50%, #222 90%);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 0 5px #000;
+    }
+
+    .spool {
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      background: 
+        radial-gradient(circle, #000 30%, transparent 35%),
+        repeating-conic-gradient(from 0deg, #ccc 0deg 30deg, transparent 30deg 60deg);
+      border: 2px solid #aaa;
+    }
+
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    .cassette.is-playing .spool {
+      animation: spin 3s linear infinite;
+    }
+
+    /* Tracklist */
+    .tracklist-container {
+      width: 100%;
+      background: rgba(0,0,0,0.8);
+      border-radius: 4px;
+      overflow-y: auto;
+      max-height: 80px; 
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    table.tape-tracklist {
       width: 100%;
       border-collapse: collapse;
       font-family: "Courier New", Courier, monospace;
-      font-size: 12px;
+      font-size: 11px;
     }
 
-    th {
-      background: #000080;
-      color: white;
-      text-align: left;
-      padding: 4px;
-      position: sticky;
-      top: 0;
-    }
-
-    td {
-      padding: 4px;
-      color: #ffaa00;
-      border-bottom: 1px dotted #333;
-    }
-
-    tr.track-row {
-      cursor: crosshair;
-    }
-
-    tr.track-row:hover td {
-      background: #333;
+    table.tape-tracklist td {
+      padding: 4px 8px;
+      border-bottom: 1px dotted rgba(255,255,255,0.2);
       color: #fff;
     }
 
-    /* Used dynamically via Javascript */
-    .status-playing {
+    tr.track-row { cursor: crosshair; transition: background-color 0.2s; }
+    tr.track-row:hover td { background-color: rgba(255,255,255,0.2); }
+
+    .status-playing td {
       color: #00ff00 !important;
       font-weight: bold;
+      text-shadow: 0 0 5px #00ff00;
     }
 
-    /* --- PAGE HEADER & FOOTER --- */
-    h1 {
-      color: #fff;
-      text-shadow: 2px 2px 0px #000080;
-      font-family: 'Arial Black', Impact, sans-serif;
-      letter-spacing: 3px;
-    }
-
-    .subtitle {
-      color: #aaaaaa;
-      font-size: 12px;
-      margin-top: -10px;
-    }
-
+    /* =========================================
+       FOOTER
+       ========================================= */
     .footer-zone {
       margin-top: 40px;
-      border-top: 1px dashed #333;
+      border-top: 1px dashed rgba(255, 0, 255, 0.4);
       padding-top: 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 15px;
+      gap: 10px;
+      text-align: center;
     }
 
-    .hit-counter p {
+    .credit-text {
+      color: #ff00ff;
+      font-family: 'Courier New', Courier, monospace;
       font-size: 10px;
-      color: #777;
-      margin: 0 0 5px 0;
       letter-spacing: 1px;
     }
-    
-    .badges {
-      display: flex;
-      gap: 5px;
+
+    .credit-text a {
+      color: #00ffff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .credit-text a:hover {
+      text-shadow: 0 0 5px #00ffff;
+    }
+
+    /* =========================================
+       RESPONSIVE DESIGN (MOBILE/TABLET)
+       ========================================= */
+    @media screen and (max-width: 950px) {
+      .floating-dashboard {
+        position: relative;
+        top: 0;
+        left: 0;
+        width: 100%;
+        max-width: 550px;
+        margin: 0 auto 30px auto;
+      }
+      
+      .deck-container {
+        margin: 0 auto 40px auto; /* Removes the heavy left margin on smaller screens */
+      }
     }
   </style>
 </head>
 <body>
 
-  <h1>// AUDIO ARCHIVE //</h1>
-  <p class="subtitle">STREAMING PROTOCOL: ACTIVE</p>
-
-  <div class="player-container">
-    <div class="player-header">
-      <span>[+] SPACE_AMP v1.4</span>
-      <span>_ □ X</span>
+  <div class="floating-dashboard">
+    <div class="header-container">
+      <h1 class="vapor-title">AUDIO TERMINAL</h1>
+      <p class="subtitle">STREAMING PROTOCOL: ACTIVE</p>
     </div>
 
-    <div class="lcd-screen">
-      <img src="assets/eq.gif" alt="EQ" class="eq-visualizer">
-      
-      <div class="lcd-text-container">
-        <div class="lcd-text">
-          <marquee id="now-playing-marquee" scrollamount="4">*** SYSTEM READY *** SELECT A TRACK FROM THE DIRECTORY ***</marquee>
+    <div class="master-controls">
+      <div class="lcd-screen">
+        <img src="assets/eq.gif" alt="EQ" class="eq-visualizer">
+        <div class="lcd-text-container">
+          <div class="lcd-text">
+            <marquee id="now-playing-marquee" scrollamount="4">*** SYSTEM READY *** SELECT A TAPE TRACK ***</marquee>
+          </div>
         </div>
       </div>
-      
-      <div class="kbps">1411 kbps / 44.1 kHz</div> </div>
 
-    <audio id="main-audio-player" style="display: none;"></audio>
+      <audio id="main-audio-player" style="display: none;"></audio>
 
-    <div class="controls">
-      <button class="hw-btn" id="btn-play" title="Play">▶</button>
-      <button class="hw-btn" id="btn-pause" title="Pause">||</button>
-      <button class="hw-btn" id="btn-stop" title="Stop">■</button>
-    </div>
-
-    <div class="tracklist-box">
-      <table id="playlist-table">
-        <thead>
-          <tr>
-            <th style="width: 15%;">TRK</th>
-            <th style="width: 65%;">TITLE</th>
-            <th style="width: 20%;">SIZE</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="track-row" data-src="assets/audio/music/DAY JOB (FINISHED).wav">
-            <td class="track-num">01</td>
-            <td class="track-title">DAY JOB (FINISHED).wav</td>
-            <td>4.2 MB</td>
-          </tr>
-          <tr class="track-row" data-src="assets/audio/music/Empty courage (OFFICIAL EDIT) (14).wav">
-            <td class="track-num">02</td>
-            <td class="track-title">Empty courage (OFFICIAL EDIT) (14).wav</td>
-            <td>3.8 MB</td>
-          </tr>
-          <tr class="track-row" data-src="assets/audio/music/Give It A Shot (FINISHED).wav">
-            <td class="track-num">03</td>
-            <td class="track-title">Give It A Shot (FINISHED).wav</td>
-            <td>5.1 MB</td>
-          </tr>
-          <tr class="track-row" data-src="assets/audio/music/Radio (FINISHED).wav">
-            <td class="track-num">04</td>
-            <td class="track-title">Radio (FINISHED).wav</td>
-            <td>2.9 MB</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="hw-buttons">
+        <button class="hw-btn" id="btn-play" title="Play">▶ PLAY</button>
+        <button class="hw-btn" id="btn-pause" title="Pause">|| PAUSE</button>
+        <button class="hw-btn" id="btn-stop" title="Stop">■ STOP</button>
+      </div>
     </div>
   </div>
 
+  <div class="deck-container">
+
+    <div class="cassette" id="tape-1">
+      <div class="screw top-left"></div>
+      <div class="screw top-right"></div>
+      <div class="screw bottom-left"></div>
+      <div class="screw bottom-right"></div>
+      
+      <div class="label">
+        <div class="tape-title">[ ALBUM TITLE 01 ]</div>
+        
+        <div class="window">
+          <div class="tape-roll"><div class="spool"></div></div>
+          <div class="tape-roll"><div class="spool"></div></div>
+        </div>
+
+        <div class="tracklist-container">
+          <table class="tape-tracklist">
+            <tbody>
+              <tr class="track-row" data-src="assets/audio/music/DAY JOB (FINISHED).wav">
+                <td style="width: 15%;">01</td>
+                <td>DAY JOB (FINISHED).wav</td>
+              </tr>
+              <tr class="track-row" data-src="assets/audio/music/Empty courage (OFFICIAL EDIT) (14).wav">
+                <td>02</td>
+                <td>Empty courage (OFFICIAL EDIT) (14).wav</td>
+              </tr>
+              <tr class="track-row" data-src="assets/audio/music/Give It A Shot (FINISHED).wav">
+                <td>03</td>
+                <td>Give It A Shot (FINISHED).wav</td>
+              </tr>
+              <tr class="track-row" data-src="assets/audio/music/Radio (FINISHED).wav">
+                <td>04</td>
+                <td>Radio (FINISHED).wav</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="bridge">
+        <div class="bridge-hole"></div>
+        <div class="bridge-hole"></div>
+      </div>
+    </div>
+
+    <div class="cassette" id="tape-2">
+      <div class="screw top-left"></div>
+      <div class="screw top-right"></div>
+      <div class="screw bottom-left"></div>
+      <div class="screw bottom-right"></div>
+      
+      <div class="label">
+        <div class="tape-title">[ ALBUM TITLE 02 ]</div>
+        
+        <div class="window">
+          <div class="tape-roll"><div class="spool"></div></div>
+          <div class="tape-roll"><div class="spool"></div></div>
+        </div>
+
+        <div class="tracklist-container">
+          <table class="tape-tracklist">
+            <tbody>
+              </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="bridge">
+        <div class="bridge-hole"></div>
+        <div class="bridge-hole"></div>
+      </div>
+    </div>
+
+  </div>
+
   <div class="footer-zone">
-    <div class="badges">
-      <img src="assets/netscape.gif" alt="Best Viewed in Netscape" style="image-rendering: pixelated;">
-      <img src="assets/winamp.gif" alt="Get Winamp" style="image-rendering: pixelated;">
-    </div>
-
-    <div class="hit-counter">
-      <p>UNIQUE VISITORS:</p>
-      <img src="assets/counter.gif" alt="001337" style="border: 2px inset #555; image-rendering: pixelated;">
-    </div>
-
+    <p class="credit-text">
+      CASSETTE CSS ARCHITECTURE BY <a href="https://mrtoxas.github.io/cassette-tape-css/" target="_blank">MRTOXAS</a>
+    </p>
     <a href="index.html">
-      <img src="88x31/anihome112g.gif" alt="Return to Index" style="image-rendering: pixelated; border: 1px solid #555;">
+      <img src="88x31/anihome112g.gif" alt="Return to Cave" style="image-rendering: pixelated; border: 1px solid #ff00ff; box-shadow: 0 0 5px #ff00ff;">
     </a>
   </div>
 
@@ -294,68 +512,59 @@
     const pauseBtn = document.getElementById('btn-pause');
     const stopBtn = document.getElementById('btn-stop');
     const trackRows = document.querySelectorAll('.track-row');
+    const allCassettes = document.querySelectorAll('.cassette');
 
-    // Function to handle playing a specific track from the table
     function loadAndPlayTrack(rowElement) {
-      // 1. Remove the 'playing' green text from all rows
-      trackRows.forEach(r => {
-        r.querySelectorAll('td').forEach(td => td.classList.remove('status-playing'));
-        // Reset the little arrow if it exists
-        const numCell = r.querySelector('.track-num');
-        numCell.textContent = numCell.textContent.replace('▶ ', ''); 
-      });
+      trackRows.forEach(r => r.classList.remove('status-playing'));
+      allCassettes.forEach(c => c.classList.remove('is-playing'));
 
-      // 2. Add the 'playing' green text to the clicked row
-      rowElement.querySelectorAll('td').forEach(td => td.classList.add('status-playing'));
+      rowElement.classList.add('status-playing');
+      const activeTape = rowElement.closest('.cassette');
+      activeTape.classList.add('is-playing'); 
       
-      // 3. Add the play arrow to the track number
-      const currentNumCell = rowElement.querySelector('.track-num');
-      currentNumCell.textContent = '▶ ' + currentNumCell.textContent;
-
-      // 4. Update the Audio source and play
       const trackSrc = rowElement.getAttribute('data-src');
       audioPlayer.src = trackSrc;
       audioPlayer.play();
 
-      // 5. Update the marquee text
-      const trackTitle = rowElement.querySelector('.track-title').textContent;
-      marquee.textContent = `▶ NOW PLAYING: ${trackTitle} -- ENJOY THE AUDIO ARCHIVE --`;
+      const trackTitle = rowElement.querySelector('td:nth-child(2)').textContent;
+      const tapeTitle = activeTape.querySelector('.tape-title').textContent;
+      marquee.textContent = `▶ NOW PLAYING: ${tapeTitle} > ${trackTitle} -- ENJOY THE AUDIO ARCHIVE --`;
     }
 
-    // Add click event listeners to every row in the table
     trackRows.forEach(row => {
       row.addEventListener('click', function() {
         loadAndPlayTrack(this);
       });
     });
 
-    // Hardware Buttons Logic
     playBtn.addEventListener('click', () => {
       if(audioPlayer.src) {
         audioPlayer.play();
+        const activeRow = document.querySelector('.status-playing');
+        if(activeRow) {
+            activeRow.closest('.cassette').classList.add('is-playing');
+        }
       } else if (trackRows.length > 0) {
-        // If nothing is loaded, play the first track
         loadAndPlayTrack(trackRows[0]);
       }
     });
 
     pauseBtn.addEventListener('click', () => {
       audioPlayer.pause();
+      allCassettes.forEach(c => c.classList.remove('is-playing'));
     });
 
     stopBtn.addEventListener('click', () => {
       audioPlayer.pause();
-      audioPlayer.currentTime = 0; // Rewind to beginning
-      marquee.textContent = `*** PLAYBACK STOPPED *** SELECT A TRACK ***`;
+      audioPlayer.currentTime = 0;
+      allCassettes.forEach(c => c.classList.remove('is-playing'));
+      marquee.textContent = `*** PLAYBACK STOPPED *** SELECT A TAPE ***`;
     });
 
-    // When the song ends, automatically play the next one
     audioPlayer.addEventListener('ended', () => {
         let nextRow = null;
         for(let i = 0; i < trackRows.length; i++) {
-            // Find which row is currently green
-            if(trackRows[i].querySelector('.status-playing')) {
-                // Select the next row in the list, or loop back to the first
+            if(trackRows[i].classList.contains('status-playing')) {
                 nextRow = trackRows[i + 1] || trackRows[0];
                 break;
             }
