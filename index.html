@@ -152,7 +152,7 @@
       display: inline-block;
       text-decoration: none;
       transition: all 0.2s ease-in-out;
-      position: relative; /* Added for tooltip anchoring */
+      position: relative; 
     }
 
     .gif-portals img {
@@ -166,7 +166,6 @@
       filter: drop-shadow(0px 0px 10px #ff00ff);
     }
 
-    /* --- NEW HOVER SUBTITLES --- */
     .gif-portals a::after {
       content: attr(data-title);
       position: absolute;
@@ -189,6 +188,73 @@
     }
 
     .gif-portals a:hover::after {
+      opacity: 1;
+      visibility: visible;
+      bottom: -20px; 
+    }
+
+    /* =========================================
+       5.5 OFFICIAL STREAM LINKS
+       ========================================= */
+    .stream-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center; /* This keeps them vertically centered regardless of size */
+      gap: 25px; 
+      margin: 10px auto 30px auto;
+      width: 90%;
+    }
+
+    .stream-links a {
+      display: inline-block;
+      text-decoration: none;
+      transition: all 0.2s ease-in-out;
+      position: relative;
+    }
+
+    .stream-links img {
+      height: 85px; /* Default size for Instagram, TikTok, Facebook */
+      width: auto;
+      image-rendering: pixelated; 
+    }
+
+    /* Individual size overrides */
+    .stream-links img.icon-large {
+      height: 110px; /* Scaled up for Spotify, Apple Music, Twitter */
+    }
+
+    .stream-links img.icon-small {
+      height: 65px; /* Scaled down for YouTube */
+    }
+
+    .stream-links a:hover {
+      transform: scale(1.15) translateY(-4px);
+      filter: drop-shadow(0px 0px 8px #00ff00);
+    }
+
+    .stream-links a::after {
+      content: attr(data-title);
+      position: absolute;
+      bottom: -35px; /* Positioned relative to the individual 'a' tag to account for size differences */
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #000080; 
+      color: #00ff00; 
+      border: 1px ridge #ff00ff; 
+      padding: 2px 5px;
+      font-size: 11px;
+      font-weight: bold;
+      white-space: nowrap;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.2s ease-in-out;
+      pointer-events: none; 
+      z-index: 10;
+      box-shadow: 2px 2px #000; 
+    }
+
+    .stream-links a:hover::after {
       opacity: 1;
       visibility: visible;
       bottom: -20px; 
@@ -420,6 +486,7 @@
       80%  { transform: translate(1px, 2px); filter: hue-rotate(0deg) contrast(2); }
       100% { transform: translate(0); filter: hue-rotate(0deg); }
     }
+    
     /* --- THE ODOMETER HIT COUNTER --- */
     .hit-counter {
       background-color: #000;
@@ -485,6 +552,19 @@
     <p><b>WARNING:</b> You have stumbled into my digital brain. No algorithms, no corporate streaming. Just pure, uncompressed audio and raw pixels.</p>
     
     <hr size="5" width="80%" color="#ff00ff">
+
+    <h2>+++ OFFICIAL LINKS +++</h2>
+    <div class="stream-links">
+      <a href="404.html" data-title="SPOTIFY"><img src="assets/officialstreamlinks/source.gif" alt="Spotify" class="icon-large"></a>
+      <a href="404.html" data-title="APPLE MUSIC"><img src="assets/officialstreamlinks/giphy.gif" alt="Apple Music" class="icon-large"></a>
+      <a href="https://www.youtube.com/@beetlesinelectriclight" data-title="YOUTUBE"><img src="assets/officialstreamlinks/play-youtube.gif" alt="YouTube" class="icon-small"></a>
+      <a href="https://www.instagram.com/beetlesinelectriclight" data-title="INSTAGRAM"><img src="assets/officialstreamlinks/source_1.gif" alt="Instagram"></a>
+      <a href="404.html" data-title="TIKTOK"><img src="assets/officialstreamlinks/giphy_1.gif" alt="TikTok"></a>
+      <a href="404.html" data-title="TWITTER"><img src="assets/officialstreamlinks/d9ad13_80198a2a59b746928c805a9b796f3eadmv2.gif" alt="Twitter" class="icon-large"></a>
+      <a href="404.html" data-title="FACEBOOK"><img src="assets/officialstreamlinks/twitter-png.gif" alt="Facebook"></a>
+    </div>
+
+    <br>
 
     <h2>+++ CYBER PORTALS +++</h2>
     <div class="gif-portals">
