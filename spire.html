@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nerf the Spire | OP STS2 Combos</title>
+    <style>
+        /* Base Styles */
+        body, html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+        }
+
+        /* 1. Atmospheric Background Integration */
+        .spire-atmosphere {
+            background-image: url('assets/bg/spire-bg.png'); 
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed; 
+            color: #f0f0f0; 
+            background-color: #0d0d0d; 
+        }
+
+        /* Content Container that floats above the background */
+        .site-container {
+            position: relative;
+            z-index: 1; 
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 2. Integrated Header */
+        header {
+            text-align: center;
+            padding: 10vh 2rem 5vh; 
+            position: relative;
+            z-index: 2;
+        }
+
+        .header-content {
+            display: inline-block;
+            max-width: 800px;
+        }
+
+        .logo {
+            max-width: 600px; 
+            width: 100%;
+            height: auto;
+            filter: drop-shadow(0px 8px 16px rgba(211, 168, 78, 0.4))
+                    drop-shadow(0px -4px 10px rgba(0, 255, 255, 0.2)); 
+            margin-bottom: 2rem;
+        }
+
+        header .site-intro {
+            color: #dcdcdc;
+            font-size: 1.25rem;
+            max-width: 700px;
+            margin: 0 auto;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9), 
+                         -1px -1px 0px rgba(255, 255, 255, 0.1); 
+            background-color: rgba(20, 20, 20, 0.6); 
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-bottom: 3px solid #d3a84e; 
+        }
+
+        /* 3. The Vortex Gallery Grid Layout */
+        main {
+            flex: 1; 
+            padding-top: 5vh; 
+            position: relative;
+            z-index: 2;
+        }
+
+        .video-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); 
+            gap: 2.5rem; 
+            padding: 2rem 4rem; 
+            max-width: 1600px; 
+            margin: 0 auto;
+        }
+
+        /* Individual Video Cards */
+        .video-card {
+            background-color: rgba(26, 26, 26, 0.9); 
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #d3a84e; 
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+
+        .video-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.8),
+                        0 0 20px rgba(211, 168, 78, 0.3); 
+            border-color: #f1c40f; 
+        }
+
+        .video-wrapper video {
+            width: 100%;
+            display: block;
+            aspect-ratio: 16 / 9;
+            object-fit: cover;
+            background-color: #000;
+        }
+
+        .video-info {
+            padding: 2rem;
+        }
+
+        .video-info h3 {
+            margin: 0 0 1rem 0;
+            color: #d3a84e; 
+            font-size: 1.4rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+        }
+
+        .video-info p {
+            margin: 0;
+            color: #b0b0b0;
+            font-size: 1.05rem;
+            line-height: 1.5;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #808080;
+            font-size: 0.9rem;
+            position: relative;
+            z-index: 2;
+            margin-top: auto; 
+            background-color: rgba(13, 13, 13, 0.7); 
+            border-top: 1px solid rgba(211, 168, 78, 0.2);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1200px) {
+            .video-gallery {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 2rem;
+                padding: 2rem;
+            }
+            .logo {
+                max-width: 500px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .video-gallery {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 1.5rem;
+            }
+            .logo {
+                max-width: 400px;
+            }
+            header .site-intro {
+                font-size: 1.1rem;
+                padding: 1rem;
+            }
+            header {
+                padding-top: 5vh;
+            }
+        }
+    </style>
+</head>
+<body class="spire-atmosphere">
+    <div class="site-container">
+        
+        <header>
+            <div class="header-content">
+                <img src="assets/logo.png" alt="Nerf the Spire Logo" class="logo">
+                <p class="site-intro">Showcasing the most broken, overpowered cards and boss-melting combos in Slay the Spire 2.</p>
+            </div>
+        </header>
+
+        <main>
+            <section class="video-gallery">
+                
+                <div class="video-card">
+                    <div class="video-wrapper">
+                        <video controls preload="metadata">
+                            <source src="assets/videos/sts2/clip_1774634956380.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    <div class="video-info">
+                        <h3>Combo Title 1</h3>
+                        <p>Description of the cards used and the mechanics of this run will go here.</p>
+                    </div>
+                </div>
+
+                <div class="video-card">
+                    <div class="video-wrapper">
+                        <video controls preload="metadata">
+                            <source src="assets/videos/sts2/clip_1774589786190.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    <div class="video-info">
+                        <h3>Combo Title 2</h3>
+                        <p>Description of the cards used and the mechanics of this run will go here.</p>
+                    </div>
+                </div>
+
+                <div class="video-card">
+                    <div class="video-wrapper">
+                        <video controls preload="metadata">
+                            <source src="assets/videos/sts2/infiniteagain.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    <div class="video-info">
+                        <h3>Combo Title 3</h3>
+                        <p>Description of the cards used and the mechanics of this run will go here.</p>
+                    </div>
+                </div>
+
+                <div class="video-card">
+                    <div class="video-wrapper">
+                        <video controls preload="metadata">
+                            <source src="assets/videos/sts2/clip_1774333947816.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    <div class="video-info">
+                        <h3>Combo Title 4</h3>
+                        <p>Description of the cards used and the mechanics of this run will go here.</p>
+                    </div>
+                </div>
+
+                <div class="video-card">
+                    <div class="video-wrapper">
+                        <video controls preload="metadata">
+                            <source src="assets/videos/sts2/clip_1773790822481.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    <div class="video-info">
+                        <h3>Combo Title 5</h3>
+                        <p>Description of the cards used and the mechanics of this run will go here.</p>
+                    </div>
+                </div>
+
+            </section>
+        </main>
+
+        <footer>
+            <p>RIP to the Spire. Not affiliated with Mega Crit.</p>
+        </footer>
+    </div>
+</body>
+</html>
