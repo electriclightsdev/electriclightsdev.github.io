@@ -200,33 +200,36 @@
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      align-items: center; /* This keeps them vertically centered regardless of size */
+      align-items: center; 
       gap: 25px; 
-      margin: 10px auto 30px auto;
+      margin: 10px auto 40px auto; /* Slightly more margin for tooltips */
       width: 90%;
     }
 
     .stream-links a {
-      display: inline-block;
+      display: flex; /* Flex allows vertical centering of the image within the fixed height */
+      align-items: center; 
+      justify-content: center;
+      height: 125px; /* Locks all anchor tags to the height of the Spotify icon */
       text-decoration: none;
       transition: all 0.2s ease-in-out;
       position: relative;
     }
 
+    /* Base setup for images */
     .stream-links img {
-      height: 85px; /* Default size for Instagram, TikTok, Facebook */
       width: auto;
       image-rendering: pixelated; 
     }
 
-    /* Individual size overrides */
-    .stream-links img.icon-large {
-      height: 110px; /* Scaled up for Spotify, Apple Music, Twitter */
-    }
-
-    .stream-links img.icon-small {
-      height: 65px; /* Scaled down for YouTube */
-    }
+    /* Targetted Size Controls */
+    .stream-links img.sz-spotify { height: 125px; } 
+    .stream-links img.sz-apple   { height: 110px; }   
+    .stream-links img.sz-youtube { height: 65px;  }  
+    .stream-links img.sz-insta   { height: 70px;  }    
+    .stream-links img.sz-tiktok  { height: 85px;  }   
+    .stream-links img.sz-twitter { height: 90px;  }  
+    .stream-links img.sz-fb      { height: 105px; }      
 
     .stream-links a:hover {
       transform: scale(1.15) translateY(-4px);
@@ -236,7 +239,7 @@
     .stream-links a::after {
       content: attr(data-title);
       position: absolute;
-      bottom: -35px; /* Positioned relative to the individual 'a' tag to account for size differences */
+      bottom: -15px; /* Since the container is fixed at 125px, this uniform value aligns them all */
       left: 50%;
       transform: translateX(-50%);
       background-color: #000080; 
@@ -257,7 +260,7 @@
     .stream-links a:hover::after {
       opacity: 1;
       visibility: visible;
-      bottom: -20px; 
+      bottom: -5px; 
     }
 
     /* =========================================
@@ -555,13 +558,13 @@
 
     <h2>+++ OFFICIAL LINKS +++</h2>
     <div class="stream-links">
-      <a href="404.html" data-title="SPOTIFY"><img src="assets/officialstreamlinks/source.gif" alt="Spotify" class="icon-large"></a>
-      <a href="404.html" data-title="APPLE MUSIC"><img src="assets/officialstreamlinks/giphy.gif" alt="Apple Music" class="icon-large"></a>
-      <a href="https://www.youtube.com/@beetlesinelectriclight" data-title="YOUTUBE"><img src="assets/officialstreamlinks/play-youtube.gif" alt="YouTube" class="icon-small"></a>
-      <a href="https://www.instagram.com/beetlesinelectriclight" data-title="INSTAGRAM"><img src="assets/officialstreamlinks/source_1.gif" alt="Instagram"></a>
-      <a href="404.html" data-title="TIKTOK"><img src="assets/officialstreamlinks/giphy_1.gif" alt="TikTok"></a>
-      <a href="404.html" data-title="TWITTER"><img src="assets/officialstreamlinks/d9ad13_80198a2a59b746928c805a9b796f3eadmv2.gif" alt="Twitter" class="icon-large"></a>
-      <a href="404.html" data-title="FACEBOOK"><img src="assets/officialstreamlinks/twitter-png.gif" alt="Facebook"></a>
+      <a href="https://music.apple.com/us/artist/electric-light-beetles/1887309635" data-title="APPLE MUSIC"><img src="assets/officialstreamlinks/giphy.gif" alt="Apple Music" class="sz-apple"></a>
+      <a href="https://www.youtube.com/@beetlesinelectriclight" data-title="YOUTUBE"><img src="assets/officialstreamlinks/play-youtube.gif" alt="YouTube" class="sz-youtube"></a>
+      <a href="https://www.instagram.com/beetlesinelectriclight" data-title="INSTAGRAM"><img src="assets/officialstreamlinks/source_1.gif" alt="Instagram" class="sz-insta"></a>
+	  <a href="https://open.spotify.com/album/11ZxpOdLY2mwuj3JGEyVlR" data-title="SPOTIFY"><img src="assets/officialstreamlinks/source.gif" alt="Spotify" class="sz-spotify"></a>
+      <a href="https://www.tiktok.com/@beetlesinelectriclight" data-title="TIKTOK"><img src="assets/officialstreamlinks/giphy_1.gif" alt="TikTok" class="sz-tiktok"></a>
+      <a href="404.html" data-title="TWITTER"><img src="assets/officialstreamlinks/d9ad13_80198a2a59b746928c805a9b796f3eadmv2.gif" alt="Twitter" class="sz-twitter"></a>
+      <a href="404.html" data-title="FACEBOOK"><img src="assets/officialstreamlinks/twitter-png.gif" alt="Facebook" class="sz-fb"></a>
     </div>
 
     <br>
