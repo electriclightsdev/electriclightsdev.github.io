@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>La Galerie</title>
+  
+  <style>
+    /* =========================================
+       1. GLOBAL & IMMERSION SETUP
+       ========================================= */
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden; 
+      background-color: #111;
+      
+      background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.7)), url('assets/bg/gallery.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    /* =========================================
+       2. LAYOUT & POSITIONING
+       ========================================= */
+    .gallery-stage {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      width: 100vw;
+      position: relative;
+    }
+
+    /* =========================================
+       3. THE ARTWORK FRAME 
+       ========================================= */
+    .art-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .frame {
+      background-color: #f4f4f0; 
+      border: solid 2vmin #111; 
+      border-bottom-color: #222;
+      border-left-color: #111;
+      border-right-color: #050505;
+      border-top-color: #2a2a2a;
+      
+      box-shadow: 0 0 5px 0 rgba(0,0,0,.15) inset, 0 30px 60px 20px rgba(0,0,0,.9);
+      box-sizing: border-box;
+      display: inline-block;
+      padding: 3.5vmin; 
+      position: relative;
+      text-align: center;
+    }
+
+    .frame:before {
+      border-radius: 2px;
+      bottom: -1.5vmin;
+      box-shadow: 0 2px 5px 0 rgba(0,0,0,.25) inset;
+      content: "";
+      left: -1.5vmin;
+      position: absolute;
+      right: -1.5vmin;
+      top: -1.5vmin;
+    }
+
+    .frame:after {
+      border-radius: 2px;
+      bottom: -2vmin;
+      box-shadow: 0 2px 5px 0 rgba(0,0,0,.25);
+      content: "";
+      left: -2vmin;
+      position: absolute;
+      right: -2vmin;
+      top: -2vmin;
+    }
+
+    .frame img {
+      border: solid 1px rgba(0,0,0,0.8);
+      max-height: 45vh; 
+      max-width: 65vw;
+      display: block;
+      box-shadow: -2px -2px 5px rgba(0,0,0,0.3) inset;
+      
+      cursor: zoom-in;
+      transition: filter 0.3s ease;
+    }
+
+    .frame img:hover {
+      filter: brightness(1.08); 
+    }
+
+    /* =========================================
+       4. BOTTOM UI BAR: PLAQUE, EXIT, CONTROLS
+       ========================================= */
+       
+    /* Bottom Right: Scaled-down Plaque */
+    .museum-card {
+      position: absolute;
+      bottom: 30px;
+      right: 40px;
+      width: 260px; 
+      padding: 15px 20px;
+      box-sizing: border-box;
+      
+      background: rgba(15, 15, 15, 0.4);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-top: 1px solid rgba(255, 255, 255, 0.3); 
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      
+      text-align: center; 
+      cursor: zoom-in;
+      transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    /* Subtle hover effect to show it's clickable */
+    .museum-card:not(.lightbox-card):hover {
+      background: rgba(25, 25, 25, 0.55);
+      transform: translateY(-3px);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.7);
+    }
+
+    .card-title {
+      color: #fdfdfd;
+      font-family: "Didot", "Bodoni MT", "Times New Roman", serif;
+      font-weight: normal;
+      font-size: 11px;
+      margin: 0 0 6px 0;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .card-artist {
+      color: #dcdcdc;
+      font-family: "Snell Roundhand", "Brush Script MT", "Lucida Handwriting", cursive;
+      font-size: 18px; 
+      margin: 0 0 10px 0;
+      font-weight: normal;
+    }
+
+    .card-desc {
+      color: #999999;
+      font-family: "Georgia", serif;
+      font-size: 10px; 
+      line-height: 1.6;
+      margin: 0;
+      font-style: italic;
+    }
+
+    /* Bottom Left: Text Controls */
+    .gallery-controls {
+      position: absolute;
+      bottom: 35px;
+      left: 40px;
+      display: flex;
+      gap: 30px;
+    }
+
+    .gallery-controls button {
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.4);
+      font-family: "Didot", "Bodoni MT", "Times New Roman", serif;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      cursor: pointer;
+      padding: 5px 10px;
+      transition: color 0.4s ease;
+    }
+
+    .gallery-controls button:hover {
+      color: #ffffff;
+    }
+
+    .gallery-controls button:disabled {
+      opacity: 0.1;
+      cursor: default;
+    }
+
+    /* Bottom Center: Exit Link */
+    .exit-btn {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255, 255, 255, 0.3);
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      font-size: 10px;
+      font-family: "Didot", "Times New Roman", serif;
+      transition: color 0.4s ease, letter-spacing 0.4s ease;
+      z-index: 100;
+      cursor: pointer;
+    }
+
+    .exit-btn:hover {
+      color: #ffffff;
+      letter-spacing: 6px;
+    }
+
+    /* =========================================
+       5. FLOATING ARROWS (Immersive Navigation)
+       ========================================= */
+    .nav-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.02);
+      color: rgba(255, 255, 255, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.4s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(4px); 
+      z-index: 10;
+    }
+
+    .nav-arrow:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+
+    .nav-arrow:disabled {
+      opacity: 0;
+      pointer-events: none; 
+    }
+
+    .prev-arrow { left: 3vw; }
+    .next-arrow { right: 3vw; }
+
+    /* =========================================
+       6. LIGHTBOX (Magnification)
+       ========================================= */
+    .lightbox {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+      z-index: 9999;
+      cursor: zoom-out;
+    }
+
+    .lightbox.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .lightbox img {
+      max-width: 90vw;
+      max-height: 90vh;
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 0 60px rgba(0,0,0,1);
+      display: none; /* Hidden by default, toggled in JS */
+    }
+
+    /* Styles specifically for the plaque when it is magnified */
+    .lightbox-card {
+      position: relative;
+      bottom: auto;
+      right: auto;
+      transform: scale(1.6); /* Magnifies the plaque by 160% */
+      cursor: zoom-out;
+      display: none; /* Hidden by default, toggled in JS */
+    }
+
+  </style>
+</head>
+<body>
+
+  <button class="nav-arrow prev-arrow" id="arrow-prev-btn" onclick="prevImage()">❮</button>
+
+  <div class="gallery-stage">
+    
+    <div class="art-container">
+      <div class="frame">
+        <img src="assets/art/RADIOART.png" id="gallery-img" alt="Artwork" onclick="openLightbox('image')" title="Click to magnify art">
+      </div>
+    </div>
+
+    <div class="gallery-controls">
+      <button id="text-prev-btn" onclick="prevImage()">← Prev</button>
+      <button id="text-next-btn" onclick="nextImage()">Next →</button>
+    </div>
+
+    <a href="index.html" class="exit-btn">Exit Gallery</a>
+
+    <div class="museum-card" onclick="openLightbox('plaque')" title="Click to read plaque">
+      <p class="card-title" id="card-title">Loading...</p>
+      <p class="card-artist" id="card-artist">Loading...</p>
+      <p class="card-desc" id="card-desc">Loading...</p>
+    </div>
+
+  </div>
+
+  <button class="nav-arrow next-arrow" id="arrow-next-btn" onclick="nextImage()">❯</button>
+
+  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    
+    <img src="" id="lightbox-img" alt="Magnified Art">
+    
+    <div class="museum-card lightbox-card" id="lightbox-plaque">
+      <p class="card-title" id="lb-card-title"></p>
+      <p class="card-artist" id="lb-card-artist"></p>
+      <p class="card-desc" id="lb-card-desc"></p>
+    </div>
+
+  </div>
+
+  <script>
+    // ==========================================
+    // GALLERY DATA
+    // ==========================================
+    const artworkList = [
+      {
+        src: "assets/art/RADIOART.png",
+        title: "Radioactive Transmission",
+        artist: "Beetles in Electric Light",
+        desc: "A vibrant, glitch-infused study of frequency and distortion. Captured during a live sonic anomaly."
+      }
+    ];
+
+    let currentIndex = 0;
+
+    // DOM Elements
+    const imgEl = document.getElementById("gallery-img");
+    const titleEl = document.getElementById("card-title");
+    const artistEl = document.getElementById("card-artist");
+    const descEl = document.getElementById("card-desc");
+    
+    // Control Elements (Text & Arrows)
+    const arrowPrevBtn = document.getElementById("arrow-prev-btn");
+    const arrowNextBtn = document.getElementById("arrow-next-btn");
+    const textPrevBtn = document.getElementById("text-prev-btn");
+    const textNextBtn = document.getElementById("text-next-btn");
+    
+    // Lightbox Elements
+    const lightbox = document.getElementById("lightbox");
+    const lightboxImg = document.getElementById("lightbox-img");
+    const lightboxPlaque = document.getElementById("lightbox-plaque");
+    
+    // Lightbox Plaque Text Elements
+    const lbTitleEl = document.getElementById("lb-card-title");
+    const lbArtistEl = document.getElementById("lb-card-artist");
+    const lbDescEl = document.getElementById("lb-card-desc");
+
+    function updateGallery() {
+      const currentArt = artworkList[currentIndex];
+      
+      // Update image and text
+      imgEl.src = currentArt.src;
+      titleEl.innerText = currentArt.title;
+      artistEl.innerText = currentArt.artist;
+      descEl.innerText = currentArt.desc;
+
+      // Hide/Disable controls based on array position
+      const isFirst = currentIndex === 0;
+      const isLast = currentIndex === artworkList.length - 1;
+
+      arrowPrevBtn.disabled = isFirst;
+      textPrevBtn.disabled = isFirst;
+      
+      arrowNextBtn.disabled = isLast;
+      textNextBtn.disabled = isLast;
+    }
+
+    function nextImage() {
+      if (currentIndex < artworkList.length - 1) {
+        currentIndex++;
+        updateGallery();
+      }
+    }
+
+    function prevImage() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        updateGallery();
+      }
+    }
+
+    // Lightbox Functions
+    function openLightbox(type) {
+      const currentArt = artworkList[currentIndex];
+
+      if (type === 'image') {
+        // Show the image, hide the plaque
+        lightboxImg.src = currentArt.src;
+        lightboxImg.style.display = "block";
+        lightboxPlaque.style.display = "none";
+      } else if (type === 'plaque') {
+        // Populate the text, show the plaque, hide the image
+        lbTitleEl.innerText = currentArt.title;
+        lbArtistEl.innerText = currentArt.artist;
+        lbDescEl.innerText = currentArt.desc;
+        
+        lightboxPlaque.style.display = "block";
+        lightboxImg.style.display = "none";
+      }
+
+      lightbox.classList.add("active");
+    }
+
+    function closeLightbox() {
+      lightbox.classList.remove("active");
+    }
+
+    // Initialize the gallery on page load
+    window.onload = updateGallery;
+  </script>
+
+</body>
+</html>
