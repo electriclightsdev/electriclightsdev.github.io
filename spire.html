@@ -37,7 +37,7 @@
         /* 2. Integrated Header */
         header {
             text-align: center;
-            padding: 10vh 2rem 5vh; 
+            padding: 10vh 2rem 2vh; /* Reduced bottom padding slightly since text is gone */
             position: relative;
             z-index: 2;
         }
@@ -56,34 +56,36 @@
             margin-bottom: 2rem;
         }
 
-        header .site-intro {
-            color: #dcdcdc;
-            font-size: 1.25rem;
-            max-width: 700px;
-            margin: 0 auto;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9), 
-                         -1px -1px 0px rgba(255, 255, 255, 0.1); 
-            background-color: rgba(20, 20, 20, 0.6); 
-            padding: 1.5rem;
-            border-radius: 12px;
-            border-bottom: 3px solid #d3a84e; 
-        }
-
         /* 3. The Vortex Gallery Grid Layout */
         main {
             flex: 1; 
-            padding-top: 5vh; 
+            padding-top: 2vh; 
             position: relative;
             z-index: 2;
         }
 
         .video-gallery {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); 
+            grid-template-columns: repeat(3, 1fr); /* Forced 3 columns for the wrap-around effect */
             gap: 2.5rem; 
             padding: 2rem 4rem; 
             max-width: 1600px; 
             margin: 0 auto;
+            align-items: center; /* Vertically aligns the center image with the video cards */
+        }
+
+        /* Center Image Styling */
+        .center-feature {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .center-feature img {
+            width: 100%;
+            max-width: 350px; /* Keeps it to about a third of the original size */
+            height: auto;
+            /* Borders and shadows removed for a seamless blend */
         }
 
         /* Individual Video Cards */
@@ -94,6 +96,7 @@
             border: 1px solid #d3a84e; 
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6);
             transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            height: 100%; /* Ensures cards stretch evenly */
         }
 
         .video-card:hover {
@@ -146,9 +149,13 @@
         /* Responsive adjustments */
         @media (max-width: 1200px) {
             .video-gallery {
-                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                grid-template-columns: repeat(2, 1fr);
                 gap: 2rem;
                 padding: 2rem;
+            }
+            .center-feature {
+                grid-column: span 2; /* Forces the image to sit on its own row in the middle */
+                padding: 2rem 0;
             }
             .logo {
                 max-width: 500px;
@@ -157,15 +164,15 @@
 
         @media (max-width: 768px) {
             .video-gallery {
-                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                grid-template-columns: 1fr;
                 gap: 1.5rem;
+            }
+            .center-feature {
+                grid-column: span 1;
+                padding: 1rem 0;
             }
             .logo {
                 max-width: 400px;
-            }
-            header .site-intro {
-                font-size: 1.1rem;
-                padding: 1rem;
             }
             header {
                 padding-top: 5vh;
@@ -179,7 +186,6 @@
         <header>
             <div class="header-content">
                 <img src="assets/nerf.png" alt="Nerf the Spire Logo" class="logo">
-                <p class="site-intro">Clad goes infinite again in STS2</p>
             </div>
         </header>
 
@@ -194,8 +200,8 @@
                         </video>
                     </div>
                     <div class="video-info">
-                        <h3>Combo Title 1</h3>
-                        <p>Description of the cards used and the mechanics of this run will go here.</p>
+                        <h3>Bonus Clone Shenanigans</h3>
+                        <p>Cloned Adrenaline + Corrosive wave + Speedster. Ignore the inefficient drawing :/</p>
                     </div>
                 </div>
 
@@ -207,8 +213,8 @@
                         </video>
                     </div>
                     <div class="video-info">
-                        <h3>Combo Title 2</h3>
-                        <p>Description of the cards used and the mechanics of this run will go here.</p>
+                        <h3>A4 Spite looping</h3>
+                        <p>Stoke will have a sad, but much needed nerf. Was fishing for the Body Slam this run(infinite spite+rage), but never found it.</p>
                     </div>
                 </div>
 
@@ -220,8 +226,8 @@
                         </video>
                     </div>
                     <div class="video-info">
-                        <h3>Combo Title 3</h3>
-                        <p>Description of the cards used and the mechanics of this run will go here.</p>
+                        <h3>A6 Spite looping</h3>
+                        <p>Not much to say here. Nerf stoke, nerf spite</p>
                     </div>
                 </div>
 
@@ -233,9 +239,13 @@
                         </video>
                     </div>
                     <div class="video-info">
-                        <h3>Combo Title 4</h3>
-                        <p>Description of the cards used and the mechanics of this run will go here.</p>
+                        <h3>A7 with a 7 card deck</h3>
+                        <p>Did not find spite (crazy), Double Pommel + Bloodletting infinite* <br><br><sub>*(HP limitations, duh)</sub></p>
                     </div>
+                </div>
+
+                <div class="center-feature">
+                    <img src="assets/spitenerf.png" alt="Spite Nerf">
                 </div>
 
                 <div class="video-card">
@@ -246,8 +256,8 @@
                         </video>
                     </div>
                     <div class="video-info">
-                        <h3>Combo Title 5</h3>
-                        <p>Description of the cards used and the mechanics of this run will go here.</p>
+                        <h3>A5</h3>
+                        <p>Stoke into Spite looping. Get the idea?</p>
                     </div>
                 </div>
 
@@ -255,7 +265,7 @@
         </main>
 
         <footer>
-            <p>RIP to the Spire. Not affiliated with Mega Crit.</p>
+            <p>Glory to the Slayers. Not affiliated with Mega Crit.</p>
         </footer>
     </div>
 </body>
