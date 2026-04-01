@@ -37,7 +37,7 @@
         /* 2. Integrated Header */
         header {
             text-align: center;
-            padding: 10vh 2rem 2vh; /* Reduced bottom padding slightly since text is gone */
+            padding: 10vh 2rem 2vh; 
             position: relative;
             z-index: 2;
         }
@@ -66,12 +66,12 @@
 
         .video-gallery {
             display: grid;
-            grid-template-columns: repeat(3, 1fr); /* Forced 3 columns for the wrap-around effect */
+            grid-template-columns: repeat(3, 1fr);
             gap: 2.5rem; 
             padding: 2rem 4rem; 
             max-width: 1600px; 
             margin: 0 auto;
-            align-items: center; /* Vertically aligns the center image with the video cards */
+            align-items: center; 
         }
 
         /* Center Image Styling */
@@ -83,9 +83,8 @@
 
         .center-feature img {
             width: 100%;
-            max-width: 350px; /* Keeps it to about a third of the original size */
+            max-width: 350px; 
             height: auto;
-            /* Borders and shadows removed for a seamless blend */
         }
 
         /* Individual Video Cards */
@@ -96,7 +95,7 @@
             border: 1px solid #d3a84e; 
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6);
             transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-            height: 100%; /* Ensures cards stretch evenly */
+            height: 100%; 
         }
 
         .video-card:hover {
@@ -106,11 +105,11 @@
             border-color: #f1c40f; 
         }
 
-        .video-wrapper video {
+        .video-wrapper iframe {
             width: 100%;
             display: block;
             aspect-ratio: 16 / 9;
-            object-fit: cover;
+            border: none;
             background-color: #000;
         }
 
@@ -154,7 +153,7 @@
                 padding: 2rem;
             }
             .center-feature {
-                grid-column: span 2; /* Forces the image to sit on its own row in the middle */
+                grid-column: span 2; 
                 padding: 2rem 0;
             }
             .logo {
@@ -194,10 +193,7 @@
                 
                 <div class="video-card">
                     <div class="video-wrapper">
-                        <video controls preload="metadata">
-                            <source src="assets/videos/spire/1.mp4" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
+                        <iframe src="https://www.youtube.com/embed/lJ-1NpO-bB4" title="Bonus Clone Shenanigans" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
                     </div>
                     <div class="video-info">
                         <h3>Bonus Clone Shenanigans</h3>
@@ -207,10 +203,7 @@
 
                 <div class="video-card">
                     <div class="video-wrapper">
-                        <video controls preload="metadata">
-                            <source src="assets/videos/spire/2.mp4" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
+                        <iframe src="https://www.youtube.com/embed/e4XqRRBcuoM" title="A4 Spite looping" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
                     </div>
                     <div class="video-info">
                         <h3>A4 Spite looping</h3>
@@ -220,10 +213,7 @@
 
                 <div class="video-card">
                     <div class="video-wrapper">
-                        <video controls preload="metadata">
-                            <source src="assets/videos/spire/3.mp4" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
+                        <iframe src="https://www.youtube.com/embed/T6zYFIzJ0dg" title="A6 Spite looping" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
                     </div>
                     <div class="video-info">
                         <h3>A6 Spite looping</h3>
@@ -233,10 +223,7 @@
 
                 <div class="video-card">
                     <div class="video-wrapper">
-                        <video controls preload="metadata">
-                            <source src="assets/videos/spire/4.mp4" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
+                        <iframe src="https://www.youtube.com/embed/VzCAiweboAA" title="A7 with a 7 card deck" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
                     </div>
                     <div class="video-info">
                         <h3>A7 with a 7 card deck</h3>
@@ -250,14 +237,31 @@
 
                 <div class="video-card">
                     <div class="video-wrapper">
-                        <video controls preload="metadata">
-                            <source src="assets/videos/spire/5.mp4" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
+                        <iframe src="https://www.youtube.com/embed/sQSRxwBfzuc" title="A5" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
                     </div>
                     <div class="video-info">
                         <h3>A5</h3>
                         <p>Stoke into Spite looping. Get the idea?</p>
+                    </div>
+                </div>
+
+                <div class="video-card">
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/N5XzXadtV5E" title="New Spire Combo 1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    </div>
+                    <div class="video-info">
+                        <h3>New Video 6</h3>
+                        <p>Description for your newly uploaded 6th video goes right here.</p>
+                    </div>
+                </div>
+
+                <div class="video-card">
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/tqivF5GNtt8" title="New Spire Combo 2" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    </div>
+                    <div class="video-info">
+                        <h3>New Video 7</h3>
+                        <p>Description for your newly uploaded 7th video goes right here.</p>
                     </div>
                 </div>
 
