@@ -64,11 +64,77 @@
             z-index: 2;
         }
 
+        /* --- The Usual Suspects --- */
+        .usual-suspects {
+            max-width: 900px;
+            margin: 0 auto 3rem auto;
+            padding: 2rem;
+            background-color: rgba(26, 26, 26, 0.9);
+            border: 2px solid #d3a84e; 
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(211, 168, 78, 0.1);
+            text-align: center;
+        }
+
+        .usual-suspects h2 {
+            color: #d3a84e;
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            font-size: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+        }
+
+        .version-note {
+            color: #888;
+            font-size: 0.95rem;
+            font-style: italic;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+        }
+
+        .suspects-blurb {
+            color: #b0b0b0;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            max-width: 750px;
+            margin: 0 auto 2rem auto;
+        }
+
+        .suspects-blurb strong {
+            color: #e5c07b;
+            font-weight: 600;
+        }
+
+        .suspects-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1.5rem;
+        }
+
+        .suspect-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .suspect-card:hover {
+            transform: translateY(-5px) scale(1.05);
+        }
+
+        .suspect-card img {
+            width: 130px; 
+            border-radius: 8px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.8);
+            border: 1px solid #5a4e41;
+        }
+
+        /* Video Gallery */
         .video-gallery {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 2.5rem; 
-            padding: 2rem 4rem; 
+            padding: 0 4rem 2rem 4rem; 
             max-width: 1600px; 
             margin: 0 auto;
             align-items: center; 
@@ -91,7 +157,6 @@
         .video-card {
             background-color: rgba(26, 26, 26, 0.9); 
             border-radius: 12px;
-            /* overflow: hidden; Removed to allow tooltips to overflow */
             border: 1px solid #d3a84e; 
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6);
             transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
@@ -105,10 +170,10 @@
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.8),
                         0 0 20px rgba(211, 168, 78, 0.3); 
             border-color: #f1c40f; 
-            z-index: 10; /* Added to bring hovered card and its tooltips to the front */
+            z-index: 10; 
         }
 
-        /* --- NEW FEATURE: Thematic UI Framing --- */
+        /* Thematic UI Framing */
         .spire-frame {
             background-color: #120e10; 
             padding: 6px; 
@@ -119,7 +184,7 @@
                 0 0 0 6px #15110e, 
                 0 10px 20px rgba(0, 0, 0, 0.8), 
                 inset 0 0 15px rgba(0, 0, 0, 0.9);
-            margin: 10px; /* Slight margin so it floats nicely in the card */
+            margin: 10px; 
         }
 
         .spire-frame iframe {
@@ -131,7 +196,6 @@
             border-radius: 2px;
         }
         
-        /* Apply frame to the center image as well */
         .center-feature.spire-frame {
             padding: 6px;
             margin: 0;
@@ -164,7 +228,7 @@
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
         }
 
-        /* --- NEW FEATURE: Card Tooltips --- */
+        /* Card Tooltips */
         .card-tooltip {
             position: relative;
             cursor: help;
@@ -185,7 +249,7 @@
             left: 50%;
             transform: translateX(-50%); 
             width: 200px; 
-            z-index: 9999; /* Increased z-index so it floats over everything */
+            z-index: 9999; 
             border-radius: 8px;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.8);
             pointer-events: none; 
@@ -213,7 +277,7 @@
             .video-gallery {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 2rem;
-                padding: 2rem;
+                padding: 0 2rem 2rem 2rem;
             }
             .center-feature {
                 grid-column: span 2; 
@@ -229,6 +293,7 @@
             .video-gallery {
                 grid-template-columns: 1fr;
                 gap: 1.5rem;
+                padding: 0 1.5rem 2rem 1.5rem;
             }
             .center-feature {
                 grid-column: span 1;
@@ -239,6 +304,9 @@
             }
             header {
                 padding-top: 5vh;
+            }
+            .usual-suspects {
+                margin: 0 1.5rem 2rem 1.5rem;
             }
         }
     </style>
@@ -253,6 +321,37 @@
         </header>
 
         <main>
+            <section class="usual-suspects">
+                <h2>The Usual Suspects</h2>
+                
+                <p class="version-note">Note: These clips are recorded on version 0.99.1. I realize some of these cards (Expect a Fight, Stoke, and Spite) have been balanced or reworked in version 0.100.0!</p>
+                
+                <p class="suspects-blurb">
+                    These cards are the ultimate infinite enablers. The biggest offenders are the common rarity cards—<strong>Pommel Strike</strong> and <strong>Bloodletting</strong>. Because they are too easy to find in almost any run, they remove any decision making while playing Ironclad. After you find your common cards the object of the game becomes avoid all fights and remove as many cards as you can from your deck. :/
+                </p>
+
+                <div class="suspects-grid">
+                    <div class="suspect-card" title="Stoke">
+                        <img src="https://slaythespire.wiki.gg/images/thumb/StS2_Ironclad-Stoke.png/150px-StS2_Ironclad-Stoke.png?3ddb63" alt="Stoke Card">
+                    </div>
+                    <div class="suspect-card" title="Pommel Strike">
+                        <img src="https://slaythespire.wiki.gg/images/thumb/StS2_Ironclad-PommelStrike.png/150px-StS2_Ironclad-PommelStrike.png?2dd510" alt="Pommel Strike Card">
+                    </div>
+                    <div class="suspect-card" title="Bloodletting">
+                        <img src="https://slaythespire.wiki.gg/images/thumb/StS2_Ironclad-Bloodletting.png/150px-StS2_Ironclad-Bloodletting.png?ee6a61" alt="Bloodletting Card">
+                    </div>
+                    <div class="suspect-card" title="Pillage">
+                        <img src="https://slaythespire.wiki.gg/images/thumb/StS2_Ironclad-Pillage.png/150px-StS2_Ironclad-Pillage.png?4bbfc5" alt="Pillage Card">
+                    </div>
+                    <div class="suspect-card" title="Spite">
+                        <img src="https://slaythespire.wiki.gg/images/thumb/StS2_Ironclad-Spite.png/150px-StS2_Ironclad-Spite.png?187e96" alt="Spite Card">
+                    </div>
+                    <div class="suspect-card" title="Expect a Fight">
+                        <img src="https://slaythespire.wiki.gg/images/thumb/StS2_Ironclad-ExpectaFight.png/150px-StS2_Ironclad-ExpectaFight.png?7cbcf8" alt="Expect a Fight Card">
+                    </div>
+                </div>
+            </section>
+
             <section class="video-gallery">
                 
                 <div class="video-card">
@@ -335,7 +434,7 @@
                     </div>
                     <div class="video-info">
                         <h3>A10 vs a green dog and Doormat</h3>
-                        <p>Boss 1: Test Subject Boss 2: Doormaker<br> Apologies only one boss recorded. the run was won with the usual suspects: <span class="card-tooltip">Pommel Strke<img src="https://slaythespire.wiki.gg/images/thumb/StS2_Ironclad-PommelStrike.png/150px-StS2_Ironclad-PommelStrike.png?2dd510" alt="Pommel Card"></span>, <span class="card-tooltip">Bloodletting<img src="https://slaythespire.wiki.gg/images/thumb/StS2_Ironclad-Bloodletting.png/150px-StS2_Ironclad-Bloodletting.png?ee6a61" alt="Bloodletting Card"></span>, and <span class="card-tooltip">Spite<img src="https://slaythespire.wiki.gg/images/thumb/StS2_Ironclad-Spite.png/150px-StS2_Ironclad-Spite.png?187e96" alt="Spite Card"></span>, featuring Rampage as a boss finisher.</p>
+                        <p>Boss 1: Test Subject Boss 2: Doormaker<br> Apologies only one boss recorded. the run was won with the usual suspects: <span class="card-tooltip">Pommel Strike<img src="https://slaythespire.wiki.gg/images/thumb/StS2_Ironclad-PommelStrike.png/150px-StS2_Ironclad-PommelStrike.png?2dd510" alt="Pommel Card"></span>, <span class="card-tooltip">Bloodletting<img src="https://slaythespire.wiki.gg/images/thumb/StS2_Ironclad-Bloodletting.png/150px-StS2_Ironclad-Bloodletting.png?ee6a61" alt="Bloodletting Card"></span>, and <span class="card-tooltip">Spite<img src="https://slaythespire.wiki.gg/images/thumb/StS2_Ironclad-Spite.png/150px-StS2_Ironclad-Spite.png?187e96" alt="Spite Card"></span>, featuring Rampage as a boss finisher.</p>
                     </div>
                 </div>
 
