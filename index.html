@@ -202,15 +202,15 @@
       justify-content: center;
       align-items: center; 
       gap: 25px; 
-      margin: 10px auto 40px auto; /* Slightly more margin for tooltips */
+      margin: 10px auto 40px auto; 
       width: 90%;
     }
 
     .stream-links a {
-      display: flex; /* Flex allows vertical centering of the image within the fixed height */
+      display: flex; 
       align-items: center; 
       justify-content: center;
-      height: 125px; /* Locks all anchor tags to the height of the Spotify icon */
+      height: 125px; 
       text-decoration: none;
       transition: all 0.2s ease-in-out;
       position: relative;
@@ -239,7 +239,7 @@
     .stream-links a::after {
       content: attr(data-title);
       position: absolute;
-      bottom: -15px; /* Since the container is fixed at 125px, this uniform value aligns them all */
+      bottom: -15px; 
       left: 50%;
       transform: translateX(-50%);
       background-color: #000080; 
@@ -556,7 +556,7 @@
     
     <hr size="5" width="80%" color="#ff00ff">
 
-    <h2>+++ OFFICIAL LINKS +++</h2>
+    <img src="assets/MQE7JUBYYUU2HCDIKY5H7DD765UJ7OJT.gif" alt="Official Links" class="webring-header" style="margin-top: 30px;">
     <div class="stream-links">
       <a href="https://music.apple.com/us/artist/electric-light-beetles/1887309635" data-title="APPLE MUSIC"><img src="assets/officialstreamlinks/giphy.gif" alt="Apple Music" class="sz-apple"></a>
       <a href="https://www.youtube.com/@beetlesinelectriclight" data-title="YOUTUBE"><img src="assets/officialstreamlinks/play-youtube.gif" alt="YouTube" class="sz-youtube"></a>
@@ -612,9 +612,9 @@
       <audio id="tape-audio"></audio>
 
       <div class="controls">
-        <button class="mech-button play-btn" onclick="playTape()">&#9658;</button>
-        <button class="mech-button" onclick="pauseTape()">&#10074;&#10074;</button>
-        <button class="mech-button stop-btn" onclick="stopTape()">&#9632;</button>
+        <button class="mech-button play-btn" onclick="playTape()">►</button>
+        <button class="mech-button" onclick="pauseTape()">❚❚</button>
+        <button class="mech-button stop-btn" onclick="stopTape()">■</button>
       </div>
     </div>
 
@@ -628,8 +628,8 @@
     </p>
 
     <div class="webring-container">
-      <img src="assets/MQE7JUBYYUU2HCDIKY5H7DD765UJ7OJT.gif" alt="Webring Header Blast" class="webring-header">
-      
+      <h2>+++ CLICK HERE? +++</h2>
+      <br>
       <a href="index.html"><img src="88x31/anihome112g.gif" alt="Link 1" class="eighty-eight"></a>
       <a href="gallery.html"><img src="88x31/anybrowser3.gif" alt="Link 2" class="eighty-eight"></a>
       <a href="404.html"><img src="88x31/ban-button.gif" alt="Link 3" class="eighty-eight"></a>
@@ -640,7 +640,7 @@
     </div>
 
     <footer>
-      <p><small>&copy; 2026 The Artist. Do not steal my bandwidth.</small></p>
+      <p><small>© 2026 The Artist. Do not steal my bandwidth.</small></p>
     </footer>
 
   </div>
