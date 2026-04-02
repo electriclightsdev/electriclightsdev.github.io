@@ -5,7 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>· · · ● · · ● · · · · · · · · ●  · · · · · · · · ●</title>
   <link rel="icon" type="image/png" href="assets/icon2.gif">
-  
+  <script>
+  // Add a console log so you can see if the script is actually running
+  console.log("Current hostname is: " + window.location.hostname);
+
+  if (window.location.hostname === 'yourdomain.com' || window.location.hostname === 'www.yourdomain.com') {
+    window.location.href = './your-sts-folder/index.html'; 
+  }
+ </script>
   <style>
     /* =========================================
        1. GLOBAL & BASE STYLES
@@ -759,6 +766,7 @@
 
     // Run the function immediately on page load
     updateMemeDate();
+    
   </script>
 
 </body>
