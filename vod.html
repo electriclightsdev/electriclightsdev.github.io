@@ -16,19 +16,31 @@
       padding: 0;
       width: 100vw;
       height: 100vh;
-      overflow: hidden; /* Locks the page so it can't scroll */
-      cursor: url('assets/mouse.png'), auto; 
+      overflow: hidden; 
+      cursor: url('assets/mouse.png'), auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
     /* =========================================
-       2. THE CRT RIG LAYER SYSTEM
+       2. THE RESPONSIVE CRT RIG
        ========================================= */
+    .tv-container {
+      position: relative;
+      /* This maintains the 16:9 shape of your background image */
+      width: 100%;
+      max-width: 1200px; 
+      aspect-ratio: 16 / 9;
+      container-type: size; /* Enables container queries for text scaling */
+    }
+
     .tv-rig {
       position: absolute;
       top: 0;
       left: 0;
-      width: 100vw;   /* Stretches to 100% of the viewport width */
-      height: 100vh;  /* Stretches to 100% of the viewport height */
+      width: 100%;
+      height: 100%;
     }
 
     /* LAYER 1: The Video (Bottom) */
@@ -38,7 +50,7 @@
       left: 23.4%;
       width: 53.1%;
       height: 69.4%;
-      object-fit: fill; /* Forces the video to stretch with the screen */
+      object-fit: fill; 
       z-index: 1; 
       background-color: #000; 
     }
@@ -50,59 +62,56 @@
       left: 0;
       width: 100%;
       height: 100%;
-      object-fit: fill; /* Forces the image to stretch and break its aspect ratio */
+      object-fit: contain;
       z-index: 2;
       pointer-events: none; 
     }
 
-    /* LAYER 3: The Hotspots (Top) */
+    /* =========================================
+       3. INTERACTIVE HOTSPOTS
+       ========================================= */
     .hotspot {
       position: absolute;
       z-index: 3;
       cursor: url('assets/mouse.png'), pointer;
       border: 1px solid transparent; 
-      border-radius: 5px;
+      border-radius: 2px; /* Slightly tighter border */
     }
 
     .hotspot:hover {
-      background-color: rgba(0, 255, 255, 0.3); 
+      background-color: rgba(0, 255, 255, 0.2); 
     }
 
-    .btn-ch-up {
-      top: 85%;
-      left: 32%;
-      width: 2%;
-      height: 4%;
-    }
-
-    .btn-ch-down {
-      top: 85%;
-      left: 34.5%;
-      width: 2%;
-      height: 4%;
-    }
+    /* Button Row Positioning - Adjust 'left' % values to align with your image */
+    .btn-ch-up   { top: 85%; left: 31.8%; width: 1.8%; height: 4%; }
+    .btn-ch-down { top: 85%; left: 34.0%; width: 1.8%; height: 4%; }
+    .btn-vol-up  { top: 85%; left: 36.2%; width: 1.8%; height: 4%; }
+    .btn-vol-down{ top: 85%; left: 38.4%; width: 1.8%; height: 4%; }
+    .btn-extra   { top: 85%; left: 40.6%; width: 1.8%; height: 4%; }
+    
+    /* Power button, slightly larger and offset */
+    .btn-power   { top: 85%; left: 43.5%; width: 2.2%; height: 4.5%; }
 
     /* Channel Display LED */
     .channel-display {
       position: absolute;
       top: 12%;
-      right: 29%; /* Adjusted further left so it doesn't clip off the screen */
+      right: 28%; 
       color: #00ff00;
       font-family: "Courier New", Courier, monospace;
-      font-size: clamp(14px, 2vw, 36px); 
+      font-size: 2.5cqw; /* Scales perfectly based on container width */
       font-weight: bold;
       text-shadow: 0 0 5px #00ff00;
       z-index: 4;
       pointer-events: none;
     }
     
-    /* Back Button Escape Hatch - 8-Bit Nintendo Style */
     .exit-btn {
       position: absolute;
       top: 20px;
       left: 20px;
-      color: #666666; /* Subtle text */
-      background-color: #111111; /* Dark background to hide in the shadows */
+      color: #666666;
+      background-color: #111111;
       font-family: "Courier New", Courier, monospace;
       font-size: 16px;
       font-weight: bold;
@@ -111,20 +120,14 @@
       padding: 8px 12px;
       opacity: 0.5;
       transition: all 0.1s;
-      /* Simulates a chunky 8-bit border */
-      box-shadow: 
-        inset 2px 2px 0 #333333,
-        inset -2px -2px 0 #000000;
+      box-shadow: inset 2px 2px 0 #333333, inset -2px -2px 0 #000000;
     }
     
     .exit-btn:hover {
       opacity: 1;
       color: #ffffff;
-      background-color: #e52521; /* Classic Nintendo Red */
-      /* Reverses the bevel for a 'pressed' or lit-up look */
-      box-shadow: 
-        inset 2px 2px 0 #ff6b68,
-        inset -2px -2px 0 #8c100e;
+      background-color: #e52521;
+      box-shadow: inset 2px 2px 0 #ff6b68, inset -2px -2px 0 #8c100e;
     }
   </style>
 </head>
@@ -132,15 +135,21 @@
 
   <a href="index.html" class="exit-btn">◀ EXIT</a>
 
-  <div class="tv-rig">
-    <div id="channel-indicator" class="channel-display">CH: 01</div>
+  <div class="tv-container">
+    <div class="tv-rig">
+      <div id="channel-indicator" class="channel-display">CH: 01</div>
 
-    <video id="main-screen" class="tv-video" autoplay loop muted></video>
+      <video id="main-screen" class="tv-video" autoplay loop muted playsinline></video>
 
-    <img src="assets/bg/vodbg.png" class="tv-bezel" alt="Retro TV Overlay">
+      <img src="assets/bg/vodbg.png" class="tv-bezel" alt="Retro TV Overlay">
 
-    <div class="hotspot btn-ch-up" onclick="switchChannel(1)" title="Channel Up"></div>
-    <div class="hotspot btn-ch-down" onclick="switchChannel(-1)" title="Channel Down"></div>
+      <div class="hotspot btn-ch-up"    onclick="switchChannel(1)"    title="Channel Up"></div>
+      <div class="hotspot btn-ch-down"  onclick="switchChannel(-1)"   title="Channel Down"></div>
+      <div class="hotspot btn-vol-up"   onclick="adjustVolume(0.1)"   title="Volume Up"></div>
+      <div class="hotspot btn-vol-down" onclick="adjustVolume(-0.1)"  title="Volume Down"></div>
+      <div class="hotspot btn-extra"    onclick="extraFunc()"         title="Utility"></div>
+      <div class="hotspot btn-power"    onclick="togglePower()"       title="Power"></div>
+    </div>
   </div>
 
   <script>
@@ -148,7 +157,6 @@
     const tvScreen = document.getElementById("main-screen");
     const channelIndicator = document.getElementById("channel-indicator");
 
-    // The Archive: Add your video files here
     const playlist = [
       "assets/videos/spire/1.mp4",
       "assets/space_cowboy_concept_animatic.mp4",
@@ -157,20 +165,25 @@
     
     let currentChannel = 0;
     
-    // Initialize the TV
+    // 1. Core Functions
     function loadVideo() {
       tvScreen.src = playlist[currentChannel];
-      tvScreen.play();
+      tvScreen.load();
+      tvScreen.play().catch(error => {
+          console.log("Autoplay with sound blocked. Waiting for user interaction.");
+      });
       
-      // Update the green LED display (pads with zero, e.g., "01", "02")
       let displayNum = (currentChannel + 1).toString().padStart(2, '0');
       channelIndicator.innerText = "CH: " + displayNum;
     }
 
+    // 2. Button Event Handlers
     function switchChannel(direction) {
+      // Unmute the video on first interaction, bypasses autoplay block
+      tvScreen.muted = false;
+      
       currentChannel += direction;
       
-      // Loop around if we hit the end of the tape
       if (currentChannel >= playlist.length) {
         currentChannel = 0; 
       } else if (currentChannel < 0) {
@@ -180,7 +193,32 @@
       loadVideo();
     }
 
-    // Turn the TV on
+    function adjustVolume(amount) {
+        // Unmute if muted
+        tvScreen.muted = false;
+        
+        let currentVolume = tvScreen.volume;
+        let newVolume = currentVolume + amount;
+        
+        // Clamp volume between 0.0 and 1.0
+        if (newVolume > 1.0) newVolume = 1.0;
+        if (newVolume < 0.0) newVolume = 0.0;
+        
+        tvScreen.volume = newVolume;
+        console.log("Volume adjusted to: " + (newVolume * 100).toFixed(0) + "%");
+    }
+
+    function extraFunc() {
+        console.log("Utility button pressed. No function set yet.");
+        // Example: Use this for a menu, a scan effect, etc.
+    }
+
+    function togglePower() {
+        console.log("Power button pressed. Placeholder function.");
+        // Example: Toggle visible: none on .tv-video and .channel-display
+    }
+
+    // --- INITIALIZE ---
     loadVideo();
   </script>
 
