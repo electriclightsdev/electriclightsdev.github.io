@@ -31,10 +31,10 @@
     ============================================================ */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    /* 1rem = 1svh — entire layout scales with viewport height */
-    html { font-size: min(1svh, 0.85svw); }
+    /* 1rem ≈ 1svh — entire layout scales with viewport */
+    html { font-size: min(1.08svh, 0.92svw); }
 
-    @media (orientation: portrait) { html { font-size: min(0.75svw, 1svh); } }
+    @media (orientation: portrait) { html { font-size: min(0.82svw, 1.08svh); } }
 
     body {
       min-height: 100svh;
@@ -50,7 +50,7 @@
        TV BODY  —  boxy, square-ish, two-tone
     ============================================================ */
     .tv {
-      width: 86rem;
+      width: 94rem;
       aspect-ratio: 1.22 / 1;
       position: relative;
 
@@ -161,6 +161,9 @@
       /* CRT barrel distortion illusion: more radius on Y */
       border-radius: 1.2rem / 2rem;
 
+      /* NOTE: container-type intentionally omitted — it breaks
+         cross-origin YouTube iframes in Chrome/Safari */
+
       box-shadow:
         /* deep inner shadow = curved edge darkness */
         inset 0   0  80px rgba(0,0,0,1),
@@ -237,7 +240,7 @@
       display: flex;
       align-items: center;
       gap: 0.6em;
-      font-size: 2.2cqw;
+      font-size: 1.4vw;
       color: var(--phosphor);
       font-family: 'VT323', monospace;
       text-shadow: 0 0 6px var(--phosphor);
@@ -854,7 +857,7 @@ function applyChannel() {
     localVideo.style.display = 'none';
     localVideo.pause();
     ytWrapper.style.display = 'block';
-    testCanvas.style.display = 'block';
+    testCanvas.style.display = 'none'; /* hide immediately — yt-wrapper (z:2) sits above test-canvas (z:1) anyway */
 
     if (ytReady) {
       if (ytPlayer && ytPlayer.loadVideoById) {
@@ -886,6 +889,8 @@ function makeYTPlayer(videoId) {
       autoplay: 1, controls: 0, rel: 0,
       modestbranding: 1, iv_load_policy: 3,
       mute: muted ? 1 : 0,
+      enablejsapi: 1,
+      origin: window.location.origin,
     },
     events: {
       onReady(e) {
