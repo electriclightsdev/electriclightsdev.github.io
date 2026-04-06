@@ -4,567 +4,1105 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>· · · ● V O D ● · · ·</title>
-  <link rel="icon" type="image/png" href="assets/icon2.gif">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 
   <style>
-    /* =========================================
-       1. GLOBAL / RESET
-       ========================================= */
+    /* ============================================================
+       TOKENS
+    ============================================================ */
+    :root {
+      --charcoal:     #1e1c18;
+      --charcoal-hi:  #2c2a24;
+      --charcoal-lo:  #111008;
+      --cream:        #d4c89e;
+      --cream-hi:     #e8dfc0;
+      --cream-lo:     #b0a070;
+      --cream-mid:    #c4b888;
+      --rubber:       #221e18;
+      --rubber-hi:    #302c24;
+      --phosphor:     #39ff6a;
+      --phosphor-dim: rgba(57,255,106,0.08);
+      --amber:        #ffb347;
+    }
+
+    /* ============================================================
+       RESET & BASE
+    ============================================================ */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    /* 1rem = 1svh — entire layout scales with viewport height */
+    html { font-size: min(1svh, 0.85svw); }
+
+    @media (orientation: portrait) { html { font-size: min(0.75svw, 1svh); } }
+
     body {
-      background: #000;
-      width: 100vw;
-      height: 100vh;
-      overflow: hidden;
-      cursor: url('assets/mouse.png'), auto;
+      min-height: 100svh;
       display: flex;
-      justify-content: center;
       align-items: center;
-      font-family: "Courier New", Courier, monospace;
-    }
-
-    /* =========================================
-       2. TV RIG  (16:9, max 1200 px wide)
-       ========================================= */
-    .tv-container {
-      position: relative;
-      width: 100%;
-      max-width: 1200px;
-      aspect-ratio: 16 / 9;
-      container-type: size;
-    }
-
-    .tv-rig {
-      position: absolute;
-      inset: 0;
-    }
-
-    /* ── Screen area ── */
-    .screen-area {
-      position: absolute;
-      top:    9.2%;
-      left:  23.4%;
-      width: 53.1%;
-      height: 69.4%;
-      z-index: 1;
-      background: #000;
+      justify-content: center;
+      background: url('assets/bg/vodbg.png') center / cover fixed;
       overflow: hidden;
+      font-family: 'Share Tech Mono', 'Courier New', monospace;
     }
 
-    /* Local video */
-    #local-video {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: fill;
-      display: none;
+    /* ============================================================
+       TV BODY  —  boxy, square-ish, two-tone
+    ============================================================ */
+    .tv {
+      width: 86rem;
+      aspect-ratio: 1.22 / 1;
+      position: relative;
+
+      /* Dark charcoal base */
+      background: linear-gradient(150deg,
+        var(--charcoal-hi) 0%,
+        var(--charcoal)    45%,
+        var(--charcoal-lo) 100%
+      );
+
+      /* Very boxy corners — just a touch of radius */
+      border-radius: 2.5rem;
+
+      padding: 2rem;
+      display: flex;
+      gap: 1.6rem;
+
+      /* Chunky plastic depth */
+      box-shadow:
+        /* surface highlight top-left */
+        inset 0  2px 0 rgba(255,255,255,0.10),
+        inset 2px 0  0 rgba(255,255,255,0.06),
+        /* shadow edges */
+        inset 0 -2px 0 rgba(0,0,0,0.55),
+        inset -2px 0  0 rgba(0,0,0,0.35),
+        /* outer glow / ambient */
+        0 30px 90px rgba(0,0,0,0.85),
+        0 10px 30px rgba(0,0,0,0.65),
+        /* thick bottom ledge = the "chunky" feel */
+        0  6px 0 #0e0c08,
+        0 12px 0 #090806,
+        0 18px 0 #060504,
+        0 24px 30px rgba(0,0,0,0.4);
     }
 
-    /* YouTube iframe wrapper */
-    #yt-wrapper {
+    /* Plastic sheen overlay */
+    .tv::before {
+      content: '';
       position: absolute;
       inset: 0;
-      width: 100%;
-      height: 100%;
-      display: none;
-    }
-    #yt-wrapper iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-
-    /* Static / noise canvas – always on top inside screen */
-    #static-canvas {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 5;
-      opacity: 0;
+      border-radius: inherit;
+      background:
+        radial-gradient(ellipse at 20% 15%,
+          rgba(255,255,255,0.055) 0%, transparent 55%),
+        radial-gradient(ellipse at 80% 85%,
+          rgba(0,0,0,0.3) 0%, transparent 60%);
       pointer-events: none;
-      transition: opacity 0.05s;
+      z-index: 1;
     }
 
-    /* Power-off solid black cover */
-    #power-cover {
-      position: absolute;
-      inset: 0;
+    /* ============================================================
+       LEFT — SCREEN SECTION
+    ============================================================ */
+    .screen-section {
+      flex: 1.75;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .tv-badge {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 0 0.4rem;
+    }
+
+    .tv-brand {
+      font-family: 'VT323', monospace;
+      font-size: 2rem;
+      letter-spacing: 0.25em;
+      color: var(--cream);
+      opacity: 0.5;
+      text-transform: uppercase;
+    }
+
+    .tv-model {
+      font-size: 0.65rem;
+      color: var(--cream);
+      opacity: 0.22;
+      letter-spacing: 0.2em;
+    }
+
+    /* ── Bezel ── */
+    .screen-bezel {
+      flex: 1;
+      background: radial-gradient(ellipse at 50% 35%, #1a1814, #060504);
+      border-radius: 1.5rem;
+      padding: 1.2rem;
+      position: relative;
+      box-shadow:
+        inset 0  4px 16px rgba(0,0,0,0.98),
+        inset 0  0   0  1px rgba(255,255,255,0.025),
+        inset 0  0  50px rgba(0,0,0,0.6);
+    }
+
+    /* ── The screen glass ── */
+    .screen {
+      width: 100%;
+      height: 100%;
       background: #000;
-      z-index: 6;
-      display: none;
+      position: relative;
+      overflow: hidden;
+      container-type: size;
+
+      /* CRT barrel distortion illusion: more radius on Y */
+      border-radius: 1.2rem / 2rem;
+
+      box-shadow:
+        /* deep inner shadow = curved edge darkness */
+        inset 0   0  80px rgba(0,0,0,1),
+        inset 0   0  30px rgba(0,0,0,0.95),
+        /* phosphor ambient leak */
+        0 0 25px rgba(57,255,106,0.07),
+        0 0 60px rgba(57,255,106,0.03);
     }
 
-    /* CRT scanlines */
-    .scanlines {
+    /* Curved glass glare — the magic layer */
+    .screen::before {
+      content: '';
       position: absolute;
       inset: 0;
-      z-index: 7;
+      border-radius: inherit;
+      z-index: 22;
+      pointer-events: none;
+      background:
+        /* primary glare: top-left ellipse */
+        radial-gradient(ellipse at 28% 20%,
+          rgba(255,255,255,0.16) 0%,
+          rgba(255,255,255,0.07) 18%,
+          transparent 48%
+        ),
+        /* secondary: bottom-right breath */
+        radial-gradient(ellipse at 78% 82%,
+          rgba(255,255,255,0.035) 0%,
+          transparent 35%
+        ),
+        /* edge vignette = convex curvature illusion */
+        radial-gradient(ellipse at 50% 50%,
+          transparent 45%,
+          rgba(0,0,0,0.55) 80%,
+          rgba(0,0,0,0.80) 100%
+        );
+    }
+
+    /* Scanlines */
+    .screen::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      z-index: 23;
       pointer-events: none;
       background: repeating-linear-gradient(
         to bottom,
-        transparent 0px,
-        transparent 2px,
-        rgba(0,0,0,0.18) 2px,
-        rgba(0,0,0,0.18) 4px
+        transparent      0px,
+        transparent      3px,
+        rgba(0,0,0,0.12) 3px,
+        rgba(0,0,0,0.12) 4px
       );
     }
 
-    /* Phosphor vignette */
-    .vignette {
+    /* ── Media layers ── */
+    #local-video, #yt-wrapper, #test-canvas, #static-canvas, #power-cover {
       position: absolute;
-      inset: 0;
-      z-index: 8;
+      inset: 0; width: 100%; height: 100%;
+    }
+
+    #local-video   { object-fit: fill; display: none; z-index: 1; }
+    #yt-wrapper    { display: none; z-index: 2; }
+    #yt-wrapper iframe { width: 100%; height: 100%; border: none; }
+    #test-canvas   { z-index: 1; }
+    #static-canvas { z-index: 15; opacity: 0; pointer-events: none; transition: opacity 0.04s; }
+    #power-cover   { z-index: 18; background: #000; display: none; }
+
+    /* ── Screen OSD ── */
+    .screen-osd {
+      position: absolute;
+      bottom: 9%;
+      left: 6%;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      gap: 0.6em;
+      font-size: 2.2cqw;
+      color: var(--phosphor);
+      font-family: 'VT323', monospace;
+      text-shadow: 0 0 6px var(--phosphor);
+      opacity: 0;
       pointer-events: none;
-      background: radial-gradient(ellipse at 50% 50%,
-        transparent 55%,
-        rgba(0,0,0,0.65) 100%
-      );
+      transition: opacity 0.35s;
     }
 
-    /* ── Bezel (top layer image) ── */
-    .tv-bezel {
-      position: absolute;
-      inset: 0;
+    .osd-bar-track {
+      width: 7em;
+      height: 0.45em;
+      background: rgba(57,255,106,0.12);
+      border: 1px solid rgba(57,255,106,0.3);
+    }
+
+    .osd-bar-fill {
+      height: 100%;
+      background: var(--phosphor);
+      box-shadow: 0 0 6px var(--phosphor);
+      transition: width 0.1s;
+    }
+
+    /* ============================================================
+       RIGHT — CONTROLS PANEL  (cream two-tone)
+    ============================================================ */
+    .controls-panel {
+      flex: 0.62;
+      position: relative;
+      z-index: 2;
+      background: linear-gradient(155deg,
+        var(--cream-hi)  0%,
+        var(--cream)     45%,
+        var(--cream-lo) 100%
+      );
+      border-radius: 1.8rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1.4rem 1rem 1.2rem;
+      gap: 0;
+
+      box-shadow:
+        inset 0  2px 0 rgba(255,255,255,0.75),
+        inset 2px 0  0 rgba(255,255,255,0.40),
+        inset 0 -2px 0 rgba(0,0,0,0.18),
+        inset -1px 0  0 rgba(0,0,0,0.12),
+        inset 0  0 25px rgba(0,0,0,0.07);
+    }
+
+    /* ── Speaker grille ── */
+    .speaker {
+      width: 88%;
+      height: 8.5rem;
+      flex-shrink: 0;
+      border-radius: 0.9rem;
+      overflow: hidden;
+      position: relative;
+
+      box-shadow:
+        inset 0 3px 8px rgba(0,0,0,0.45),
+        inset 0 0 0 1px rgba(0,0,0,0.25),
+        0 1px 0 rgba(255,255,255,0.4);
+    }
+
+    .speaker-cloth {
       width: 100%;
       height: 100%;
-      object-fit: contain;
-      z-index: 10;
-      pointer-events: none;
+      background:
+        radial-gradient(circle, rgba(0,0,0,0.52) 1.6px, transparent 1.6px);
+      background-size: 5px 5px;
+      background-color: #7e6e4a;
     }
 
-    /* =========================================
-       3. HUD OVERLAYS  (z-index 11+)
-       ========================================= */
-
-    /* Channel display */
-    .channel-display {
+    .speaker::after {
+      content: '';
       position: absolute;
-      top: 12%;
-      right: 28%;
-      color: #00ff41;
-      font-size: 2.5cqw;
-      font-weight: bold;
-      text-shadow: 0 0 6px #00ff41, 0 0 12px #00ff41;
-      z-index: 11;
-      pointer-events: none;
-      transition: opacity 0.3s;
+      inset: 0;
+      background: linear-gradient(to bottom,
+        rgba(0,0,0,0.35) 0%, transparent 25%,
+        transparent 75%, rgba(0,0,0,0.25) 100%
+      );
     }
 
-    /* Volume OSD */
-    #vol-osd {
-      position: absolute;
-      bottom: 33%;
-      left: 26%;
-      color: #00ff41;
-      font-size: 1.6cqw;
-      font-weight: bold;
-      text-shadow: 0 0 6px #00ff41;
-      z-index: 11;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.4s;
+    /* ── Panel brand ── */
+    .panel-brand {
+      font-family: 'VT323', monospace;
+      font-size: 1.2rem;
+      letter-spacing: 0.3em;
+      color: var(--charcoal);
+      opacity: 0.28;
+      text-transform: uppercase;
+      margin: 0.9rem 0 1.1rem;
     }
 
-    #vol-bar {
-      display: inline-block;
-      vertical-align: middle;
-      width: 8cqw;
-      height: 0.8cqw;
-      background: #003a00;
-      border: 1px solid #00ff41;
-      margin-left: 0.4cqw;
+    /* ── Shared label style ── */
+    .ctrl-label {
+      font-size: 0.55rem;
+      letter-spacing: 0.25em;
+      color: var(--charcoal-lo);
+      text-transform: uppercase;
+      opacity: 0.5;
+      margin-bottom: 0.45rem;
+      display: block;
+      text-align: center;
+    }
+
+    /* ── Power section ── */
+    .power-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1.4rem;
+      width: 100%;
+    }
+
+    .power-btn {
+      width: 80%;
+      height: 1.4rem;
+      border-radius: 0.35rem;
+      cursor: pointer;
+      user-select: none;
       position: relative;
-      top: -0.1cqw;
+
+      background: linear-gradient(to bottom, #cdc090, #a89860);
+
+      box-shadow:
+        inset 0  1px 0 rgba(255,255,255,0.55),
+        inset 0 -3px 0 rgba(0,0,0,0.32),
+        0 3px 7px rgba(0,0,0,0.45),
+        0 1px 2px rgba(0,0,0,0.3);
+
+      transition: transform 0.06s, box-shadow 0.06s;
     }
 
-    #vol-fill {
+    .power-btn::after {
+      content: '▶  ON / OFF';
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.5rem;
+      letter-spacing: 0.15em;
+      color: rgba(0,0,0,0.38);
+      text-shadow: 0 1px 0 rgba(255,255,255,0.45);
+      font-family: 'Share Tech Mono', monospace;
+    }
+
+    .power-btn:hover { filter: brightness(1.05); }
+
+    .power-btn:active,
+    .power-btn.depressed {
+      transform: translateY(2px);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.3),
+        inset 0 -1px 0 rgba(0,0,0,0.3),
+        0 1px 3px rgba(0,0,0,0.4);
+    }
+
+    /* Power LED */
+    .power-led {
+      width: 0.7rem;
+      height: 0.7rem;
+      border-radius: 50%;
+      background: #3a2a10;
+      border: 1px solid rgba(0,0,0,0.4);
+      transition: background 0.5s, box-shadow 0.5s;
+    }
+
+    .power-led.on {
+      background: var(--phosphor);
+      box-shadow: 0 0 5px var(--phosphor), 0 0 12px rgba(57,255,106,0.4);
+    }
+
+    /* ── Channel dial section ── */
+    .dial-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.7rem;
+    }
+
+    /* Outer tick ring */
+    .dial-ring {
+      width: 9rem;
+      height: 9rem;
+      border-radius: 50%;
+      position: relative;
+      background: var(--cream-mid);
+      flex-shrink: 0;
+
+      box-shadow:
+        inset 0  2px 0 rgba(255,255,255,0.4),
+        inset 0 -2px 0 rgba(0,0,0,0.3),
+        0 4px 10px rgba(0,0,0,0.45),
+        0 1px 3px rgba(0,0,0,0.3);
+    }
+
+    /* The knob body — rubber dark circle */
+    .dial-knob-body {
+      position: absolute;
+      inset: 1rem;
+      border-radius: 50%;
+      cursor: pointer;
+      user-select: none;
+
+      background: radial-gradient(circle at 35% 30%,
+        var(--rubber-hi) 0%,
+        var(--rubber)    40%,
+        #0e0c08         100%
+      );
+
+      box-shadow:
+        inset 0  2px 5px rgba(255,255,255,0.09),
+        inset 0 -3px 8px rgba(0,0,0,0.9),
+        0 5px 12px rgba(0,0,0,0.75),
+        0 2px 5px rgba(0,0,0,0.55);
+
+      transition: box-shadow 0.08s;
+    }
+
+    .dial-knob-body:active {
+      box-shadow:
+        inset 0 1px 3px rgba(255,255,255,0.06),
+        inset 0 -1px 5px rgba(0,0,0,0.9),
+        0 3px 7px rgba(0,0,0,0.7);
+    }
+
+    /* Rotating part */
+    .dial-rotor {
+      width: 100%;
       height: 100%;
-      background: #00ff41;
-      box-shadow: 0 0 4px #00ff41;
-      transition: width 0.15s;
+      border-radius: 50%;
+      position: relative;
+      transition: transform 0.18s cubic-bezier(0.34, 1.45, 0.64, 1);
     }
 
-    /* Mute badge */
-    #mute-badge {
+    /* Cream notch on the knob */
+    .dial-notch {
       position: absolute;
-      top: 12%;
-      left: 26%;
-      color: #ff4444;
-      font-size: 1.8cqw;
-      font-weight: bold;
-      text-shadow: 0 0 6px #ff4444;
-      z-index: 11;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.3s;
+      top: 0.55rem;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0.65rem;
+      height: 1.5rem;
+      border-radius: 0.32rem;
+      background: linear-gradient(to bottom, var(--cream-hi), var(--cream));
+      box-shadow:
+        0 1px 4px rgba(0,0,0,0.65),
+        0 0 0 1px rgba(0,0,0,0.2);
     }
 
-    /* =========================================
-       4. HOTSPOTS
-       ========================================= */
-    .hotspot {
+    /* Channel LED display */
+    .ch-display {
+      background: #030803;
+      border: 1px solid #0a180a;
+      border-radius: 0.4rem;
+      padding: 0.25rem 0.8rem;
+      font-family: 'VT323', monospace;
+      font-size: 1.8rem;
+      line-height: 1;
+      color: var(--phosphor);
+      letter-spacing: 0.08em;
+      text-shadow: 0 0 6px var(--phosphor), 0 0 14px rgba(57,255,106,0.25);
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.95);
+    }
+
+    .ch-name {
+      font-size: 0.48rem;
+      color: var(--charcoal-lo);
+      opacity: 0.42;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      text-align: center;
+      max-width: 10rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* ── Volume section ── */
+    .vol-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.6rem;
+      margin-top: auto;
+      padding-top: 0.8rem;
+    }
+
+    .vol-ring {
+      width: 5rem;
+      height: 5rem;
+      border-radius: 50%;
+      background: var(--cream-mid);
+      position: relative;
+
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.4),
+        inset 0 -1px 0 rgba(0,0,0,0.3),
+        0 3px 7px rgba(0,0,0,0.4);
+    }
+
+    .vol-knob-body {
       position: absolute;
-      z-index: 12;
-      cursor: url('assets/mouse.png'), pointer;
-      border: 1px solid transparent;
-      border-radius: 2px;
+      inset: 0.65rem;
+      border-radius: 50%;
+      cursor: ns-resize;
+
+      background: radial-gradient(circle at 35% 30%,
+        var(--rubber-hi) 0%,
+        var(--rubber)    45%,
+        #0e0c08         100%
+      );
+
+      box-shadow:
+        inset 0 1px 4px rgba(255,255,255,0.09),
+        inset 0 -2px 6px rgba(0,0,0,0.9),
+        0 3px 8px rgba(0,0,0,0.7);
     }
-    .hotspot:hover { background: rgba(0,255,255,0.18); }
 
-    .btn-ch-up    { top: 85%; left: 31.8%; width: 1.8%; height: 4%; }
-    .btn-ch-down  { top: 85%; left: 34.0%; width: 1.8%; height: 4%; }
-    .btn-vol-up   { top: 85%; left: 36.2%; width: 1.8%; height: 4%; }
-    .btn-vol-down { top: 85%; left: 38.4%; width: 1.8%; height: 4%; }
-    .btn-mute     { top: 85%; left: 40.6%; width: 1.8%; height: 4%; }
-    .btn-power    { top: 85%; left: 43.5%; width: 2.2%; height: 4.5%; }
+    .vol-rotor {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      position: relative;
+      transition: transform 0.06s;
+    }
 
-    /* =========================================
-       5. EXIT BUTTON
-       ========================================= */
+    .vol-notch {
+      position: absolute;
+      top: 0.32rem;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0.38rem;
+      height: 0.9rem;
+      border-radius: 0.2rem;
+      background: var(--cream);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.55);
+    }
+
+    /* ============================================================
+       EXIT BUTTON
+    ============================================================ */
     .exit-btn {
       position: fixed;
-      top: 20px;
-      left: 20px;
-      color: #666;
-      background: #111;
-      font-family: "Courier New", Courier, monospace;
-      font-size: 16px;
+      top: 1.5rem;
+      left: 1.5rem;
+      color: #555;
+      background: #0f0f0f;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 1rem;
       font-weight: bold;
       text-decoration: none;
-      z-index: 100;
-      padding: 8px 12px;
-      opacity: 0.5;
+      z-index: 999;
+      padding: 0.5rem 0.9rem;
+      opacity: 0.45;
       transition: all 0.1s;
-      box-shadow: inset 2px 2px 0 #333, inset -2px -2px 0 #000;
+      box-shadow: inset 2px 2px 0 #2a2a2a, inset -2px -2px 0 #000;
     }
+
     .exit-btn:hover {
       opacity: 1;
       color: #fff;
-      background: #e52521;
-      box-shadow: inset 2px 2px 0 #ff6b68, inset -2px -2px 0 #8c100e;
+      background: #c01a16;
+      box-shadow: inset 2px 2px 0 #e84440, inset -2px -2px 0 #7a0e0c;
     }
 
-    /* =========================================
-       6. POWER-ON FLASH ANIMATION
-       ========================================= */
-    @keyframes powerFlash {
-      0%   { opacity: 1; }
-      40%  { opacity: 0.6; }
-      60%  { opacity: 1; }
-      100% { opacity: 0; }
+    /* ============================================================
+       POWER-ON FLICKER ANIMATION
+    ============================================================ */
+    @keyframes flicker-in {
+      0%   { opacity: 0; }
+      15%  { opacity: 0.8; }
+      20%  { opacity: 0; }
+      35%  { opacity: 1; }
+      40%  { opacity: 0.4; }
+      55%  { opacity: 1; }
+      100% { opacity: 1; }
     }
+
+    .screen.flicker { animation: flicker-in 0.6s ease-out forwards; }
   </style>
 </head>
 <body>
 
 <a href="index.html" class="exit-btn">◀ EXIT</a>
 
-<div class="tv-container">
-  <div class="tv-rig">
+<div class="tv">
 
-    <!-- Screen area (all layers inside) -->
-    <div class="screen-area">
-      <video id="local-video" autoplay loop playsinline></video>
-      <div id="yt-wrapper">
-        <!-- YouTube iframe injected here by JS -->
-      </div>
-      <canvas id="static-canvas"></canvas>
-      <div id="power-cover"></div>
-      <div class="scanlines"></div>
-      <div class="vignette"></div>
+  <!-- ═══════════════ SCREEN SIDE ═══════════════ -->
+  <div class="screen-section">
+
+    <div class="tv-badge">
+      <span class="tv-brand">CRT · VOD</span>
+      <span class="tv-model">MODEL TX-9200</span>
     </div>
 
-    <!-- Bezel image sits above the screen -->
-    <img src="assets/bg/vodbg.png" class="tv-bezel" alt="Retro TV Overlay">
+    <div class="screen-bezel">
+      <div class="screen" id="screen">
+        <canvas id="test-canvas"></canvas>
+        <video id="local-video" autoplay loop playsinline></video>
+        <div id="yt-wrapper"></div>
+        <canvas id="static-canvas"></canvas>
+        <div id="power-cover"></div>
 
-    <!-- HUD -->
-    <div id="channel-indicator" class="channel-display">CH: 01</div>
-    <div id="vol-osd">VOL <span id="vol-num">80</span>% <span id="vol-bar"><span id="vol-fill"></span></span></div>
-    <div id="mute-badge">⊘ MUTE</div>
+        <!-- Volume OSD -->
+        <div class="screen-osd" id="screen-osd">
+          VOL
+          <div class="osd-bar-track">
+            <div class="osd-bar-fill" id="osd-fill" style="width:80%"></div>
+          </div>
+          <span id="osd-num">80</span>%
+        </div>
+      </div>
+    </div>
 
-    <!-- Hotspots -->
-    <div class="hotspot btn-ch-up"   onclick="switchChannel(1)"   title="Channel Up"></div>
-    <div class="hotspot btn-ch-down" onclick="switchChannel(-1)"  title="Channel Down"></div>
-    <div class="hotspot btn-vol-up"  onclick="adjustVolume(0.1)"  title="Volume Up"></div>
-    <div class="hotspot btn-vol-down"onclick="adjustVolume(-0.1)" title="Volume Down"></div>
-    <div class="hotspot btn-mute"    onclick="toggleMute()"       title="Mute/Unmute"></div>
-    <div class="hotspot btn-power"   onclick="togglePower()"      title="Power"></div>
   </div>
-</div>
 
+  <!-- ═══════════════ CONTROLS SIDE ═══════════════ -->
+  <div class="controls-panel">
 
-<!-- YouTube IFrame API -->
+    <div class="speaker"><div class="speaker-cloth"></div></div>
+
+    <div class="panel-brand">CRT · VOD</div>
+
+    <!-- Power -->
+    <div class="power-section">
+      <span class="ctrl-label">Power</span>
+      <div class="power-btn" id="power-btn" onclick="togglePower()"></div>
+      <div class="power-led" id="power-led"></div>
+    </div>
+
+    <!-- Channel dial -->
+    <div class="dial-section">
+      <span class="ctrl-label">Channel</span>
+      <div class="dial-ring" id="dial-ring">
+        <div class="dial-knob-body" id="dial-knob">
+          <div class="dial-rotor" id="dial-rotor">
+            <div class="dial-notch"></div>
+          </div>
+        </div>
+      </div>
+      <div class="ch-display" id="ch-display">CH 01</div>
+      <div class="ch-name" id="ch-name">—</div>
+    </div>
+
+    <!-- Volume -->
+    <div class="vol-section">
+      <span class="ctrl-label">Volume</span>
+      <div class="vol-ring">
+        <div class="vol-knob-body" id="vol-knob">
+          <div class="vol-rotor" id="vol-rotor">
+            <div class="vol-notch"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div><!-- .tv -->
+
 <script src="https://www.youtube.com/iframe_api"></script>
-
 <script>
-// ============================================================
-//  CHANNEL LIST
-//  type: "local"   → plays a self-hosted .mp4
-//  type: "youtube" → plays a YouTube video by ID
-//
-//  To add more YouTube videos from your playlist, copy the
-//  video ID from the URL (youtube.com/watch?v=VIDEO_ID_HERE)
-//  and add a new { type:"youtube", id:"VIDEO_ID_HERE", label:"Title" }
-// ============================================================
+/* ============================================================
+   ★  CHANNEL LIST  — add / remove channels here
+   ============================================================
+   type "youtube" → streams from YouTube (needs video ID)
+   type "local"   → plays a self-hosted file (needs src path)
+============================================================ */
 const CHANNELS = [
-  // ── YouTube channels ──────────────────────────────────────
-  { type: "youtube", id: "pW7V8-wipSI",  label: "YT 01" },  // first video in your playlist
-  // Add more from your playlist below, e.g.:
-  // { type: "youtube", id: "XXXXXXXXXXX", label: "YT 02" },
-  { type: "youtube", id: "ORzJSmIxEIQ",  label: "YT 02" }
-  { type: "youtube", id: "MHJMXz8hU9E",  label: "YT 03" }
-  { type: "youtube", id: "9JegO82kBSg",  label: "YT 04" }
-  // ── Local / self-hosted channels ─────────────────────────
-  { type: "local",   src: "assets/videos/spire/1.mp4",                        label: "LOCAL 01" },
-  { type: "local",   src: "assets/space_cowboy_concept_animatic.mp4",          label: "LOCAL 02" },
-  { type: "local",   src: "assets/historical_robot_sketch_timelapse.mp4",      label: "LOCAL 03" },
+  { type: 'youtube', id: 'pW7V8-wipSI',                              label: 'YT 01'           },
+  // { type: 'youtube', id: 'PASTE_VIDEO_ID',                         label: 'YT 02'           },
+  { type: 'local',   src: 'assets/videos/spire/1.mp4',               label: 'SPIRE'           },
+  { type: 'local',   src: 'assets/space_cowboy_concept_animatic.mp4', label: 'SPACE COWBOY'    },
+  { type: 'local',   src: 'assets/historical_robot_sketch_timelapse.mp4', label: 'ROBOT TIMELAPSE' },
 ];
 
-// ============================================================
-//  STATE
-// ============================================================
-let currentChannel = 0;
-let volume         = 0.8;   // 0.0 – 1.0
-let muted          = true;  // start muted (autoplay policy)
-let isPoweredOn    = true;
-let transitioning  = false;
-let volOsdTimer    = null;
-let ytPlayer       = null;  // YouTube IFrame Player instance
-let ytReady        = false; // IFrame API loaded?
+/* ============================================================
+   STATE
+============================================================ */
+let ch          = 0;
+let vol         = 0.8;
+let muted       = true;
+let powered     = true;
+let busy        = false;
+let ytPlayer    = null;
+let ytReady     = false;
+let osdTimer    = null;
+let volDragStartY = null;
+let volAtDragStart = vol;
 
-// DOM refs
-const localVideo      = document.getElementById("local-video");
-const ytWrapper       = document.getElementById("yt-wrapper");
-const staticCanvas    = document.getElementById("static-canvas");
-const powerCover      = document.getElementById("power-cover");
-const chanIndicator   = document.getElementById("channel-indicator");
-const volOsd          = document.getElementById("vol-osd");
-const volNum          = document.getElementById("vol-num");
-const volFill         = document.getElementById("vol-fill");
-const muteBadge       = document.getElementById("mute-badge");
-const staticCtx       = staticCanvas.getContext("2d");
+/* ── Vol knob angle: -135° (min) → +135° (max) */
+let volAngle = -135 + vol * 270;
 
-// ============================================================
-//  YOUTUBE IFRAME API  (called automatically by the API script)
-// ============================================================
-function onYouTubeIframeAPIReady() {
-  ytReady = true;
-  // If the first channel is YouTube, now we can load it
-  if (CHANNELS[currentChannel].type === "youtube") loadChannel(false);
+/* ── Dial angle per channel */
+const dialDeg = (idx) => (idx / CHANNELS.length) * 360;
+
+/* ============================================================
+   DOM
+============================================================ */
+const screen       = document.getElementById('screen');
+const localVideo   = document.getElementById('local-video');
+const ytWrapper    = document.getElementById('yt-wrapper');
+const testCanvas   = document.getElementById('test-canvas');
+const staticCanvas = document.getElementById('static-canvas');
+const powerCover   = document.getElementById('power-cover');
+const powerBtn     = document.getElementById('power-btn');
+const powerLed     = document.getElementById('power-led');
+const dialRing     = document.getElementById('dial-ring');
+const dialKnob     = document.getElementById('dial-knob');
+const dialRotor    = document.getElementById('dial-rotor');
+const chDisplay    = document.getElementById('ch-display');
+const chNameEl     = document.getElementById('ch-name');
+const volKnob      = document.getElementById('vol-knob');
+const volRotor     = document.getElementById('vol-rotor');
+const screenOsd    = document.getElementById('screen-osd');
+const osdFill      = document.getElementById('osd-fill');
+const osdNum       = document.getElementById('osd-num');
+const staticCtx    = staticCanvas.getContext('2d');
+
+/* ============================================================
+   DIAL TICK MARKS  (built dynamically from CHANNELS.length)
+============================================================ */
+function buildTicks() {
+  dialRing.querySelectorAll('.tick').forEach(t => t.remove());
+
+  const n  = CHANNELS.length;
+  const r  = dialRing.offsetWidth / 2;       // ring radius px
+  const tr = r * 0.80;                       // tick orbit radius
+
+  for (let i = 0; i < n; i++) {
+    const ang = ((i / n) * 360 - 90) * (Math.PI / 180);
+    const x   = r + Math.cos(ang) * tr;
+    const y   = r + Math.sin(ang) * tr;
+    const isActive = i === ch;
+
+    const tick = document.createElement('div');
+    tick.className = 'tick';
+    const size = isActive ? 6 : 4;
+    tick.style.cssText = `
+      position: absolute;
+      width: ${size}px; height: ${size}px;
+      border-radius: 50%;
+      background: ${isActive ? '#fff' : 'rgba(255,255,255,0.3)'};
+      top: ${y - size/2}px; left: ${x - size/2}px;
+      pointer-events: none;
+      box-shadow: ${isActive ? '0 0 4px rgba(255,255,255,0.7)' : 'none'};
+      transition: all 0.2s;
+    `;
+    dialRing.appendChild(tick);
+  }
 }
 
-function createYTPlayer(videoId) {
-  // Destroy old player if exists
-  if (ytPlayer) { ytPlayer.destroy(); ytPlayer = null; }
+/* ============================================================
+   CHANNEL SWITCHING
+============================================================ */
+function switchChannel(dir) {
+  if (!powered || busy) return;
+  ch = (ch + dir + CHANNELS.length) % CHANNELS.length;
 
-  ytWrapper.innerHTML = '<div id="yt-player-el"></div>';
+  /* Dial rotation */
+  dialRotor.style.transform = `rotate(${dialDeg(ch)}deg)`;
+  buildTicks();
+  updateHUD();
+  runStatic(300, () => applyChannel());
+}
 
-  ytPlayer = new YT.Player("yt-player-el", {
-    videoId: videoId,
+/* Click left half = prev, right half = next */
+dialKnob.addEventListener('click', e => {
+  if (!powered || busy) return;
+  const { left, width } = dialKnob.getBoundingClientRect();
+  switchChannel(e.clientX < left + width / 2 ? -1 : 1);
+});
+
+/* Also support scroll wheel on dial */
+dialKnob.addEventListener('wheel', e => {
+  if (!powered || busy) return;
+  e.preventDefault();
+  switchChannel(e.deltaY > 0 ? 1 : -1);
+}, { passive: false });
+
+function updateHUD() {
+  chDisplay.textContent = `CH ${String(ch + 1).padStart(2, '0')}`;
+  chNameEl.textContent  = CHANNELS[ch].label;
+}
+
+/* ============================================================
+   APPLY CHANNEL  (load video)
+============================================================ */
+function applyChannel() {
+  const c = CHANNELS[ch];
+  drawTestPattern();
+
+  if (c.type === 'local') {
+    ytWrapper.style.display = 'none';
+    safeStopYT();
+
+    localVideo.style.display = 'block';
+    localVideo.muted  = muted;
+    localVideo.volume = vol;
+    localVideo.src    = c.src;
+    localVideo.load();
+    localVideo.play()
+      .then(() => { testCanvas.style.display = 'none'; })
+      .catch(() => { /* test pattern stays */ });
+    localVideo.onerror = drawTestPattern;
+
+  } else {
+    localVideo.style.display = 'none';
+    localVideo.pause();
+    ytWrapper.style.display = 'block';
+    testCanvas.style.display = 'block';
+
+    if (ytReady) {
+      if (ytPlayer && ytPlayer.loadVideoById) {
+        ytPlayer.loadVideoById(c.id);
+        syncYTVolume();
+        setTimeout(() => { testCanvas.style.display = 'none'; }, 2000);
+      } else {
+        makeYTPlayer(c.id);
+      }
+    }
+  }
+}
+
+/* ============================================================
+   YOUTUBE IFRAME API
+============================================================ */
+function onYouTubeIframeAPIReady() {
+  ytReady = true;
+  if (CHANNELS[ch].type === 'youtube') applyChannel();
+}
+
+function makeYTPlayer(videoId) {
+  safeStopYT();
+  ytWrapper.innerHTML = '<div id="yt-el"></div>';
+
+  ytPlayer = new YT.Player('yt-el', {
+    videoId,
     playerVars: {
-      autoplay:       1,
-      controls:       0,
-      rel:            0,
-      modestbranding: 1,
-      iv_load_policy: 3,
-      mute:           muted ? 1 : 0,
+      autoplay: 1, controls: 0, rel: 0,
+      modestbranding: 1, iv_load_policy: 3,
+      mute: muted ? 1 : 0,
     },
     events: {
-      onReady: (e) => {
-        e.target.setVolume(Math.round(volume * 100));
-        if (muted) e.target.mute(); else e.target.unMute();
+      onReady(e) {
+        syncYTVolume();
         e.target.playVideo();
+        testCanvas.style.display = 'none';
       },
+      onError: drawTestPattern,
     },
   });
 }
 
-// ============================================================
-//  CHANNEL LOADING
-// ============================================================
-function loadChannel(withStatic = true) {
-  const ch = CHANNELS[currentChannel];
-  const displayNum = (currentChannel + 1).toString().padStart(2, "0");
-  chanIndicator.innerText = "CH: " + displayNum;
+function syncYTVolume() {
+  if (!ytPlayer || !ytPlayer.setVolume) return;
+  ytPlayer.setVolume(Math.round(vol * 100));
+  muted ? ytPlayer.mute() : ytPlayer.unMute();
+}
 
-  if (withStatic) {
-    runStatic(350, () => applyChannel(ch));
-  } else {
-    applyChannel(ch);
+function safeStopYT() {
+  if (ytPlayer && ytPlayer.stopVideo) {
+    try { ytPlayer.stopVideo(); } catch(e) {}
   }
 }
 
-function applyChannel(ch) {
-  if (ch.type === "local") {
-    // Hide YouTube
-    ytWrapper.style.display = "none";
-    if (ytPlayer) { ytPlayer.stopVideo(); }
+/* ============================================================
+   STATIC NOISE TRANSITION
+============================================================ */
+function runStatic(ms, cb) {
+  if (busy) return;
+  busy = true;
 
-    // Show local video
-    localVideo.style.display = "block";
-    localVideo.src    = ch.src;
-    localVideo.muted  = muted;
-    localVideo.volume = volume;
-    localVideo.load();
-    localVideo.play().catch(() => {});
+  staticCanvas.width  = screen.offsetWidth  || 640;
+  staticCanvas.height = screen.offsetHeight || 480;
+  staticCanvas.style.opacity = '1';
 
-  } else {
-    // Hide local
-    localVideo.style.display = "none";
-    localVideo.pause();
-
-    // Show YouTube
-    ytWrapper.style.display = "block";
-
-    if (ytReady) {
-      if (ytPlayer && typeof ytPlayer.loadVideoById === "function") {
-        ytPlayer.loadVideoById(ch.id);
-        if (muted) ytPlayer.mute(); else ytPlayer.unMute();
-        ytPlayer.setVolume(Math.round(volume * 100));
-      } else {
-        createYTPlayer(ch.id);
-      }
-    }
-    // If ytReady is false, onYouTubeIframeAPIReady will call loadChannel(false)
-  }
-}
-
-// ============================================================
-//  STATIC NOISE EFFECT
-// ============================================================
-function runStatic(durationMs, callback) {
-  if (transitioning) return;
-  transitioning = true;
-
-  const canvas = staticCanvas;
-  canvas.width  = canvas.offsetWidth  || 640;
-  canvas.height = canvas.offsetHeight || 360;
-
-  staticCanvas.style.opacity = "1";
-
-  let frameId;
-  const drawNoise = () => {
-    const imgData = staticCtx.createImageData(canvas.width, canvas.height);
-    const d = imgData.data;
-    for (let i = 0; i < d.length; i += 4) {
+  let fid;
+  function drawNoise() {
+    const img = staticCtx.createImageData(staticCanvas.width, staticCanvas.height);
+    for (let i = 0; i < img.data.length; i += 4) {
       const v = Math.random() * 255 | 0;
-      d[i] = d[i+1] = d[i+2] = v;
-      d[i+3] = 255;
+      img.data[i] = img.data[i+1] = img.data[i+2] = v;
+      img.data[i+3] = 255;
     }
-    staticCtx.putImageData(imgData, 0, 0);
-    frameId = requestAnimationFrame(drawNoise);
-  };
+    staticCtx.putImageData(img, 0, 0);
+    fid = requestAnimationFrame(drawNoise);
+  }
   drawNoise();
 
   setTimeout(() => {
-    cancelAnimationFrame(frameId);
-    staticCanvas.style.opacity = "0";
-    transitioning = false;
-    if (callback) callback();
-  }, durationMs);
+    cancelAnimationFrame(fid);
+    staticCanvas.style.opacity = '0';
+    busy = false;
+    if (cb) cb();
+  }, ms);
 }
 
-// ============================================================
-//  BUTTON HANDLERS
-// ============================================================
-function switchChannel(dir) {
-  if (!isPoweredOn || transitioning) return;
-  currentChannel = (currentChannel + dir + CHANNELS.length) % CHANNELS.length;
-  loadChannel(true);
+/* ============================================================
+   TEST PATTERN  (SMPTE bars)
+============================================================ */
+function drawTestPattern() {
+  const c   = testCanvas;
+  c.width   = c.offsetWidth  || 640;
+  c.height  = c.offsetHeight || 480;
+  c.style.display = 'block';
+  const ctx = c.getContext('2d'), w = c.width, h = c.height;
+
+  const top = ['#c0c0c0','#c0c000','#00c0c0','#00c000','#c000c0','#c00000','#0000c0'];
+  top.forEach((col, i) => {
+    ctx.fillStyle = col;
+    ctx.fillRect(i * w / 7, 0, w / 7, h * 0.75);
+  });
+
+  const bot = ['#0000c0','#131313','#c000c0','#131313','#00c0c0','#131313','#c0c0c0'];
+  bot.forEach((col, i) => {
+    ctx.fillStyle = col;
+    ctx.fillRect(i * w / 7, h * 0.75, w / 7, h * 0.25);
+  });
+
+  ctx.fillStyle    = 'rgba(0,0,0,0.55)';
+  ctx.fillRect(0, 0, w, h);
+
+  ctx.fillStyle    = '#39ff6a';
+  ctx.font         = `bold ${Math.round(h * 0.07)}px "VT323", monospace`;
+  ctx.textAlign    = 'center';
+  ctx.shadowColor  = '#39ff6a';
+  ctx.shadowBlur   = 12;
+  ctx.fillText(`NO SIGNAL  ·  CH ${String(ch + 1).padStart(2, '0')}`, w / 2, h * 0.50);
+
+  ctx.font         = `${Math.round(h * 0.045)}px "Share Tech Mono", monospace`;
+  ctx.shadowBlur   = 6;
+  ctx.fillStyle    = 'rgba(57,255,106,0.5)';
+  ctx.fillText(CHANNELS[ch].label, w / 2, h * 0.60);
 }
 
-function adjustVolume(amount) {
-  if (!isPoweredOn) return;
-  muted   = false;
-  volume  = Math.min(1, Math.max(0, volume + amount));
-
-  localVideo.muted  = false;
-  localVideo.volume = volume;
-  if (ytPlayer && typeof ytPlayer.setVolume === "function") {
-    ytPlayer.unMute();
-    ytPlayer.setVolume(Math.round(volume * 100));
-  }
-
-  showVolOsd();
-  updateMuteBadge();
-}
-
-function toggleMute() {
-  if (!isPoweredOn) return;
-  muted = !muted;
-
-  localVideo.muted = muted;
-  if (ytPlayer && typeof ytPlayer.mute === "function") {
-    muted ? ytPlayer.mute() : ytPlayer.unMute();
-  }
-
-  updateMuteBadge();
-  showVolOsd();
-}
-
+/* ============================================================
+   POWER BUTTON
+============================================================ */
 function togglePower() {
-  if (transitioning) return;
+  if (busy) return;
+  powerBtn.classList.add('depressed');
+  setTimeout(() => powerBtn.classList.remove('depressed'), 140);
 
-  if (isPoweredOn) {
-    // Power OFF
-    isPoweredOn = false;
-    runStatic(300, () => {
-      powerCover.style.display = "block";
+  if (powered) {
+    powered = false;
+    powerLed.classList.remove('on');
+    runStatic(260, () => {
+      powerCover.style.display = 'block';
       localVideo.pause();
-      if (ytPlayer && typeof ytPlayer.pauseVideo === "function") ytPlayer.pauseVideo();
+      safeStopYT();
     });
   } else {
-    // Power ON
-    isPoweredOn = true;
-    powerCover.style.display = "none";
-    runStatic(400, () => {
+    powered = true;
+    powerCover.style.display = 'none';
+    powerLed.classList.add('on');
+    screen.classList.add('flicker');
+    screen.addEventListener('animationend', () => screen.classList.remove('flicker'), { once: true });
+    runStatic(380, () => {
       localVideo.play().catch(() => {});
-      if (ytPlayer && typeof ytPlayer.playVideo === "function") ytPlayer.playVideo();
+      if (ytPlayer && ytPlayer.playVideo) ytPlayer.playVideo();
     });
   }
 }
 
-// ============================================================
-//  HUD HELPERS
-// ============================================================
-function showVolOsd() {
-  const pct = Math.round(volume * 100);
-  volNum.innerText      = muted ? "MUTE" : pct;
-  volFill.style.width   = (muted ? 0 : pct) + "%";
-  volOsd.style.opacity  = "1";
+/* ============================================================
+   VOLUME KNOB  (drag up/down)
+============================================================ */
+volKnob.addEventListener('mousedown', e => {
+  volDragStartY    = e.clientY;
+  volAtDragStart   = vol;
+  e.preventDefault();
+  document.addEventListener('mousemove', onVolDrag);
+  document.addEventListener('mouseup', endVolDrag, { once: true });
+});
 
-  clearTimeout(volOsdTimer);
-  volOsdTimer = setTimeout(() => { volOsd.style.opacity = "0"; }, 1800);
+volKnob.addEventListener('touchstart', e => {
+  volDragStartY  = e.touches[0].clientY;
+  volAtDragStart = vol;
+  e.preventDefault();
+  document.addEventListener('touchmove', onVolTouchDrag, { passive: false });
+  document.addEventListener('touchend', endVolTouchDrag, { once: true });
+}, { passive: false });
+
+function onVolDrag(e) {
+  const dy = volDragStartY - e.clientY;
+  setVolume(volAtDragStart + dy * 0.004);
 }
 
-function updateMuteBadge() {
-  muteBadge.style.opacity = muted ? "1" : "0";
+function onVolTouchDrag(e) {
+  const dy = volDragStartY - e.touches[0].clientY;
+  setVolume(volAtDragStart + dy * 0.004);
+  e.preventDefault();
 }
 
-// ============================================================
-//  INIT
-// ============================================================
+function endVolDrag()      { document.removeEventListener('mousemove', onVolDrag); }
+function endVolTouchDrag() { document.removeEventListener('touchmove', onVolTouchDrag); }
+
+/* Scroll wheel on vol knob */
+volKnob.addEventListener('wheel', e => {
+  e.preventDefault();
+  setVolume(vol + (e.deltaY > 0 ? -0.05 : 0.05));
+}, { passive: false });
+
+function setVolume(newVol) {
+  vol      = Math.min(1, Math.max(0, newVol));
+  muted    = false;
+  volAngle = -135 + vol * 270;
+  volRotor.style.transform = `rotate(${volAngle}deg)`;
+
+  localVideo.muted  = false;
+  localVideo.volume = vol;
+  syncYTVolume();
+  showOsd();
+}
+
+/* ============================================================
+   OSD
+============================================================ */
+function showOsd() {
+  const pct = Math.round(vol * 100);
+  osdNum.textContent   = pct;
+  osdFill.style.width  = pct + '%';
+  screenOsd.style.opacity = '1';
+  clearTimeout(osdTimer);
+  osdTimer = setTimeout(() => { screenOsd.style.opacity = '0'; }, 2000);
+}
+
+/* ============================================================
+   INIT
+============================================================ */
 function init() {
-  // Size canvas to match rendered screen
-  staticCanvas.width  = staticCanvas.offsetWidth  || 640;
-  staticCanvas.height = staticCanvas.offsetHeight || 360;
+  /* Size static canvas */
+  staticCanvas.width  = screen.offsetWidth  || 640;
+  staticCanvas.height = screen.offsetHeight || 480;
 
-  // If first channel is local, load immediately.
-  // YouTube channel will be loaded once the API fires onYouTubeIframeAPIReady.
-  if (CHANNELS[currentChannel].type === "local") {
-    loadChannel(false);
+  /* Initial HUD */
+  updateHUD();
+
+  /* Initial dial angle */
+  dialRotor.style.transform = `rotate(${dialDeg(ch)}deg)`;
+
+  /* Ticks depend on rendered size — wait a frame */
+  requestAnimationFrame(buildTicks);
+
+  /* Volume knob start position */
+  volRotor.style.transform = `rotate(${volAngle}deg)`;
+
+  /* Power LED on */
+  powerLed.classList.add('on');
+
+  /* Load first channel */
+  if (CHANNELS[ch].type === 'local') {
+    applyChannel();
   }
-  // (ytReady channels handled in onYouTubeIframeAPIReady)
-
-  updateMuteBadge();
-
-  // Show initial vol OSD briefly
-  volFill.style.width = (volume * 100) + "%";
+  /* YouTube defers to onYouTubeIframeAPIReady */
 }
 
+window.addEventListener('resize', buildTicks);
 init();
 </script>
 
