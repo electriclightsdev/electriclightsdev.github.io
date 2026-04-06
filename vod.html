@@ -3,224 +3,570 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>· · · ●  V O D  ● · · ·</title>
+  <title>· · · ● V O D ● · · ·</title>
   <link rel="icon" type="image/png" href="assets/icon2.gif">
-  
+
   <style>
     /* =========================================
-       1. GLOBAL STYLES
+       1. GLOBAL / RESET
        ========================================= */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
-      background-color: #000; 
-      margin: 0;
-      padding: 0;
+      background: #000;
       width: 100vw;
       height: 100vh;
-      overflow: hidden; 
+      overflow: hidden;
       cursor: url('assets/mouse.png'), auto;
       display: flex;
       justify-content: center;
       align-items: center;
+      font-family: "Courier New", Courier, monospace;
     }
 
     /* =========================================
-       2. THE RESPONSIVE CRT RIG
+       2. TV RIG  (16:9, max 1200 px wide)
        ========================================= */
     .tv-container {
       position: relative;
-      /* This maintains the 16:9 shape of your background image */
       width: 100%;
-      max-width: 1200px; 
+      max-width: 1200px;
       aspect-ratio: 16 / 9;
-      container-type: size; /* Enables container queries for text scaling */
+      container-type: size;
     }
 
     .tv-rig {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      inset: 0;
     }
 
-    /* LAYER 1: The Video (Bottom) */
-    .tv-video {
+    /* ── Screen area ── */
+    .screen-area {
       position: absolute;
-      top: 9.2%;
-      left: 23.4%;
+      top:    9.2%;
+      left:  23.4%;
       width: 53.1%;
       height: 69.4%;
-      object-fit: fill; 
-      z-index: 1; 
-      background-color: #000; 
+      z-index: 1;
+      background: #000;
+      overflow: hidden;
     }
 
-    /* LAYER 2: The Bezel (Middle) */
+    /* Local video */
+    #local-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: fill;
+      display: none;
+    }
+
+    /* YouTube iframe wrapper */
+    #yt-wrapper {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: none;
+    }
+    #yt-wrapper iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* Static / noise canvas – always on top inside screen */
+    #static-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 5;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.05s;
+    }
+
+    /* Power-off solid black cover */
+    #power-cover {
+      position: absolute;
+      inset: 0;
+      background: #000;
+      z-index: 6;
+      display: none;
+    }
+
+    /* CRT scanlines */
+    .scanlines {
+      position: absolute;
+      inset: 0;
+      z-index: 7;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 2px,
+        rgba(0,0,0,0.18) 2px,
+        rgba(0,0,0,0.18) 4px
+      );
+    }
+
+    /* Phosphor vignette */
+    .vignette {
+      position: absolute;
+      inset: 0;
+      z-index: 8;
+      pointer-events: none;
+      background: radial-gradient(ellipse at 50% 50%,
+        transparent 55%,
+        rgba(0,0,0,0.65) 100%
+      );
+    }
+
+    /* ── Bezel (top layer image) ── */
     .tv-bezel {
       position: absolute;
-      top: 0;
-      left: 0;
+      inset: 0;
       width: 100%;
       height: 100%;
       object-fit: contain;
-      z-index: 2;
-      pointer-events: none; 
+      z-index: 10;
+      pointer-events: none;
     }
 
     /* =========================================
-       3. INTERACTIVE HOTSPOTS
+       3. HUD OVERLAYS  (z-index 11+)
        ========================================= */
-    .hotspot {
-      position: absolute;
-      z-index: 3;
-      cursor: url('assets/mouse.png'), pointer;
-      border: 1px solid transparent; 
-      border-radius: 2px; /* Slightly tighter border */
-    }
 
-    .hotspot:hover {
-      background-color: rgba(0, 255, 255, 0.2); 
-    }
-
-    /* Button Row Positioning - Adjust 'left' % values to align with your image */
-    .btn-ch-up   { top: 85%; left: 31.8%; width: 1.8%; height: 4%; }
-    .btn-ch-down { top: 85%; left: 34.0%; width: 1.8%; height: 4%; }
-    .btn-vol-up  { top: 85%; left: 36.2%; width: 1.8%; height: 4%; }
-    .btn-vol-down{ top: 85%; left: 38.4%; width: 1.8%; height: 4%; }
-    .btn-extra   { top: 85%; left: 40.6%; width: 1.8%; height: 4%; }
-    
-    /* Power button, slightly larger and offset */
-    .btn-power   { top: 85%; left: 43.5%; width: 2.2%; height: 4.5%; }
-
-    /* Channel Display LED */
+    /* Channel display */
     .channel-display {
       position: absolute;
       top: 12%;
-      right: 28%; 
-      color: #00ff00;
-      font-family: "Courier New", Courier, monospace;
-      font-size: 2.5cqw; /* Scales perfectly based on container width */
+      right: 28%;
+      color: #00ff41;
+      font-size: 2.5cqw;
       font-weight: bold;
-      text-shadow: 0 0 5px #00ff00;
-      z-index: 4;
+      text-shadow: 0 0 6px #00ff41, 0 0 12px #00ff41;
+      z-index: 11;
       pointer-events: none;
+      transition: opacity 0.3s;
     }
-    
-    .exit-btn {
+
+    /* Volume OSD */
+    #vol-osd {
       position: absolute;
+      bottom: 33%;
+      left: 26%;
+      color: #00ff41;
+      font-size: 1.6cqw;
+      font-weight: bold;
+      text-shadow: 0 0 6px #00ff41;
+      z-index: 11;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+
+    #vol-bar {
+      display: inline-block;
+      vertical-align: middle;
+      width: 8cqw;
+      height: 0.8cqw;
+      background: #003a00;
+      border: 1px solid #00ff41;
+      margin-left: 0.4cqw;
+      position: relative;
+      top: -0.1cqw;
+    }
+
+    #vol-fill {
+      height: 100%;
+      background: #00ff41;
+      box-shadow: 0 0 4px #00ff41;
+      transition: width 0.15s;
+    }
+
+    /* Mute badge */
+    #mute-badge {
+      position: absolute;
+      top: 12%;
+      left: 26%;
+      color: #ff4444;
+      font-size: 1.8cqw;
+      font-weight: bold;
+      text-shadow: 0 0 6px #ff4444;
+      z-index: 11;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    /* =========================================
+       4. HOTSPOTS
+       ========================================= */
+    .hotspot {
+      position: absolute;
+      z-index: 12;
+      cursor: url('assets/mouse.png'), pointer;
+      border: 1px solid transparent;
+      border-radius: 2px;
+    }
+    .hotspot:hover { background: rgba(0,255,255,0.18); }
+
+    .btn-ch-up    { top: 85%; left: 31.8%; width: 1.8%; height: 4%; }
+    .btn-ch-down  { top: 85%; left: 34.0%; width: 1.8%; height: 4%; }
+    .btn-vol-up   { top: 85%; left: 36.2%; width: 1.8%; height: 4%; }
+    .btn-vol-down { top: 85%; left: 38.4%; width: 1.8%; height: 4%; }
+    .btn-mute     { top: 85%; left: 40.6%; width: 1.8%; height: 4%; }
+    .btn-power    { top: 85%; left: 43.5%; width: 2.2%; height: 4.5%; }
+
+    /* =========================================
+       5. EXIT BUTTON
+       ========================================= */
+    .exit-btn {
+      position: fixed;
       top: 20px;
       left: 20px;
-      color: #666666;
-      background-color: #111111;
+      color: #666;
+      background: #111;
       font-family: "Courier New", Courier, monospace;
       font-size: 16px;
       font-weight: bold;
       text-decoration: none;
-      z-index: 10;
+      z-index: 100;
       padding: 8px 12px;
       opacity: 0.5;
       transition: all 0.1s;
-      box-shadow: inset 2px 2px 0 #333333, inset -2px -2px 0 #000000;
+      box-shadow: inset 2px 2px 0 #333, inset -2px -2px 0 #000;
     }
-    
     .exit-btn:hover {
       opacity: 1;
-      color: #ffffff;
-      background-color: #e52521;
+      color: #fff;
+      background: #e52521;
       box-shadow: inset 2px 2px 0 #ff6b68, inset -2px -2px 0 #8c100e;
+    }
+
+    /* =========================================
+       6. POWER-ON FLASH ANIMATION
+       ========================================= */
+    @keyframes powerFlash {
+      0%   { opacity: 1; }
+      40%  { opacity: 0.6; }
+      60%  { opacity: 1; }
+      100% { opacity: 0; }
     }
   </style>
 </head>
 <body>
 
-  <a href="index.html" class="exit-btn">◀ EXIT</a>
+<a href="index.html" class="exit-btn">◀ EXIT</a>
 
-  <div class="tv-container">
-    <div class="tv-rig">
-      <div id="channel-indicator" class="channel-display">CH: 01</div>
+<div class="tv-container">
+  <div class="tv-rig">
 
-      <video id="main-screen" class="tv-video" autoplay loop muted playsinline></video>
-
-      <img src="assets/bg/vodbg.png" class="tv-bezel" alt="Retro TV Overlay">
-
-      <div class="hotspot btn-ch-up"    onclick="switchChannel(1)"    title="Channel Up"></div>
-      <div class="hotspot btn-ch-down"  onclick="switchChannel(-1)"   title="Channel Down"></div>
-      <div class="hotspot btn-vol-up"   onclick="adjustVolume(0.1)"   title="Volume Up"></div>
-      <div class="hotspot btn-vol-down" onclick="adjustVolume(-0.1)"  title="Volume Down"></div>
-      <div class="hotspot btn-extra"    onclick="extraFunc()"         title="Utility"></div>
-      <div class="hotspot btn-power"    onclick="togglePower()"       title="Power"></div>
+    <!-- Screen area (all layers inside) -->
+    <div class="screen-area">
+      <video id="local-video" autoplay loop playsinline></video>
+      <div id="yt-wrapper">
+        <!-- YouTube iframe injected here by JS -->
+      </div>
+      <canvas id="static-canvas"></canvas>
+      <div id="power-cover"></div>
+      <div class="scanlines"></div>
+      <div class="vignette"></div>
     </div>
+
+    <!-- Bezel image sits above the screen -->
+    <img src="assets/bg/vodbg.png" class="tv-bezel" alt="Retro TV Overlay">
+
+    <!-- HUD -->
+    <div id="channel-indicator" class="channel-display">CH: 01</div>
+    <div id="vol-osd">VOL <span id="vol-num">80</span>% <span id="vol-bar"><span id="vol-fill"></span></span></div>
+    <div id="mute-badge">⊘ MUTE</div>
+
+    <!-- Hotspots -->
+    <div class="hotspot btn-ch-up"   onclick="switchChannel(1)"   title="Channel Up"></div>
+    <div class="hotspot btn-ch-down" onclick="switchChannel(-1)"  title="Channel Down"></div>
+    <div class="hotspot btn-vol-up"  onclick="adjustVolume(0.1)"  title="Volume Up"></div>
+    <div class="hotspot btn-vol-down"onclick="adjustVolume(-0.1)" title="Volume Down"></div>
+    <div class="hotspot btn-mute"    onclick="toggleMute()"       title="Mute/Unmute"></div>
+    <div class="hotspot btn-power"   onclick="togglePower()"      title="Power"></div>
   </div>
+</div>
 
-  <script>
-    // --- TV SYSTEM LOGIC ---
-    const tvScreen = document.getElementById("main-screen");
-    const channelIndicator = document.getElementById("channel-indicator");
 
-    const playlist = [
-      "assets/videos/spire/1.mp4",
-      "assets/space_cowboy_concept_animatic.mp4",
-      "assets/historical_robot_sketch_timelapse.mp4"
-    ];
-    
-    let currentChannel = 0;
-    
-    // 1. Core Functions
-    function loadVideo() {
-      tvScreen.src = playlist[currentChannel];
-      tvScreen.load();
-      tvScreen.play().catch(error => {
-          console.log("Autoplay with sound blocked. Waiting for user interaction.");
-      });
-      
-      let displayNum = (currentChannel + 1).toString().padStart(2, '0');
-      channelIndicator.innerText = "CH: " + displayNum;
-    }
+<!-- YouTube IFrame API -->
+<script src="https://www.youtube.com/iframe_api"></script>
 
-    // 2. Button Event Handlers
-    function switchChannel(direction) {
-      // Unmute the video on first interaction, bypasses autoplay block
-      tvScreen.muted = false;
-      
-      currentChannel += direction;
-      
-      if (currentChannel >= playlist.length) {
-        currentChannel = 0; 
-      } else if (currentChannel < 0) {
-        currentChannel = playlist.length - 1;
+<script>
+// ============================================================
+//  CHANNEL LIST
+//  type: "local"   → plays a self-hosted .mp4
+//  type: "youtube" → plays a YouTube video by ID
+//
+//  To add more YouTube videos from your playlist, copy the
+//  video ID from the URL (youtube.com/watch?v=VIDEO_ID_HERE)
+//  and add a new { type:"youtube", id:"VIDEO_ID_HERE", label:"Title" }
+// ============================================================
+const CHANNELS = [
+  // ── YouTube channels ──────────────────────────────────────
+  { type: "youtube", id: "pW7V8-wipSI",  label: "YT 01" },  // first video in your playlist
+  // Add more from your playlist below, e.g.:
+  // { type: "youtube", id: "XXXXXXXXXXX", label: "YT 02" },
+  { type: "youtube", id: "ORzJSmIxEIQ",  label: "YT 02" }
+  { type: "youtube", id: "MHJMXz8hU9E",  label: "YT 03" }
+  { type: "youtube", id: "9JegO82kBSg",  label: "YT 04" }
+  // ── Local / self-hosted channels ─────────────────────────
+  { type: "local",   src: "assets/videos/spire/1.mp4",                        label: "LOCAL 01" },
+  { type: "local",   src: "assets/space_cowboy_concept_animatic.mp4",          label: "LOCAL 02" },
+  { type: "local",   src: "assets/historical_robot_sketch_timelapse.mp4",      label: "LOCAL 03" },
+];
+
+// ============================================================
+//  STATE
+// ============================================================
+let currentChannel = 0;
+let volume         = 0.8;   // 0.0 – 1.0
+let muted          = true;  // start muted (autoplay policy)
+let isPoweredOn    = true;
+let transitioning  = false;
+let volOsdTimer    = null;
+let ytPlayer       = null;  // YouTube IFrame Player instance
+let ytReady        = false; // IFrame API loaded?
+
+// DOM refs
+const localVideo      = document.getElementById("local-video");
+const ytWrapper       = document.getElementById("yt-wrapper");
+const staticCanvas    = document.getElementById("static-canvas");
+const powerCover      = document.getElementById("power-cover");
+const chanIndicator   = document.getElementById("channel-indicator");
+const volOsd          = document.getElementById("vol-osd");
+const volNum          = document.getElementById("vol-num");
+const volFill         = document.getElementById("vol-fill");
+const muteBadge       = document.getElementById("mute-badge");
+const staticCtx       = staticCanvas.getContext("2d");
+
+// ============================================================
+//  YOUTUBE IFRAME API  (called automatically by the API script)
+// ============================================================
+function onYouTubeIframeAPIReady() {
+  ytReady = true;
+  // If the first channel is YouTube, now we can load it
+  if (CHANNELS[currentChannel].type === "youtube") loadChannel(false);
+}
+
+function createYTPlayer(videoId) {
+  // Destroy old player if exists
+  if (ytPlayer) { ytPlayer.destroy(); ytPlayer = null; }
+
+  ytWrapper.innerHTML = '<div id="yt-player-el"></div>';
+
+  ytPlayer = new YT.Player("yt-player-el", {
+    videoId: videoId,
+    playerVars: {
+      autoplay:       1,
+      controls:       0,
+      rel:            0,
+      modestbranding: 1,
+      iv_load_policy: 3,
+      mute:           muted ? 1 : 0,
+    },
+    events: {
+      onReady: (e) => {
+        e.target.setVolume(Math.round(volume * 100));
+        if (muted) e.target.mute(); else e.target.unMute();
+        e.target.playVideo();
+      },
+    },
+  });
+}
+
+// ============================================================
+//  CHANNEL LOADING
+// ============================================================
+function loadChannel(withStatic = true) {
+  const ch = CHANNELS[currentChannel];
+  const displayNum = (currentChannel + 1).toString().padStart(2, "0");
+  chanIndicator.innerText = "CH: " + displayNum;
+
+  if (withStatic) {
+    runStatic(350, () => applyChannel(ch));
+  } else {
+    applyChannel(ch);
+  }
+}
+
+function applyChannel(ch) {
+  if (ch.type === "local") {
+    // Hide YouTube
+    ytWrapper.style.display = "none";
+    if (ytPlayer) { ytPlayer.stopVideo(); }
+
+    // Show local video
+    localVideo.style.display = "block";
+    localVideo.src    = ch.src;
+    localVideo.muted  = muted;
+    localVideo.volume = volume;
+    localVideo.load();
+    localVideo.play().catch(() => {});
+
+  } else {
+    // Hide local
+    localVideo.style.display = "none";
+    localVideo.pause();
+
+    // Show YouTube
+    ytWrapper.style.display = "block";
+
+    if (ytReady) {
+      if (ytPlayer && typeof ytPlayer.loadVideoById === "function") {
+        ytPlayer.loadVideoById(ch.id);
+        if (muted) ytPlayer.mute(); else ytPlayer.unMute();
+        ytPlayer.setVolume(Math.round(volume * 100));
+      } else {
+        createYTPlayer(ch.id);
       }
-      
-      loadVideo();
     }
+    // If ytReady is false, onYouTubeIframeAPIReady will call loadChannel(false)
+  }
+}
 
-    function adjustVolume(amount) {
-        // Unmute if muted
-        tvScreen.muted = false;
-        
-        let currentVolume = tvScreen.volume;
-        let newVolume = currentVolume + amount;
-        
-        // Clamp volume between 0.0 and 1.0
-        if (newVolume > 1.0) newVolume = 1.0;
-        if (newVolume < 0.0) newVolume = 0.0;
-        
-        tvScreen.volume = newVolume;
-        console.log("Volume adjusted to: " + (newVolume * 100).toFixed(0) + "%");
+// ============================================================
+//  STATIC NOISE EFFECT
+// ============================================================
+function runStatic(durationMs, callback) {
+  if (transitioning) return;
+  transitioning = true;
+
+  const canvas = staticCanvas;
+  canvas.width  = canvas.offsetWidth  || 640;
+  canvas.height = canvas.offsetHeight || 360;
+
+  staticCanvas.style.opacity = "1";
+
+  let frameId;
+  const drawNoise = () => {
+    const imgData = staticCtx.createImageData(canvas.width, canvas.height);
+    const d = imgData.data;
+    for (let i = 0; i < d.length; i += 4) {
+      const v = Math.random() * 255 | 0;
+      d[i] = d[i+1] = d[i+2] = v;
+      d[i+3] = 255;
     }
+    staticCtx.putImageData(imgData, 0, 0);
+    frameId = requestAnimationFrame(drawNoise);
+  };
+  drawNoise();
 
-    function extraFunc() {
-        console.log("Utility button pressed. No function set yet.");
-        // Example: Use this for a menu, a scan effect, etc.
-    }
+  setTimeout(() => {
+    cancelAnimationFrame(frameId);
+    staticCanvas.style.opacity = "0";
+    transitioning = false;
+    if (callback) callback();
+  }, durationMs);
+}
 
-    function togglePower() {
-        console.log("Power button pressed. Placeholder function.");
-        // Example: Toggle visible: none on .tv-video and .channel-display
-    }
+// ============================================================
+//  BUTTON HANDLERS
+// ============================================================
+function switchChannel(dir) {
+  if (!isPoweredOn || transitioning) return;
+  currentChannel = (currentChannel + dir + CHANNELS.length) % CHANNELS.length;
+  loadChannel(true);
+}
 
-    // --- INITIALIZE ---
-    loadVideo();
-  </script>
+function adjustVolume(amount) {
+  if (!isPoweredOn) return;
+  muted   = false;
+  volume  = Math.min(1, Math.max(0, volume + amount));
+
+  localVideo.muted  = false;
+  localVideo.volume = volume;
+  if (ytPlayer && typeof ytPlayer.setVolume === "function") {
+    ytPlayer.unMute();
+    ytPlayer.setVolume(Math.round(volume * 100));
+  }
+
+  showVolOsd();
+  updateMuteBadge();
+}
+
+function toggleMute() {
+  if (!isPoweredOn) return;
+  muted = !muted;
+
+  localVideo.muted = muted;
+  if (ytPlayer && typeof ytPlayer.mute === "function") {
+    muted ? ytPlayer.mute() : ytPlayer.unMute();
+  }
+
+  updateMuteBadge();
+  showVolOsd();
+}
+
+function togglePower() {
+  if (transitioning) return;
+
+  if (isPoweredOn) {
+    // Power OFF
+    isPoweredOn = false;
+    runStatic(300, () => {
+      powerCover.style.display = "block";
+      localVideo.pause();
+      if (ytPlayer && typeof ytPlayer.pauseVideo === "function") ytPlayer.pauseVideo();
+    });
+  } else {
+    // Power ON
+    isPoweredOn = true;
+    powerCover.style.display = "none";
+    runStatic(400, () => {
+      localVideo.play().catch(() => {});
+      if (ytPlayer && typeof ytPlayer.playVideo === "function") ytPlayer.playVideo();
+    });
+  }
+}
+
+// ============================================================
+//  HUD HELPERS
+// ============================================================
+function showVolOsd() {
+  const pct = Math.round(volume * 100);
+  volNum.innerText      = muted ? "MUTE" : pct;
+  volFill.style.width   = (muted ? 0 : pct) + "%";
+  volOsd.style.opacity  = "1";
+
+  clearTimeout(volOsdTimer);
+  volOsdTimer = setTimeout(() => { volOsd.style.opacity = "0"; }, 1800);
+}
+
+function updateMuteBadge() {
+  muteBadge.style.opacity = muted ? "1" : "0";
+}
+
+// ============================================================
+//  INIT
+// ============================================================
+function init() {
+  // Size canvas to match rendered screen
+  staticCanvas.width  = staticCanvas.offsetWidth  || 640;
+  staticCanvas.height = staticCanvas.offsetHeight || 360;
+
+  // If first channel is local, load immediately.
+  // YouTube channel will be loaded once the API fires onYouTubeIframeAPIReady.
+  if (CHANNELS[currentChannel].type === "local") {
+    loadChannel(false);
+  }
+  // (ytReady channels handled in onYouTubeIframeAPIReady)
+
+  updateMuteBadge();
+
+  // Show initial vol OSD briefly
+  volFill.style.width = (volume * 100) + "%";
+}
+
+init();
+</script>
 
 </body>
 </html>
