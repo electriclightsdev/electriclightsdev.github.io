@@ -41,17 +41,336 @@
       display: flex;
       align-items: flex-end;
       justify-content: center;
-      padding-bottom: 28.3vh;
-      background: url('assets/bg/room12.png') center / cover fixed;
       overflow: hidden;
       font-family: 'Share Tech Mono', 'Courier New', monospace;
+      background: #0a0908;
+    }
+
+    /* ============================================================
+       ROOM
+    ============================================================ */
+    .room {
+      width: 100%;
+      height: 100svh;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    /* ── Back wall ── */
+    .back-wall {
+      position: absolute;
+      inset: 0;
+      /* warm muted interior — dark olive / brown tone */
+      background:
+        /* subtle vertical stripe wallpaper texture */
+        repeating-linear-gradient(
+          90deg,
+          rgba(255,255,255,0.012) 0px,
+          rgba(255,255,255,0.012) 1px,
+          transparent 1px,
+          transparent 3.5rem
+        ),
+        /* warm gradient */
+        linear-gradient(180deg,
+          #1a1712 0%,
+          #1e1a14 30%,
+          #221e16 60%,
+          #1a1610 100%
+        );
+    }
+
+    /* subtle light pool from the TV glow on the wall behind */
+    .back-wall::after {
+      content: '';
+      position: absolute;
+      bottom: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 70rem;
+      height: 40rem;
+      background: radial-gradient(ellipse,
+        rgba(57,255,106,0.018) 0%,
+        rgba(57,255,106,0.006) 40%,
+        transparent 70%
+      );
+      pointer-events: none;
+    }
+
+    /* ── Baseboard / chair rail ── */
+    .baseboard {
+      position: absolute;
+      bottom: 28rem; /* sits right at wall/floor boundary */
+      left: 0; right: 0;
+      height: 1.2rem;
+      background: linear-gradient(to bottom,
+        #2a2520 0%,
+        #1a1610 40%,
+        #0e0c08 100%
+      );
+      box-shadow:
+        0 -1px 0 rgba(255,255,255,0.04),
+        0 2px 6px rgba(0,0,0,0.5);
+      z-index: 1;
+    }
+
+    /* ── Floor ── */
+    .floor {
+      position: absolute;
+      bottom: 0;
+      left: 0; right: 0;
+      height: 28rem;
+      z-index: 1;
+
+      /* Dark hardwood — perspective via gradient */
+      background:
+        /* plank lines */
+        repeating-linear-gradient(
+          90deg,
+          rgba(0,0,0,0.12) 0px,
+          rgba(0,0,0,0.12) 1px,
+          transparent 1px,
+          transparent 8rem
+        ),
+        /* depth: darker at the back (top), lighter toward viewer */
+        linear-gradient(to bottom,
+          #12100c 0%,
+          #1e1a14 15%,
+          #2a241c 40%,
+          #302820 70%,
+          #352e24 100%
+        );
+    }
+
+    /* Floor wood grain overlay */
+    .floor::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        repeating-linear-gradient(
+          90deg,
+          transparent 0px,
+          transparent 3.8rem,
+          rgba(255,255,255,0.008) 3.8rem,
+          rgba(255,255,255,0.008) 4rem,
+          transparent 4rem,
+          transparent 8rem
+        ),
+        repeating-linear-gradient(
+          0deg,
+          transparent 0px,
+          transparent 0.8rem,
+          rgba(0,0,0,0.03) 0.8rem,
+          rgba(0,0,0,0.03) 0.85rem
+        );
+      pointer-events: none;
+    }
+
+    /* Floor reflection / sheen */
+    .floor::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 50% 10%,
+          rgba(57,255,106,0.02) 0%,
+          transparent 50%
+        ),
+        linear-gradient(to bottom,
+          rgba(0,0,0,0.4) 0%,
+          transparent 30%
+        );
+      pointer-events: none;
+    }
+
+    /* ── Side wall shadows (vignette-like depth) ── */
+    .wall-shadow-left,
+    .wall-shadow-right {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 20rem;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .wall-shadow-left {
+      left: 0;
+      background: linear-gradient(to right,
+        rgba(0,0,0,0.6) 0%,
+        rgba(0,0,0,0.2) 40%,
+        transparent 100%
+      );
+    }
+
+    .wall-shadow-right {
+      right: 0;
+      background: linear-gradient(to left,
+        rgba(0,0,0,0.6) 0%,
+        rgba(0,0,0,0.2) 40%,
+        transparent 100%
+      );
+    }
+
+    /* ── Ceiling shadow ── */
+    .ceiling-shadow {
+      position: absolute;
+      top: 0;
+      left: 0; right: 0;
+      height: 12rem;
+      z-index: 2;
+      pointer-events: none;
+      background: linear-gradient(to bottom,
+        rgba(0,0,0,0.55) 0%,
+        rgba(0,0,0,0.15) 50%,
+        transparent 100%
+      );
+    }
+
+    /* ============================================================
+       TV CONSOLE / STAND
+    ============================================================ */
+    .console-wrapper {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 3rem;
+    }
+
+    .console-stand {
+      width: 102rem;
+      height: 12rem;
+      position: relative;
+      background: linear-gradient(175deg,
+        #2c2418 0%,
+        #221c12 35%,
+        #1a150e 70%,
+        #14100a 100%
+      );
+      border-radius: 0.6rem 0.6rem 0 0;
+      margin-top: -0.5rem; /* tuck under TV shadow */
+
+      box-shadow:
+        /* top surface highlight */
+        inset 0  1px 0 rgba(255,255,255,0.06),
+        /* depth */
+        0 8px 30px rgba(0,0,0,0.7),
+        0 2px 8px rgba(0,0,0,0.5);
+    }
+
+    /* Wood grain texture */
+    .console-stand::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background:
+        repeating-linear-gradient(
+          0deg,
+          transparent 0px,
+          transparent 1.5rem,
+          rgba(255,255,255,0.008) 1.5rem,
+          rgba(255,255,255,0.008) 1.55rem
+        ),
+        repeating-linear-gradient(
+          90deg,
+          transparent 0px,
+          transparent 0.3rem,
+          rgba(0,0,0,0.03) 0.3rem,
+          rgba(0,0,0,0.03) 0.35rem
+        );
+      pointer-events: none;
+    }
+
+    /* Console surface — top edge bevel */
+    .console-top {
+      position: absolute;
+      top: 0;
+      left: 0; right: 0;
+      height: 1rem;
+      background: linear-gradient(to bottom,
+        rgba(255,255,255,0.05) 0%,
+        rgba(255,255,255,0.01) 50%,
+        transparent 100%
+      );
+      border-radius: 0.6rem 0.6rem 0 0;
+    }
+
+    /* Cabinet doors — two panels */
+    .console-doors {
+      position: absolute;
+      top: 1.8rem;
+      left: 2.5rem;
+      right: 2.5rem;
+      bottom: 1.5rem;
+      display: flex;
+      gap: 0.4rem;
+    }
+
+    .console-door {
+      flex: 1;
+      border: 1px solid rgba(255,255,255,0.03);
+      border-radius: 0.3rem;
+      background: linear-gradient(170deg,
+        rgba(255,255,255,0.02) 0%,
+        transparent 40%,
+        rgba(0,0,0,0.15) 100%
+      );
+      position: relative;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.03),
+        inset 0 -1px 0 rgba(0,0,0,0.2);
+    }
+
+    /* Door knobs */
+    .console-door:first-child::after,
+    .console-door:last-child::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 0.6rem;
+      height: 0.6rem;
+      border-radius: 50%;
+      transform: translateY(-50%);
+      background: radial-gradient(circle at 35% 30%, #8a7a5a, #3a3020);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    }
+
+    .console-door:first-child::after { right: 1rem; }
+    .console-door:last-child::after  { left: 1rem; }
+
+    /* Console legs */
+    .console-legs {
+      display: flex;
+      justify-content: space-between;
+      width: 96rem;
+      padding: 0 2rem;
+    }
+
+    .console-leg {
+      width: 1.2rem;
+      height: 5rem;
+      background: linear-gradient(to right,
+        #1a150e 0%,
+        #2c2418 40%,
+        #1a150e 100%
+      );
+      border-radius: 0 0 0.3rem 0.3rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      /* tapered look */
+      clip-path: polygon(10% 0%, 90% 0%, 75% 100%, 25% 100%);
     }
 
     /* ============================================================
        TV BODY  —  boxy, square-ish, two-tone
     ============================================================ */
     .tv {
-      width: 72rem;
+      width: 94rem;
       aspect-ratio: 1.6 / 1;
       position: relative;
 
@@ -448,7 +767,7 @@
       position: absolute;
       inset: 1rem;
       border-radius: 50%;
-      cursor: pointer;
+      cursor: default;
       user-select: none;
 
       background: radial-gradient(circle at 35% 30%,
@@ -587,6 +906,104 @@
     }
 
     /* ============================================================
+       ANTENNA
+    ============================================================ */
+    .antenna {
+      position: absolute;
+      top: -18rem;
+      left: 22%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .antenna-rod {
+      width: 0.35rem;
+      height: 18rem;
+      background: linear-gradient(to right, #888 0%, #ccc 40%, #aaa 60%, #666 100%);
+      border-radius: 0.2rem 0.2rem 0 0;
+      transform-origin: bottom center;
+      transform: rotate(16deg);
+      position: relative;
+      box-shadow: 1px 2px 6px rgba(0,0,0,0.4);
+    }
+
+    .antenna-rod-inner {
+      width: 0.22rem;
+      height: 12rem;
+      background: linear-gradient(to right, #999 0%, #ddd 40%, #bbb 60%, #777 100%);
+      border-radius: 0.15rem 0.15rem 0 0;
+      position: absolute;
+      top: -11rem;
+      left: 50%;
+      transform: translateX(-50%) rotate(-8deg);
+      transform-origin: bottom center;
+      box-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+    }
+
+    .antenna-tip {
+      width: 0.55rem;
+      height: 0.55rem;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #ddd, #888);
+      position: absolute;
+      top: -11.4rem;
+      left: 50%;
+      transform: translateX(-50%);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    }
+
+    .antenna-base {
+      width: 1.8rem;
+      height: 0.8rem;
+      background: linear-gradient(to bottom, var(--charcoal-hi), var(--charcoal-lo));
+      border-radius: 0.3rem 0.3rem 0 0;
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      box-shadow: 0 -1px 3px rgba(0,0,0,0.3);
+    }
+
+    /* ============================================================
+       CHANNEL BUTTONS
+    ============================================================ */
+    .ch-buttons {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.6rem;
+    }
+
+    .ch-btn {
+      width: 3.2rem;
+      height: 2rem;
+      border: none;
+      border-radius: 0.35rem;
+      cursor: pointer;
+      font-family: 'VT323', monospace;
+      font-size: 1.3rem;
+      color: rgba(0,0,0,0.45);
+      text-shadow: 0 1px 0 rgba(255,255,255,0.45);
+      background: linear-gradient(to bottom, #cdc090, #a89860);
+      box-shadow:
+        inset 0  1px 0 rgba(255,255,255,0.55),
+        inset 0 -3px 0 rgba(0,0,0,0.32),
+        0 3px 7px rgba(0,0,0,0.45),
+        0 1px 2px rgba(0,0,0,0.3);
+      transition: transform 0.06s, box-shadow 0.06s;
+      user-select: none;
+    }
+
+    .ch-btn:hover { filter: brightness(1.05); }
+
+    .ch-btn:active {
+      transform: translateY(2px);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.3),
+        inset 0 -1px 0 rgba(0,0,0,0.3),
+        0 1px 3px rgba(0,0,0,0.4);
+    }
+
+    /* ============================================================
        EXIT BUTTON
     ============================================================ */
     .exit-btn {
@@ -633,7 +1050,30 @@
 
 <a href="index.html" class="exit-btn">◀ EXIT</a>
 
-<div class="tv">
+<div class="room">
+
+  <!-- Room geometry -->
+  <div class="back-wall"></div>
+  <div class="baseboard"></div>
+  <div class="floor"></div>
+  <div class="wall-shadow-left"></div>
+  <div class="wall-shadow-right"></div>
+  <div class="ceiling-shadow"></div>
+
+  <!-- TV + Console -->
+  <div class="console-wrapper">
+
+    <div class="tv">
+
+  <!-- ═══════════════ ANTENNA ═══════════════ -->
+  <div class="antenna">
+    <div class="antenna-rod">
+      <div class="antenna-rod-inner">
+        <div class="antenna-tip"></div>
+      </div>
+      <div class="antenna-base"></div>
+    </div>
+  </div>
 
   <!-- ═══════════════ SCREEN SIDE ═══════════════ -->
   <div class="screen-section">
@@ -690,6 +1130,10 @@
       </div>
       <div class="ch-display" id="ch-display">CH 01</div>
       <div class="ch-name" id="ch-name">—</div>
+      <div class="ch-buttons">
+        <button class="ch-btn" onclick="switchChannel(-1)">CH▼</button>
+        <button class="ch-btn" onclick="switchChannel(1)">CH▲</button>
+      </div>
     </div>
 
     <!-- Volume -->
@@ -708,6 +1152,25 @@
 
 </div><!-- .tv -->
 
+    <!-- Console stand -->
+    <div class="console-stand">
+      <div class="console-top"></div>
+      <div class="console-doors">
+        <div class="console-door"></div>
+        <div class="console-door"></div>
+      </div>
+    </div>
+    <div class="console-legs">
+      <div class="console-leg"></div>
+      <div class="console-leg"></div>
+      <div class="console-leg"></div>
+      <div class="console-leg"></div>
+    </div>
+
+  </div><!-- .console-wrapper -->
+
+</div><!-- .room -->
+
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>
 /* ============================================================
@@ -717,11 +1180,20 @@
    type "local"   → plays a self-hosted file (needs src path)
 ============================================================ */
 const CHANNELS = [
-  { type: 'youtube', id: 'pW7V8-wipSI',                              label: 'YT 01'           },
-  { type: 'youtube', id: 'ORzJSmIxEIQ',                         label: 'YT 02'           },
-  { type: 'local',   src: 'assets/videos/spire/1.mp4',               label: 'SPIRE'           },
-  { type: 'local',   src: 'assets/space_cowboy_concept_animatic.mp4', label: 'SPACE COWBOY'    },
-  { type: 'local',   src: 'assets/historical_robot_sketch_timelapse.mp4', label: 'ROBOT TIMELAPSE' },
+  { type: 'local', src: 'assets/videos/spire/1.mp4',               label: 'SPIRE'           },
+  { type: 'local', src: 'assets/videos/Popeye the Sailor Meets Ali Baba\'s Forty Thieves (1937)', label: 'Popeye&Ali'    },
+  { type: 'local', src: 'assets/videos/Popeye the Sailor Meets Sindbad the Sailor (1936)', label: 'Popeye&Sinbad' },
+  /* ── ADD YOUR VIDEOS BELOW ── */
+  { type: 'local', src: 'assets/videos/STEAMBOAT.mp4',           label: 'VIDEO TITLE'     },
+  { type: 'local', src: 'assets/videos/TheGallop.mp4',           label: 'VIDEO TITLE'     },
+  // { type: 'local', src: 'assets/videos/YOUR_VIDEO.mp4',           label: 'VIDEO TITLE'     },
+  // { type: 'local', src: 'assets/videos/YOUR_VIDEO.mp4',           label: 'VIDEO TITLE'     },
+  // { type: 'local', src: 'assets/videos/YOUR_VIDEO.mp4',           label: 'VIDEO TITLE'     },
+  // { type: 'local', src: 'assets/videos/YOUR_VIDEO.mp4',           label: 'VIDEO TITLE'     },
+  // { type: 'local', src: 'assets/videos/YOUR_VIDEO.mp4',           label: 'VIDEO TITLE'     },
+  // { type: 'local', src: 'assets/videos/YOUR_VIDEO.mp4',           label: 'VIDEO TITLE'     },
+  // { type: 'local', src: 'assets/videos/YOUR_VIDEO.mp4',           label: 'VIDEO TITLE'     },
+  // { type: 'local', src: 'assets/videos/YOUR_VIDEO.mp4',           label: 'VIDEO TITLE'     },
 ];
 
 /* ============================================================
@@ -814,19 +1286,7 @@ function switchChannel(dir) {
   runStatic(300, () => applyChannel());
 }
 
-/* Click left half = prev, right half = next */
-dialKnob.addEventListener('click', e => {
-  if (!powered || busy) return;
-  const { left, width } = dialKnob.getBoundingClientRect();
-  switchChannel(e.clientX < left + width / 2 ? -1 : 1);
-});
-
-/* Also support scroll wheel on dial */
-dialKnob.addEventListener('wheel', e => {
-  if (!powered || busy) return;
-  e.preventDefault();
-  switchChannel(e.deltaY > 0 ? 1 : -1);
-}, { passive: false });
+/* Dial is decorative — channel switching handled by CH▲/CH▼ buttons */
 
 function updateHUD() {
   chDisplay.textContent = `CH ${String(ch + 1).padStart(2, '0')}`;
