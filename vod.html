@@ -39,9 +39,11 @@
     body {
       min-height: 100svh;
       display: flex;
-      align-items: center;
+      align-items: flex-end;
       justify-content: center;
-      background: url('assets/bg/vodbg.jpg') center / cover fixed;
+      /* console top is ~58% down — pad bottom so TV base sits on it */
+      padding-bottom: 40vh;
+      background: url('assets/bg/room12.png') center / cover fixed;
       overflow: hidden;
       font-family: 'Share Tech Mono', 'Courier New', monospace;
     }
@@ -50,7 +52,7 @@
        TV BODY  —  boxy, square-ish, two-tone
     ============================================================ */
     .tv {
-      width: 94rem;
+      width: 72rem;
       aspect-ratio: 1.6 / 1;
       position: relative;
 
