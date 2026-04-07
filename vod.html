@@ -51,7 +51,7 @@
     ============================================================ */
     .tv {
       width: 94rem;
-      aspect-ratio: 1.22 / 1;
+      aspect-ratio: 1.6 / 1;
       position: relative;
 
       /* Dark charcoal base */
@@ -156,6 +156,7 @@
       background: #000;
       position: relative;
       overflow: hidden;
+      container-type: size;
 
       /* CRT barrel distortion illusion: more radius on Y */
       border-radius: 1.2rem / 2rem;
@@ -706,6 +707,7 @@
 
 </div><!-- .tv -->
 
+<script src="https://www.youtube.com/iframe_api"></script>
 <script>
 /* ============================================================
    ★  CHANNEL LIST  — add / remove channels here
@@ -714,21 +716,11 @@
    type "local"   → plays a self-hosted file (needs src path)
 ============================================================ */
 const CHANNELS = [
-  // ── YouTube channels ────────────────────────────────────────────
-  // To add a YouTube video: copy the ID from the URL
-  // e.g. youtube.com/watch?v=pW7V8-wipSI  →  id: 'pW7V8-wipSI'
-  { type: 'youtube', id: 'pW7V8-wipSI',  label: 'YT 01' },
-  { type: 'youtube', id: 'ORzJSmIxEIQ',  label: 'YT 02' },
-  // { type: 'youtube', id: 'XXXXXXXXXXX',  label: 'YT 03' },
-  // { type: 'youtube', id: 'XXXXXXXXXXX',  label: 'YT 04' },
-  // { type: 'youtube', id: 'XXXXXXXXXXX',  label: 'YT 05' },
-
-  // ── Local / self-hosted channels ────────────────────────────────
-  // Path is relative to vod.html — e.g. 'assets/videos/myvideo.mp4'
-  { type: 'local', src: 'assets/videos/spire/1.mp4',                    label: 'SPIRE'           },
-  { type: 'local', src: 'assets/space_cowboy_concept_animatic.mp4',      label: 'SPACE COWBOY'    },
-  { type: 'local', src: 'assets/historical_robot_sketch_timelapse.mp4',  label: 'ROBOT TIMELAPSE' },
-  // { type: 'local', src: 'assets/videos/YOURFILE.mp4',                 label: 'MY VIDEO'        },
+  { type: 'youtube', id: 'pW7V8-wipSI',                              label: 'YT 01'           },
+  { type: 'youtube', id: 'ORzJSmIxEIQ',                         label: 'YT 02'           },
+  { type: 'local',   src: 'assets/videos/spire/1.mp4',               label: 'SPIRE'           },
+  { type: 'local',   src: 'assets/space_cowboy_concept_animatic.mp4', label: 'SPACE COWBOY'    },
+  { type: 'local',   src: 'assets/historical_robot_sketch_timelapse.mp4', label: 'ROBOT TIMELAPSE' },
 ];
 
 /* ============================================================
@@ -739,8 +731,10 @@ let vol         = 0.8;
 let muted       = true;
 let powered     = true;
 let busy        = false;
+let ytPlayer    = null;
+let ytReady     = false;
 let osdTimer    = null;
-let volDragStartY  = null;
+let volDragStartY = null;
 let volAtDragStart = vol;
 
 /* ── Vol knob angle: -135° (min) → +135° (max) */
@@ -863,37 +857,62 @@ function applyChannel() {
     localVideo.style.display = 'none';
     localVideo.pause();
     ytWrapper.style.display = 'block';
-    testCanvas.style.display = 'none';
-    makeYTIframe(c.id);
+    testCanvas.style.display = 'none'; /* hide immediately — yt-wrapper (z:2) sits above test-canvas (z:1) anyway */
+
+    if (ytReady) {
+      if (ytPlayer && ytPlayer.loadVideoById) {
+        ytPlayer.loadVideoById(c.id);
+        syncYTVolume();
+        setTimeout(() => { testCanvas.style.display = 'none'; }, 2000);
+      } else {
+        makeYTPlayer(c.id);
+      }
+    }
   }
 }
 
 /* ============================================================
-   YOUTUBE — plain iframe embed (no JS API)
-   Autoplay + mute via URL params: reliable across all browsers.
-   Note: YouTube volume is independent of the local volume knob.
+   YOUTUBE IFRAME API
 ============================================================ */
-function makeYTIframe(videoId) {
-  ytWrapper.innerHTML = '';
-  const iframe = document.createElement('iframe');
-  const params = new URLSearchParams({
-    autoplay:       1,
-    mute:           1,   // required for autoplay without a user gesture
-    controls:       0,
-    rel:            0,
-    modestbranding: 1,
-    iv_load_policy: 3,
-    playsinline:    1,
+function onYouTubeIframeAPIReady() {
+  ytReady = true;
+  if (CHANNELS[ch].type === 'youtube') applyChannel();
+}
+
+function makeYTPlayer(videoId) {
+  safeStopYT();
+  ytWrapper.innerHTML = '<div id="yt-el"></div>';
+
+  ytPlayer = new YT.Player('yt-el', {
+    videoId,
+    playerVars: {
+      autoplay: 1, controls: 0, rel: 0,
+      modestbranding: 1, iv_load_policy: 3,
+      mute: muted ? 1 : 0,
+      enablejsapi: 1,
+      origin: window.location.origin,
+    },
+    events: {
+      onReady(e) {
+        syncYTVolume();
+        e.target.playVideo();
+        testCanvas.style.display = 'none';
+      },
+      onError: drawTestPattern,
+    },
   });
-  iframe.src             = `https://www.youtube.com/embed/${videoId}?${params}`;
-  iframe.allow           = 'autoplay; encrypted-media; picture-in-picture';
-  iframe.allowFullscreen = true;
-  iframe.style.cssText   = 'width:100%;height:100%;border:none;display:block;';
-  ytWrapper.appendChild(iframe);
+}
+
+function syncYTVolume() {
+  if (!ytPlayer || !ytPlayer.setVolume) return;
+  ytPlayer.setVolume(Math.round(vol * 100));
+  muted ? ytPlayer.mute() : ytPlayer.unMute();
 }
 
 function safeStopYT() {
-  ytWrapper.innerHTML = ''; /* wipe the iframe — stops playback instantly */
+  if (ytPlayer && ytPlayer.stopVideo) {
+    try { ytPlayer.stopVideo(); } catch(e) {}
+  }
 }
 
 /* ============================================================
@@ -990,7 +1009,7 @@ function togglePower() {
     screen.addEventListener('animationend', () => screen.classList.remove('flicker'), { once: true });
     runStatic(380, () => {
       localVideo.play().catch(() => {});
-      /* YouTube iframe resumes automatically when power cover lifts */
+      if (ytPlayer && ytPlayer.playVideo) ytPlayer.playVideo();
     });
   }
 }
@@ -1042,6 +1061,7 @@ function setVolume(newVol) {
 
   localVideo.muted  = false;
   localVideo.volume = vol;
+  syncYTVolume();
   showOsd();
 }
 
@@ -1080,8 +1100,11 @@ function init() {
   /* Power LED on */
   powerLed.classList.add('on');
 
-  /* Load first channel — works immediately for both local and YouTube */
-  applyChannel();
+  /* Load first channel */
+  if (CHANNELS[ch].type === 'local') {
+    applyChannel();
+  }
+  /* YouTube defers to onYouTubeIframeAPIReady */
 }
 
 window.addEventListener('resize', buildTicks);
