@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TERMINAL // PANIC.EXE</title>
+  <link rel="icon" type="image/png" href="assets/icon2.gif">
+  <style>
+    body {
+      background-color: #000;
+      color: #00ff00;
+      font-family: "Courier New", Courier, monospace;
+      margin: 0;
+      padding: 20px;
+      overflow-x: hidden;
+      cursor: crosshair;
+    }
+
+    .flash-red {
+      animation: stress-flash 0.3s ease-out;
+    }
+
+    @keyframes stress-flash {
+      0% { background-color: #ff0000; }
+      100% { background-color: #000; }
+    }
+
+    .terminal-window {
+      border: 3px double #00ff00;
+      background: #051105;
+      max-width: 700px;
+      margin: 0 auto;
+      box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+    }
+
+    .terminal-header {
+      background: #00ff00;
+      color: #000;
+      padding: 5px 10px;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      letter-spacing: 2px;
+    }
+
+    .ticker {
+      background: #000;
+      color: #ff0000;
+      border-bottom: 2px solid #00ff00;
+      padding: 5px;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    .content {
+      padding: 20px;
+      text-align: center;
+    }
+
+    .portfolio-value {
+      font-size: 3rem;
+      font-weight: bold;
+      color: #00ff00;
+      text-shadow: 0 0 10px #00ff00;
+      margin: 20px 0;
+      transition: color 0.2s;
+    }
+
+    .portfolio-value.crashing {
+      color: #ff0000;
+      text-shadow: 0 0 20px #ff0000;
+      animation: shake 0.4s infinite;
+    }
+
+    @keyframes shake {
+      0% { transform: translate(1px, 1px) rotate(0deg); }
+      10% { transform: translate(-1px, -2px) rotate(-1deg); }
+      20% { transform: translate(-3px, 0px) rotate(1deg); }
+      30% { transform: translate(3px, 2px) rotate(0deg); }
+      40% { transform: translate(1px, -1px) rotate(1deg); }
+      50% { transform: translate(-1px, 2px) rotate(-1deg); }
+      60% { transform: translate(-3px, 1px) rotate(0deg); }
+      70% { transform: translate(3px, 1px) rotate(-1deg); }
+      80% { transform: translate(-1px, -1px) rotate(1deg); }
+      90% { transform: translate(1px, 2px) rotate(0deg); }
+      100% { transform: translate(1px, -2px) rotate(-1deg); }
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      border: 1px solid #00ff00;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background: rgba(0, 255, 0, 0.2);
+    }
+
+    .action-btn {
+      background: #000;
+      color: #00ff00;
+      border: 2px solid #00ff00;
+      padding: 5px 15px;
+      font-family: "Courier New", Courier, monospace;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.1s;
+    }
+
+    .action-btn:hover {
+      background: #00ff00;
+      color: #000;
+    }
+
+    .action-btn:active {
+      background: #ff0000;
+      border-color: #ff0000;
+      color: #000;
+    }
+
+    .red-text {
+      color: #ff0000;
+      text-shadow: 0 0 5px #ff0000;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="terminal-window">
+    <div class="terminal-header">
+      <span>DAY_TRADER_PRO_v1.0.EXE</span>
+      <span>CONN: SECURE</span>
+    </div>
+
+    <div class="ticker">
+      <marquee scrollamount="8">
+        WARNING: EXTREME MARKET VOLATILITY DETECTED /// NASDAQ ERR_CONNECTION_LOST /// DOW JONES HEMORRHAGING /// DO NOT PANIC /// SELL EVERYTHING /// WARNING ///
+      </marquee>
+    </div>
+
+    <div class="content">
+      <p>TOTAL PORTFOLIO VALUE (USD):</p>
+      <div class="portfolio-value" id="net-worth">$100,000.00</div>
+      
+      <p id="status-message" style="color: #00ff00;">AWAITING MARKET INSTRUCTIONS...</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>ASSET</th>
+            <th>TICKER</th>
+            <th>PRICE</th>
+            <th>ACTION</th>
+          </tr>
+        </thead>
+        <tbody id="stock-table">
+          </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div style="text-align: center; margin-top: 20px;">
+    <a href="index.html" style="color: #888; text-decoration: none; font-size: 12px; border-bottom: 1px dashed #888;">[ TERMINATE CONNECTION ]</a>
+  </div>
+
+  <script>
+    // System Variables
+    let netWorth = 100000.00;
+    const bodyEl = document.body;
+    const netWorthEl = document.getElementById('net-worth');
+    const statusEl = document.getElementById('status-message');
+    const tableEl = document.getElementById('stock-table');
+
+    // 90s Bubble Era Stocks
+    const stocks = [
+      { name: "Pets.com", ticker: "PETS", price: 142.50 },
+      { name: "Webvan Group", ticker: "WBVN", price: 89.20 },
+      { name: "Enron Corp", ticker: "ENRN", price: 90.75 },
+      { name: "Tulip Bulbs", ticker: "TULP", price: 450.00 },
+      { name: "eToys.com", ticker: "ETYS", price: 76.40 }
+    ];
+
+    // Format currency
+    function formatMoney(amount) {
+      return "$" + amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    // Render Table
+    function renderTable() {
+      tableEl.innerHTML = "";
+      stocks.forEach((stock, index) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${stock.name}</td>
+          <td>${stock.ticker}</td>
+          <td id="price-${index}" style="color: #00ff00;">${formatMoney(stock.price)}</td>
+          <td>
+            <button class="action-btn" onclick="crashMarket(${index})">BUY</button>
+            <button class="action-btn" onclick="crashMarket(${index})">SELL</button>
+          </td>
+        `;
+        tableEl.appendChild(tr);
+      });
+    }
+
+    // The core logic: the game is rigged.
+    function crashMarket(index) {
+      // Trigger visual panic
+      bodyEl.classList.remove('flash-red');
+      void bodyEl.offsetWidth; // trigger reflow
+      bodyEl.classList.add('flash-red');
+      
+      netWorthEl.classList.add('crashing');
+      statusEl.className = 'red-text';
+
+      // 1. Crash the specific stock by 15% to 45%
+      const dropFactor = (Math.random() * 0.3) + 0.15;
+      stocks[index].price = stocks[index].price * (1 - dropFactor);
+      
+      const priceCell = document.getElementById(`price-${index}`);
+      priceCell.innerText = formatMoney(stocks[index].price);
+      priceCell.className = 'red-text';
+
+      // 2. Hemorrhage the total net worth aggressively
+      // It drops faster the more they click
+      const panicPenalty = (Math.random() * 8000) + 2000; 
+      const percentageWipeout = netWorth * (Math.random() * 0.15); // Lose up to 15% of total wealth per click
+      
+      netWorth -= (panicPenalty + percentageWipeout);
+      
+      // Prevent going into the negative, keep them agonizingly close to zero
+      if (netWorth < 14.32) {
+        netWorth = (Math.random() * 10) + 2; 
+        statusEl.innerText = "MARGIN CALL. PORTFOLIO LIQUIDATED. PLEASE EXIT.";
+      } else {
+        const errorMsgs = [
+          "ERR: ORDER FAILED. MARKET FREE-FALL.",
+          "LIQUIDITY CRISIS. ASSETS LOCKED.",
+          "ROUTING ERROR: CLEARING HOUSE INSOLVENT.",
+          "PANIC SELL REJECTED. BUYERS NON-EXISTENT."
+        ];
+        statusEl.innerText = errorMsgs[Math.floor(Math.random() * errorMsgs.length)];
+      }
+
+      // Update UI
+      netWorthEl.innerText = formatMoney(netWorth);
+
+      // Remove the shaking effect after a moment so they can click again
+      setTimeout(() => {
+        netWorthEl.classList.remove('crashing');
+      }, 500);
+    }
+
+    // Init
+    renderTable();
+  </script>
+</body>
+</html>
