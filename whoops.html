@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>// DATA_HARVESTER // SPIRE_LEAK</title>
+  <style>
+    :root {
+      --neon-purple: #bc13fe;
+      --corrupt-green: #39ff14;
+      --blood-red: #ff003c;
+    }
+
+    body {
+      background: #0a0a0a;
+      color: var(--corrupt-green);
+      font-family: 'Courier New', Courier, monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      overflow: hidden;
+      text-shadow: 0 0 5px var(--corrupt-green);
+    }
+
+    /* Corruption Overlay */
+    #glitch-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: repeating-linear-gradient(0deg, rgba(0,0,0,0.1), rgba(0,0,0,0.1) 1px, transparent 1px, transparent 2px);
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    .stat-panel {
+      border: 2px solid var(--neon-purple);
+      padding: 30px;
+      background: rgba(20, 0, 40, 0.8);
+      box-shadow: 0 0 20px var(--neon-purple);
+      text-align: center;
+      max-width: 500px;
+      transition: transform 0.1s;
+    }
+
+    .counter {
+      font-size: 3rem;
+      margin: 20px 0;
+      font-weight: bold;
+    }
+
+    .btn-harvest {
+      background: transparent;
+      border: 2px solid var(--corrupt-green);
+      color: var(--corrupt-green);
+      padding: 15px 30px;
+      font-family: inherit;
+      font-size: 1.2rem;
+      cursor: pointer;
+      box-shadow: 0 0 10px var(--corrupt-green);
+      transition: all 0.2s;
+    }
+
+    .btn-harvest:hover {
+      background: var(--corrupt-green);
+      color: #000;
+    }
+
+    .btn-harvest:active {
+      transform: scale(0.95);
+    }
+
+    #log {
+      margin-top: 20px;
+      height: 100px;
+      overflow-y: hidden;
+      font-size: 0.8rem;
+      opacity: 0.7;
+      text-align: left;
+      width: 100%;
+      border-top: 1px solid var(--neon-purple);
+      padding-top: 10px;
+    }
+
+    /* Chaos Classes triggered by JS */
+    .shake { animation: shake 0.2s infinite; }
+    @keyframes shake {
+      0% { transform: translate(1px, 1px) rotate(0deg); }
+      50% { transform: translate(-2px, -1px) rotate(1deg); }
+      100% { transform: translate(1px, 1px) rotate(0deg); }
+    }
+
+    .inverted { filter: invert(1) hue-rotate(180deg); }
+  </style>
+</head>
+<body>
+
+  <div id="glitch-overlay"></div>
+
+  <div class="stat-panel" id="panel">
+    <div style="font-size: 0.7rem; letter-spacing: 3px;">INTERNAL_MEMORY_EXTRACTOR_v4.02</div>
+    <div class="counter" id="count">0</div>
+    <div style="margin-bottom: 20px;">CARDS HARVESTED</div>
+    
+    <button class="btn-harvest" onclick="harvest()">HARVEST DATA</button>
+
+    <div id="log">
+      > INITIALIZING CONNECTION...<br>
+      > TARGET: SLAY_THE_SPIRE_2_RUN_DATA<br>
+      > STATUS: READY.
+    </div>
+  </div>
+
+  <a href="index.html" style="margin-top: 30px; color: #444; text-decoration: none; font-size: 0.7rem;">[ DISCONNECT_SERIAL ]</a>
+
+  <script>
+    let cards = 0;
+    const countEl = document.getElementById('count');
+    const panelEl = document.getElementById('panel');
+    const logEl = document.getElementById('log');
+    const bodyEl = document.body;
+
+    const messages = [
+      "Extracted: [SHIV]",
+      "Extracted: [DEAD BRANCH]",
+      "Combo detected: INFINITE_LOOP",
+      "Memory leak in Sector 7",
+      "Warning: Boss integrity failing",
+      "CSS Buffer Overflow...",
+      "STRENGH+999",
+      "SYSTEM OVERHEAT"
+    ];
+
+    function harvest() {
+      cards++;
+      countEl.innerText = cards;
+      
+      // Update Log
+      const msg = messages[Math.floor(Math.random() * messages.length)];
+      logEl.innerHTML = `> ${msg}<br>` + logEl.innerHTML;
+
+      // Escalate Chaos
+      if (cards > 10) {
+        panelEl.style.borderColor = "var(--blood-red)";
+        panelEl.style.boxShadow = "0 0 30px var(--blood-red)";
+      }
+      
+      if (cards > 25) {
+        bodyEl.classList.add('shake');
+        countEl.style.color = "var(--blood-red)";
+      }
+
+      if (cards > 50) {
+        bodyEl.classList.add('inverted');
+        logEl.innerHTML = "> CRITICAL_FAILURE: ARCHIVE_CORRUPTED<br>" + logEl.innerHTML;
+      }
+
+      if (cards > 75) {
+        // Ultimate 90s prank: moving the button
+        const btn = document.querySelector('.btn-harvest');
+        btn.style.position = 'absolute';
+        btn.style.top = Math.random() * 80 + 10 + '%';
+        btn.style.left = Math.random() * 80 + 10 + '%';
+      }
+    }
+  </script>
+</body>
+</html>

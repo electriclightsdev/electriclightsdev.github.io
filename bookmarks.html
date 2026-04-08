@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A:\ > BOOKMARKS</title>
+  <link rel="icon" type="image/png" href="assets/icon2.gif">
+  <style>
+    body {
+      background-color: #b0aba0; /* Classic beige computer plastic */
+      background-image: repeating-linear-gradient(
+        45deg,
+        rgba(0,0,0,0.02) 0px,
+        rgba(0,0,0,0.02) 2px,
+        transparent 2px,
+        transparent 4px
+      );
+      margin: 0;
+      padding: 40px 20px 150px 20px; /* Bottom padding for the drive slot */
+      font-family: 'Courier New', Courier, monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow-x: hidden;
+    }
+
+    h1 {
+      color: #333;
+      text-shadow: 1px 1px 0px #fff;
+      border-bottom: 2px groove #fff;
+      padding-bottom: 10px;
+      margin-bottom: 40px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    #disk-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 30px;
+      width: 100%;
+      max-width: 1000px;
+    }
+
+    /* --- THE FLOPPY DISK CSS ART --- */
+    .floppy {
+      width: 140px;
+      height: 140px;
+      background: #2a2a2a;
+      border-radius: 5px;
+      position: relative;
+      cursor: pointer;
+      box-shadow: 
+        inset -2px -2px 4px rgba(0,0,0,0.5),
+        inset 2px 2px 4px rgba(255,255,255,0.1),
+        4px 4px 10px rgba(0,0,0,0.4);
+      transition: transform 0.2s, top 0.5s ease-in-out;
+      top: 0;
+      margin: 0 auto;
+    }
+
+    .floppy:hover {
+      transform: translateY(-5px);
+      box-shadow: 
+        inset -2px -2px 4px rgba(0,0,0,0.5),
+        inset 2px 2px 4px rgba(255,255,255,0.1),
+        8px 8px 15px rgba(0,0,0,0.5);
+    }
+
+    /* Metal Shutter */
+    .floppy::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 25px;
+      width: 45px;
+      height: 35px;
+      background: linear-gradient(to right, #ccc, #eee, #ccc);
+      border-radius: 0 0 3px 3px;
+      box-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    }
+
+    /* Bottom indent */
+    .floppy::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      right: 15px;
+      width: 15px;
+      height: 15px;
+      background: #111;
+      border-radius: 2px 2px 0 0;
+    }
+
+    /* The Paper Label */
+    .label {
+      position: absolute;
+      bottom: 15px;
+      left: 15px;
+      right: 15px;
+      height: 75px;
+      background-color: #f4f4f0;
+      background-image: repeating-linear-gradient(
+        to bottom,
+        transparent,
+        transparent 14px,
+        #88b 14px,
+        #88b 15px
+      );
+      border-radius: 3px;
+      padding: 5px;
+      box-sizing: border-box;
+      box-shadow: inset 1px 1px 2px rgba(0,0,0,0.2);
+    }
+
+    .label-text {
+      font-size: 10px;
+      font-weight: bold;
+      color: #000;
+      font-family: "Comic Sans MS", "Arial", sans-serif; /* For that handwritten feel */
+      line-height: 14px;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 4;
+      -webkit-box-orient: vertical;
+    }
+
+    /* Multi-colored plastics */
+    .color-0 { background: #2a2a2a; } /* Black */
+    .color-1 { background: #1b3b5a; } /* Blue */
+    .color-2 { background: #5a1b1b; } /* Red */
+    .color-3 { background: #e0dcd3; } /* Beige */
+    .color-4 { background: #225533; } /* Green */
+
+    /* --- THE RANDOM DISK --- */
+    .floppy.iridescent {
+      background: linear-gradient(124deg, #ff2400, #e81d1d, #e8b71d, #e3e81d, #1de840, #1ddde8, #2b1de8, #dd00f3, #dd00f3);
+      background-size: 1800% 1800%;
+      animation: rainbow 6s ease infinite;
+      transform: scale(1.15); /* Makes it slightly larger */
+      z-index: 10;
+    }
+
+    .floppy.iridescent:hover {
+      transform: scale(1.15) translateY(-4px);
+    }
+
+    @keyframes rainbow { 
+      0% { background-position: 0% 82% }
+      50% { background-position: 100% 19% }
+      100% { background-position: 0% 82% }
+    }
+
+    /* --- THE DRIVE SLOT --- */
+    #drive-bay {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 80px;
+      background: #d4d0c8;
+      border-top: 3px solid #fff;
+      box-shadow: 0 -5px 15px rgba(0,0,0,0.3);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .drive-slot {
+      width: 200px;
+      height: 15px;
+      background: #000;
+      border-bottom: 2px solid #fff;
+      border-radius: 2px;
+      position: relative;
+    }
+
+    .drive-led {
+      position: absolute;
+      right: -25px;
+      top: 2px;
+      width: 10px;
+      height: 10px;
+      background: #330000;
+      border-radius: 50%;
+      border: 1px solid #555;
+      box-shadow: inset 1px 1px 2px rgba(0,0,0,0.5);
+    }
+
+    .drive-led.active {
+      background: #ff0000;
+      box-shadow: 0 0 10px #ff0000, inset 1px 1px 2px rgba(255,255,255,0.5);
+    }
+
+    /* Animation Classes */
+    .inserting {
+      position: fixed !important;
+      z-index: 90;
+      transform: scale(1.2) !important;
+      transition: all 0.8s cubic-bezier(0.5, 0, 0.5, 1);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>A:\ > DIRECTORY_LISTING</h1>
+
+  <div id="disk-grid">
+    </div>
+
+  <div id="drive-bay">
+    <div class="drive-slot">
+      <div class="drive-led" id="drive-led"></div>
+    </div>
+  </div>
+
+  <div style="margin-top: 50px; text-align: center;">
+    <a href="index.html" style="color: #333; text-decoration: none; border-bottom: 1px dashed #333; font-weight: bold;">[ EJECT & RETURN TO CAVE ]</a>
+  </div>
+
+  <script>
+    // System Variables
+    let audioCtx = null;
+    const grid = document.getElementById('disk-grid');
+    const led = document.getElementById('drive-led');
+
+    // Extracted Bookmarks Array
+    const bookmarks = [
+      { title: "On the Infestation of Small-Souled Bugmen", url: "https://hackernoon.com/on-the-infestation-of-small-souled-bugmen-6561ae922e07" },
+      { title: "Home - midifreak.online", url: "https://midifreak.online/flash/" },
+      { title: "Cassette tape in CSS", url: "https://mrtoxas.github.io/cassette-tape-css/" },
+      { title: "The 88x31 GIF Collection | Part 1", url: "https://cyber.dabamos.de/88x31/index.html" },
+      { title: "pixel safari - directory", url: "https://pixelsafari.neocities.org/links/directory/" },
+      { title: "The Million Dollar Homepage", url: "https://milliondollarhomepage.com/" },
+      { title: "Floor796", url: "https://floor796.com/#t5l1,239,109" },
+      { title: "Cameron's World", url: "https://www.cameronsworld.net/" },
+      { title: "codingfont.com", url: "https://www.codingfont.com/" },
+      { title: "The Geocities Gallery", url: "https://geocities.restorativland.org/" },
+      { title: "Holotypic Occlupanid Research Group", url: "https://www.horg.com/horg/" },
+      { title: "Jiji - Bilibili Video Download", url: "https://www.jijidown.com/" },
+      { title: "Retro Wireframe Arcade Background", url: "https://codepen.io/mattjroberts/pen/pazNdx" },
+      { title: "Retro CRT terminal screen in CSS + JS", url: "https://dev.to/ekeijl/retro-crt-terminal-screen-in-css-js-4afh" },
+      { title: "CRT Monitor Styled Codeblocks", url: "https://publish.obsidian.md/xybre/permalink/6b8a4441-c676-40bb-a422-74179e6759f6" },
+      { title: "CSS CRT screen effect", url: "https://codepen.io/lbebber/pen/XJRdrV/" },
+      { title: "system.css | Apple-inspired interfaces", url: "https://sakofchit.github.io/system.css/#radio-buttons" },
+      { title: "matt-auckland/retro-css", url: "https://github.com/matt-auckland/retro-css" },
+      { title: "PSone.css", url: "https://micah5.github.io/PSone.css/" },
+      { title: "Skeuomorphic spacecraft control panel", url: "https://codepen.io/Margarita-the-solid/pen/qENzBWN" },
+      { title: "alonsarias/pureslop", url: "https://github.com/alonsarias/pureslop" },
+      { title: "Sparkling Boxes", url: "https://codepen.io/soju22/pen/pvyaomb" },
+      { title: "A Single Div", url: "https://a.singlediv.com/" },
+      { title: "Bramus on CodePen", url: "https://codepen.io/bramus" },
+      { title: "vhs retro style", url: "https://codepen.io/creme/pen/aPJwEz" },
+      { title: "CSS only animated angled pattern", url: "https://codepen.io/t_afif/pen/xxaOXQr" },
+      { title: "Keep the Web Free, Say No to Web3", url: "https://yesterweb.org/no-to-web3/" },
+      { title: "web-badges-world", url: "https://web.badges.world/" },
+      { title: "The Pug In A Rug", url: "https://puginarug.com/" },
+      { title: "FUTILE", url: "https://futile.ch/en/" },
+      { title: "Koalas to the Max dot Com", url: "https://www.koalastothemax.com/" },
+      { title: "Checkbox Olympics", url: "https://checkbox.toys/#total" },
+      { title: "ant toys", url: "https://ant.toys/" },
+      { title: "EVERY DAY I'M", url: "http://www.everydayim.com/" },
+      { title: "Rotating Sandwiches", url: "https://rotatingsandwiches.com/" }
+    ];
+
+    // 1. Create the Iridescent Random Disk First
+    const randomDisk = document.createElement('div');
+    randomDisk.className = 'floppy iridescent';
+    randomDisk.innerHTML = `
+      <div class="label">
+        <div class="label-text" style="text-align: center; font-size: 12px; margin-top: 15px;">? ? ?<br><br>FEELING<br>LUCKY</div>
+      </div>
+    `;
+    
+    randomDisk.onclick = (e) => {
+      const randomUrl = bookmarks[Math.floor(Math.random() * bookmarks.length)].url;
+      insertDisk(randomDisk, randomUrl, e);
+    };
+    grid.appendChild(randomDisk);
+
+    // 2. Render the rest of the bookmarks
+    bookmarks.forEach((bm, index) => {
+      const disk = document.createElement('div');
+      const colorClass = `color-${Math.floor(Math.random() * 5)}`;
+      disk.className = `floppy ${colorClass}`;
+      
+      disk.innerHTML = `
+        <div class="label">
+          <div class="label-text">${bm.title}</div>
+        </div>
+      `;
+
+      disk.onclick = (e) => insertDisk(disk, bm.url, e);
+      grid.appendChild(disk);
+    });
+
+    // Audio Engine: Synthesized Floppy Drive Grinding
+    function playDriveSound() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      
+      const now = audioCtx.currentTime;
+      
+      // We create a rapid series of harsh square waves to simulate the mechanical stepping motor
+      for (let i = 0; i < 8; i++) {
+        const osc = audioCtx.createOscillator();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(150 + (Math.random() * 50), now + (i * 0.1));
+        
+        const gain = audioCtx.createGain();
+        gain.gain.setValueAtTime(0, now + (i * 0.1));
+        gain.gain.linearRampToValueAtTime(0.3, now + (i * 0.1) + 0.02);
+        gain.gain.linearRampToValueAtTime(0, now + (i * 0.1) + 0.08);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        
+        osc.start(now + (i * 0.1));
+        osc.stop(now + (i * 0.1) + 0.09);
+      }
+    }
+
+    // Interaction Logic
+    function insertDisk(element, url, event) {
+      // Prevent clicking multiple disks
+      if (document.querySelector('.inserting')) return;
+
+      // Get initial position to handle the fixed transition smoothly
+      const rect = element.getBoundingClientRect();
+      element.style.left = rect.left + 'px';
+      element.style.top = rect.top + 'px';
+      element.style.margin = '0';
+      
+      // Trigger animation state
+      element.classList.add('inserting');
+      led.classList.add('active');
+      playDriveSound();
+
+      // Force reflow
+      void element.offsetWidth;
+
+      // Move down into the slot
+      const windowHeight = window.innerHeight;
+      const targetLeft = (window.innerWidth / 2) - 70; // Center it
+      element.style.left = targetLeft + 'px';
+      element.style.top = (windowHeight + 20) + 'px'; // Move below screen
+
+      // Redirect after animation finishes
+      setTimeout(() => {
+        window.open(url, '_blank');
+        
+        // Reset the UI in case they come back to this tab
+        element.classList.remove('inserting');
+        element.style.left = '';
+        element.style.top = '0';
+        element.style.margin = '0 auto';
+        led.classList.remove('active');
+      }, 900);
+    }
+  </script>
+</body>
+</html>
