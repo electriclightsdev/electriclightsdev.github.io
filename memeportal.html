@@ -49,18 +49,61 @@
             height: auto;
         }
 
-        .caption {
+        /* ── EXPAND BUTTON ── */
+        .expand-btn {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 22px;
+            height: 22px;
             background: #000;
-            color: #00FFFF;
-            font-family: 'Courier New', monospace;
-            font-size: 10px;
-            padding: 4px 6px;
-            text-align: center;
-            border-top: 2px solid #333;
-            letter-spacing: 1px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            border: 2px outset #FF00FF;
+            color: #FF00FF;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            font-family: monospace;
+            line-height: 1;
+            padding: 0;
+            transition: background 0.1s;
+        }
+
+        .expand-btn:hover {
+            background: #FF00FF;
+            color: #000;
+        }
+
+        .expand-btn:active {
+            border: 2px inset #FF00FF;
+        }
+
+        /* ── EXPANDED STATE ── */
+        .meme-frame.expanded {
+            width: min(90vw, 700px) !important;
+            margin-left: 5vw !important;
+            z-index: 500;
+            animation: kaboom 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.6) forwards;
+        }
+
+        .meme-frame.collapsing {
+            animation: shrink 0.25s cubic-bezier(0.55, -0.3, 0.7, 0.5) forwards;
+        }
+
+        @keyframes kaboom {
+            0%   { transform: rotate(var(--base-rot)) scale(1); }
+            40%  { transform: rotate(0deg) scale(1.08); filter: brightness(1.4) hue-rotate(30deg); }
+            70%  { transform: rotate(-1deg) scale(1.02); }
+            100% { transform: rotate(0deg) scale(1); filter: none; }
+        }
+
+        @keyframes shrink {
+            0%   { transform: rotate(0deg) scale(1); }
+            40%  { transform: rotate(var(--base-rot)) scale(0.85); filter: brightness(0.7); }
+            100% { transform: rotate(var(--base-rot)) scale(1); filter: none; }
         }
 
         /* ── VIDEO FRAMES ── */
@@ -413,12 +456,15 @@
             frame.className = 'meme-frame';
 
             // Chaos layout
-            const randWidth  = Math.floor(Math.random() * 220) + 160; // 160–380px
-            const randLeft   = Math.floor(Math.random() * 68);         // 0–68%
-            const randRot    = (Math.random() * 18 - 9).toFixed(1);   // -9 to +9deg
+            const randWidth  = Math.floor(Math.random() * 220) + 160;
+            const randLeft   = Math.floor(Math.random() * 68);
+            const randRot    = (Math.random() * 18 - 9).toFixed(1);
             const randShadowColor = Math.random() > 0.5 ? 'rgba(255,0,255,0.5)' : 'rgba(0,255,255,0.4)';
 
             frame.style.setProperty('--left-offset', randLeft + '%');
+            frame.style.setProperty('--base-rot', `${randRot}deg`);
+            frame.dataset.baseWidth = randWidth;
+            frame.dataset.baseLeft = randLeft;
             frame.style.width = randWidth + 'px';
             frame.style.transform = `rotate(${randRot}deg)`;
             frame.style.marginBottom = (Math.floor(Math.random() * 40) + 30) + 'px';
@@ -431,12 +477,13 @@
                 frame.appendChild(buildImageFrame(filename));
             }
 
-            // Caption
-            const caption = document.createElement('div');
-            caption.className = 'caption';
-            // Strip extension for display, uppercase
-            caption.innerText = filename.replace(/\.[^.]+$/, '').toUpperCase().slice(0, 30);
-            frame.appendChild(caption);
+            // Expand button
+            const expandBtn = document.createElement('button');
+            expandBtn.className = 'expand-btn';
+            expandBtn.title = 'BLOW UP';
+            expandBtn.innerText = '⛶';
+            expandBtn.addEventListener('click', () => toggleExpand(frame, expandBtn));
+            frame.appendChild(expandBtn);
 
             container.appendChild(frame);
         });
@@ -449,6 +496,29 @@
             document.getElementById('empty-msg').style.display = 'block';
             document.getElementById('dig-btn').disabled = true;
             document.getElementById('dig-btn').innerText = '[ FULLY EXCAVATED ]';
+        }
+    }
+
+    // ── Toggle expand ──
+    function toggleExpand(frame, btn) {
+        const isExpanded = frame.classList.contains('expanded');
+
+        if (isExpanded) {
+            frame.classList.remove('expanded');
+            frame.classList.add('collapsing');
+            btn.innerText = '⛶';
+            btn.title = 'BLOW UP';
+            frame.addEventListener('animationend', () => {
+                frame.classList.remove('collapsing');
+                frame.style.width = frame.dataset.baseWidth + 'px';
+                frame.style.setProperty('--left-offset', frame.dataset.baseLeft + '%');
+                frame.style.marginLeft = frame.dataset.baseLeft + '%';
+                frame.style.transform = `rotate(${frame.style.getPropertyValue('--base-rot') || '0deg'})`;
+            }, { once: true });
+        } else {
+            frame.classList.add('expanded');
+            btn.innerText = '✕';
+            btn.title = 'SHRINK';
         }
     }
 
