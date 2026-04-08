@@ -1,169 +1,459 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>meme.exe | v1.01</title>
+    <title>meme.exe | v2.0</title>
     <style>
+        * { box-sizing: border-box; }
+
         body {
-            /* Path corrected to your assets folder */
             background-image: url('assets/bg/gifgallery.jpg');
             background-attachment: fixed;
             background-repeat: repeat;
             margin: 0;
             padding: 0;
             font-family: "Arial Black", Gadget, sans-serif;
-            overflow-x: hidden; /* Prevents horizontal scroll from rotations */
+            overflow-x: hidden;
+            cursor: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><text y="14" font-size="14">👆</text></svg>'), auto;
         }
 
         #main-scroll-zone {
             width: 100%;
             min-height: 1000px;
-            padding-bottom: 200px;
+            padding: 20px 20px 220px 20px;
+            position: relative;
         }
 
+        /* ── MEME FRAMES ── */
         .meme-frame {
             background-color: #FFF;
             border: 5px solid #000;
-            padding: 10px;
+            padding: 8px 8px 0 8px;
             position: relative;
-            box-shadow: 10px 10px 0px rgba(0,0,0,0.5);
+            box-shadow: 8px 8px 0px rgba(0,0,0,0.6);
             display: inline-block;
-            transition: transform 0.2s;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            vertical-align: top;
+            margin-bottom: 50px;
+            margin-left: var(--left-offset);
         }
 
         .meme-frame:hover {
-            transform: scale(1.05) !important; /* Pop effect on hover */
+            transform: scale(1.06) rotate(0deg) !important;
+            box-shadow: 14px 14px 0px rgba(0,0,0,0.7);
             z-index: 999;
+        }
+
+        .meme-frame img {
+            display: block;
+            width: 100%;
+            height: auto;
         }
 
         .caption {
             background: #000;
-            color: #00FFFF; /* Teal from your BG */
+            color: #00FFFF;
             font-family: 'Courier New', monospace;
-            font-size: 11px;
-            padding: 4px;
+            font-size: 10px;
+            padding: 4px 6px;
             text-align: center;
-            border-top: 2px solid #000;
+            border-top: 2px solid #333;
+            letter-spacing: 1px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        /* The Windows 95 Style Taskbar */
+        /* ── VIDEO FRAMES ── */
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            cursor: pointer;
+            background: #000;
+            display: block;
+        }
+
+        .video-wrapper video {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        .play-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 56px;
+            height: 56px;
+            background: rgba(0,0,0,0.75);
+            border: 3px solid #FF00FF;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            transition: opacity 0.2s;
+            box-shadow: 0 0 16px #FF00FF88;
+        }
+
+        .play-overlay::after {
+            content: '';
+            display: block;
+            width: 0;
+            height: 0;
+            border-top: 14px solid transparent;
+            border-bottom: 14px solid transparent;
+            border-left: 22px solid #FF00FF;
+            margin-left: 4px;
+        }
+
+        .video-wrapper.playing .play-overlay {
+            opacity: 0;
+        }
+
+        .video-wrapper:hover .play-overlay {
+            opacity: 1 !important;
+            background: rgba(0,0,0,0.9);
+        }
+
+        /* ── LOADING STATE ── */
+        #loading-msg {
+            display: none;
+            text-align: center;
+            color: #FF00FF;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            margin: 20px 0;
+            animation: blink 0.6s step-end infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* ── EMPTY STATE ── */
+        #empty-msg {
+            display: none;
+            text-align: center;
+            background: #000;
+            color: #FFFF00;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            padding: 20px;
+            border: 3px dashed #FFFF00;
+            margin: 40px auto;
+            max-width: 500px;
+        }
+
+        /* ── HEADER ── */
+        #site-header {
+            text-align: center;
+            margin: 20px 0 10px;
+        }
+
+        #site-header .title-box {
+            background: black;
+            color: white;
+            padding: 10px 20px;
+            display: inline-block;
+            border: 3px double white;
+        }
+
+        #site-header h1 {
+            margin: 0;
+            font-size: clamp(18px, 4vw, 32px);
+            letter-spacing: 2px;
+            animation: colorshift 2s infinite;
+        }
+
+        @keyframes colorshift {
+            0%   { color: #fff; }
+            25%  { color: #FF00FF; }
+            50%  { color: #00FFFF; }
+            75%  { color: #FFFF00; }
+            100% { color: #fff; }
+        }
+
+        #site-header .subtitle {
+            color: #00FFFF;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            margin-top: 4px;
+        }
+
+        /* ── LOAD MORE ── */
+        #load-more-container {
+            text-align: center;
+            margin: 30px 0 60px;
+        }
+
+        .btn-90s {
+            background: #FFFF00;
+            border: 6px outset #FFFF00;
+            padding: 15px 30px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: "Arial Black", sans-serif;
+            letter-spacing: 1px;
+            transition: filter 0.1s;
+        }
+
+        .btn-90s:hover {
+            filter: brightness(1.2);
+        }
+
+        .btn-90s:active {
+            border: 6px inset #FFFF00;
+        }
+
+        .btn-90s:disabled {
+            background: #888;
+            border-color: #888;
+            cursor: not-allowed;
+            filter: none;
+        }
+
+        /* ── TASKBAR ── */
         #taskbar {
             position: fixed;
             bottom: 0;
             width: 100%;
-            height: 35px;
+            height: 38px;
             background: #C0C0C0;
             border-top: 2px solid #FFF;
             display: flex;
             align-items: center;
             z-index: 10000;
-            box-shadow: 0px -2px 5px rgba(0,0,0,0.2);
+            box-shadow: 0px -2px 5px rgba(0,0,0,0.3);
+            gap: 8px;
+            padding: 0 8px;
         }
 
         #home-button {
             background: #C0C0C0;
             border: 2px outset #FFF;
             padding: 2px 10px;
-            margin: 0 10px;
             font-weight: bold;
             font-size: 12px;
             cursor: pointer;
+            white-space: nowrap;
+            font-family: "Arial Black", sans-serif;
+        }
+
+        #home-button:active {
+            border: 2px inset #FFF;
+        }
+
+        .taskbar-label {
+            font-size: 11px;
+            color: #444;
+            font-family: monospace;
+            white-space: nowrap;
         }
 
         #counter-display {
             background: #000;
             border: 2px inset #808080;
-            color: #FF00FF; /* Pink from your BG */
-            padding: 2px 15px;
+            color: #FF00FF;
+            padding: 2px 12px;
             font-family: monospace;
+            font-size: 12px;
             margin-left: auto;
-            margin-right: 20px;
+            white-space: nowrap;
         }
 
-        #load-more-container {
-            text-align: center;
-            margin: 50px 0;
-        }
-
-        .btn-90s {
-            background: #FFFF00; /* Yellow */
-            border: 6px outset #FFFF00;
-            padding: 15px 30px;
-            font-size: 20px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .btn-90s:active {
-            border: 6px inset #FFFF00;
+        #total-display {
+            background: #000;
+            border: 2px inset #808080;
+            color: #00FFFF;
+            padding: 2px 12px;
+            font-family: monospace;
+            font-size: 12px;
+            white-space: nowrap;
         }
     </style>
 </head>
 <body>
 
-<center>
-    <div style="background: black; color: white; padding: 10px; display: inline-block; margin-top: 20px; border: 3px double white;">
-        <h1><blink>THE SHITPOST SMITHSONIAN</blink></h1>
+<div id="site-header">
+    <div class="title-box">
+        <h1>THE SHITPOST SMITHSONIAN</h1>
+        <div class="subtitle">MEMPHIS_OS v2.0 // ARCHAEOLOGICAL DIG IN PROGRESS</div>
     </div>
-</center>
+</div>
 
 <div id="main-scroll-zone">
     <div id="meme-container"></div>
-    
+    <div id="loading-msg">EXCAVATING... PLEASE STAND BY</div>
+    <div id="empty-msg">⚠ NO MORE ARTIFACTS FOUND ⚠<br><small>The dig site has been exhausted.</small></div>
+
     <div id="load-more-container">
-        <button class="btn-90s" onclick="digDeeper()">[ DIG DEEPER ]</button>
+        <button class="btn-90s" id="dig-btn" onclick="digDeeper()">[ DIG DEEPER ]</button>
     </div>
 </div>
 
 <div id="taskbar">
-    <div id="home-button" onclick="location.href='index.html'">HOME</div>
-    <div style="font-size: 11px; color: #555;">MEMPHIS_OS v1.0</div>
-    <div id="counter-display">MEMES_FOUND: 0</div>
+    <div id="home-button" onclick="location.href='index.html'">🏠 HOME</div>
+    <div class="taskbar-label">MEMPHIS_OS v2.0</div>
+    <div id="counter-display">EXCAVATED: 0</div>
+    <div id="total-display">TOTAL: ...</div>
 </div>
 
 <script>
-    let memeCount = 0;
-    
-    // Placeholder 90s test images (Replace with your own later)
-    const testPool = [
-        "https://web.archive.org/web/20090829143527im_/http://geocities.com/Heartland/Plains/1385/undercon.gif",
-        "https://web.archive.org/web/20091027005128im_/http://geocities.com/athens/aegean/2559/spinningstar.gif",
-        "https://web.archive.org/web/20090829143527im_/http://geocities.com/Heartland/Plains/1385/new.gif"
-    ];
+    const MEMES_PER_DIG = 6;
+    const VIDEO_EXTS = new Set(['.mp4', '.webm']);
+    const IMAGE_EXTS = new Set(['.jpg', '.jpeg', '.png', '.gif', '.webp']);
 
-    function digDeeper() {
-        const container = document.getElementById('meme-container');
-        
-        for (let i = 0; i < 4; i++) {
-            memeCount++;
-            const frame = document.createElement('div');
-            frame.className = 'meme-frame';
-            
-            // Randomized values for the "Chaotic" look
-            const randWidth = Math.floor(Math.random() * 200) + 150;
-            const randLeft = Math.floor(Math.random() * 65);
-            const randRot = Math.floor(Math.random() * 20) - 10;
-            const randImg = testPool[Math.floor(Math.random() * testPool.length)];
+    let allMemes = [];
+    let shuffled = [];
+    let cursor = 0;
+    let excavated = 0;
 
-            frame.style.width = randWidth + 'px';
-            frame.style.marginLeft = randLeft + '%';
-            frame.style.transform = `rotate(${randRot}deg)`;
-            frame.style.marginBottom = "60px";
-            frame.style.display = "block";
-
-            frame.innerHTML = `
-                <img src="${randImg}" width="100%">
-                <div class="caption">DATA_PHASE_${memeCount}.BMP</div>
-            `;
-            
-            container.appendChild(frame);
+    // ── Shuffle (Fisher-Yates) ──
+    function shuffle(arr) {
+        const a = [...arr];
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
         }
-        
-        document.getElementById('counter-display').innerText = `MEMES_FOUND: ${memeCount}`;
-        window.scrollBy({ top: 400, behavior: 'smooth' });
+        return a;
     }
 
-    // Initial load
-    window.onload = digDeeper;
+    // ── Fetch manifest ──
+    async function loadManifest() {
+        try {
+            const res = await fetch('memes.json');
+            if (!res.ok) throw new Error('manifest not found');
+            allMemes = await res.json();
+            shuffled = shuffle(allMemes);
+            document.getElementById('total-display').innerText = `TOTAL: ${allMemes.length}`;
+            digDeeper(); // initial load
+        } catch (e) {
+            document.getElementById('total-display').innerText = 'TOTAL: ERR';
+            document.getElementById('empty-msg').style.display = 'block';
+            document.getElementById('empty-msg').innerText =
+                '⚠ memes.json NOT FOUND ⚠\nRun generate_manifest.py first!';
+            console.error('Could not load memes.json:', e);
+        }
+    }
+
+    // ── Get file extension ──
+    function getExt(filename) {
+        return filename.slice(filename.lastIndexOf('.')).toLowerCase();
+    }
+
+    // ── Build a video frame ──
+    function buildVideoFrame(src, label) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'video-wrapper';
+
+        const video = document.createElement('video');
+        video.src = `assets/memes/${src}`;
+        video.preload = 'metadata';
+        video.playsInline = true;
+
+        const overlay = document.createElement('div');
+        overlay.className = 'play-overlay';
+
+        wrapper.appendChild(video);
+        wrapper.appendChild(overlay);
+
+        wrapper.addEventListener('click', () => {
+            if (video.paused) {
+                // Pause all other videos first
+                document.querySelectorAll('.video-wrapper video').forEach(v => {
+                    if (v !== video) { v.pause(); v.closest('.video-wrapper').classList.remove('playing'); }
+                });
+                video.play();
+                wrapper.classList.add('playing');
+            } else {
+                video.pause();
+                wrapper.classList.remove('playing');
+            }
+        });
+
+        video.addEventListener('ended', () => wrapper.classList.remove('playing'));
+
+        return wrapper;
+    }
+
+    // ── Build an image frame ──
+    function buildImageFrame(src) {
+        const img = document.createElement('img');
+        img.src = `assets/memes/${src}`;
+        img.loading = 'lazy';
+        img.alt = src;
+        return img;
+    }
+
+    // ── Dig deeper ──
+    function digDeeper() {
+        if (cursor >= shuffled.length) {
+            document.getElementById('empty-msg').style.display = 'block';
+            document.getElementById('dig-btn').disabled = true;
+            document.getElementById('dig-btn').innerText = '[ FULLY EXCAVATED ]';
+            return;
+        }
+
+        const container = document.getElementById('meme-container');
+        const batch = shuffled.slice(cursor, cursor + MEMES_PER_DIG);
+        cursor += MEMES_PER_DIG;
+
+        batch.forEach(filename => {
+            const ext = getExt(filename);
+            const isVideo = VIDEO_EXTS.has(ext);
+            const isImage = IMAGE_EXTS.has(ext);
+            if (!isVideo && !isImage) return;
+
+            excavated++;
+
+            const frame = document.createElement('div');
+            frame.className = 'meme-frame';
+
+            // Chaos layout
+            const randWidth  = Math.floor(Math.random() * 220) + 160; // 160–380px
+            const randLeft   = Math.floor(Math.random() * 68);         // 0–68%
+            const randRot    = (Math.random() * 18 - 9).toFixed(1);   // -9 to +9deg
+            const randShadowColor = Math.random() > 0.5 ? 'rgba(255,0,255,0.5)' : 'rgba(0,255,255,0.4)';
+
+            frame.style.setProperty('--left-offset', randLeft + '%');
+            frame.style.width = randWidth + 'px';
+            frame.style.transform = `rotate(${randRot}deg)`;
+            frame.style.marginBottom = (Math.floor(Math.random() * 40) + 30) + 'px';
+            frame.style.display = 'block';
+            frame.style.boxShadow = `8px 8px 0px ${randShadowColor}`;
+
+            if (isVideo) {
+                frame.appendChild(buildVideoFrame(filename, filename));
+            } else {
+                frame.appendChild(buildImageFrame(filename));
+            }
+
+            // Caption
+            const caption = document.createElement('div');
+            caption.className = 'caption';
+            // Strip extension for display, uppercase
+            caption.innerText = filename.replace(/\.[^.]+$/, '').toUpperCase().slice(0, 30);
+            frame.appendChild(caption);
+
+            container.appendChild(frame);
+        });
+
+        document.getElementById('counter-display').innerText = `EXCAVATED: ${excavated}`;
+
+        if (cursor < shuffled.length) {
+            window.scrollBy({ top: 500, behavior: 'smooth' });
+        } else {
+            document.getElementById('empty-msg').style.display = 'block';
+            document.getElementById('dig-btn').disabled = true;
+            document.getElementById('dig-btn').innerText = '[ FULLY EXCAVATED ]';
+        }
+    }
+
+    // ── Boot ──
+    window.onload = loadManifest;
 </script>
 
 </body>
