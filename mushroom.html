@@ -99,22 +99,38 @@
     .gif-btn:hover  { filter: drop-shadow(0 0 8px #ffcc88) brightness(1.18); }
     .gif-btn.active { filter: drop-shadow(0 0 14px #ff9933) brightness(1.22); }
 
-    /* --- distributed across the full viewport ---        */
-    /* top row: hug the far left/right, clear of title    */
-    .gif-redshroom  { left: 2%;   top: 10%;    width: 70px;  animation: shake 0.45s steps(2,end) infinite; }
-    .gif-worm       { right: 2%;  top: 10%;    width: 88px;  animation: bob 3.2s ease-in-out infinite; }
+    /* ── TOP ROW: far left/right only, title center is clear ── */
+    .gif-redshroom  { left: 2%;   top: 9%;     width: 68px;  animation: shake 0.45s steps(2,end) infinite; }
+    .gif-worm       { right: 2%;  top: 8%;     width: 86px;  animation: bob 3.2s ease-in-out infinite; }
 
-    /* upper-middle: still wide apart, below title zone   */
-    .gif-shroomtiny { left: 18%;  top: 32%;    width: 52px;  animation: blinkBob 2.1s steps(3,end) infinite; }
-    .gif-hat        { right: 16%; top: 30%;    width: 56px;  animation: spinDrift 7s linear infinite; }
+    /* ── UPPER-MID: spread wide, below title ── */
+    .gif-shroomtiny { left: 12%;  top: 28%;    width: 50px;  animation: blinkBob 2.1s steps(3,end) infinite; }
+    .gif-dot        { left: 38%;  top: 25%;    width: 44px;  animation: pulse 3s ease-in-out infinite; }
+    .gif-hat        { right: 10%; top: 27%;    width: 54px;  animation: spinDrift 7s linear infinite; }
 
-    /* middle row */
-    .gif-purple     { left: 4%;   top: 52%;    width: 66px;  animation: floatRotate 5s ease-in-out infinite; }
-    .gif-mystery    { right: 4%;  top: 50%;    width: 76px;  animation: bounce 1.1s cubic-bezier(0.36,0.07,0.19,0.97) infinite alternate; }
+    /* ── MID-LEFT cluster ── */
+    .gif-purple     { left: 2%;   top: 50%;    width: 64px;  animation: floatRotate 5s ease-in-out infinite; }
+    .gif-shroomhouse{ left: 16%;  top: 55%;    width: 80px;  animation: bob 4s ease-in-out infinite; }
 
-    /* bottom row */
-    .gif-girl       { left: 22%;  bottom: 9%;  width: 80px;  animation: sway 5.2s ease-in-out infinite; }
-    .gif-house      { right: 6%;  bottom: 5%;  width: 150px; animation: pulse 2.8s ease-in-out infinite; }
+    /* ── MID-CENTER ── */
+    .gif-egg        { left: 40%;  top: 48%;    width: 70px;  animation: pulse 2.2s ease-in-out infinite; }
+    .gif-hat2       { left: 55%;  top: 42%;    width: 62px;  animation: sway 4.5s ease-in-out infinite; }
+
+    /* ── MID-RIGHT cluster ── */
+    .gif-mystery    { right: 3%;  top: 46%;    width: 74px;  animation: bounce 1.1s cubic-bezier(0.36,0.07,0.19,0.97) infinite alternate; }
+    .gif-acorn      { right: 16%; top: 54%;    width: 56px;  animation: spinDrift 9s linear infinite; }
+
+    /* ── LOWER-MID ── */
+    .gif-slime      { left: 28%;  bottom: 30%; width: 58px;  animation: shake 0.6s steps(2,end) infinite; }
+    .gif-fairy      { left: 50%;  bottom: 28%; width: 60px;  animation: floatRotate 6s ease-in-out infinite; }
+    .gif-troll      { right: 28%; bottom: 26%; width: 66px;  animation: bob 2.8s ease-in-out infinite; }
+
+    /* ── BOTTOM ROW ── */
+    .gif-girl       { left: 4%;   bottom: 8%;  width: 78px;  animation: sway 5.2s ease-in-out infinite; }
+    .gif-elf        { left: 22%;  bottom: 6%;  width: 64px;  animation: bounce 1.4s ease-in-out infinite alternate; }
+    .gif-redhouse   { left: 44%;  bottom: 5%;  width: 72px;  animation: pulse 3.5s ease-in-out infinite; }
+    .gif-bunny      { right: 14%; bottom: 7%;  width: 90px;  animation: blinkBob 3s steps(3,end) infinite; }
+    .gif-house      { right: 2%;  bottom: 4%;  width: 148px; animation: pulse 2.8s ease-in-out infinite; }
 
     @keyframes bob         { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
     @keyframes spinDrift   { 0%{transform:rotate(0deg) translateX(0)} 25%{transform:rotate(90deg) translateX(8px)} 50%{transform:rotate(180deg)} 75%{transform:rotate(270deg) translateX(-8px)} 100%{transform:rotate(360deg)} }
@@ -250,40 +266,51 @@
 
   <!-- GIFS -->
   <img id="gif-redshroom"  class="gif-btn gif-redshroom"  src="assets/mushroomassets/HEQWZRB5AM4VZGGV7GPOYG3IFUSFZNHN.gif" alt="click me">
-  <img id="gif-shroomtiny" class="gif-btn gif-shroomtiny" src="assets/mushroomassets/CEV4GN65DD2CD4ETJOIWA6HXABFHHVGN.gif" alt="click me">
   <img id="gif-worm"       class="gif-btn gif-worm"       src="assets/mushroomassets/4MJCU22KGMVIHJYNICQQ75UQ7JD256NL.gif" alt="click me">
-  <img id="gif-purple"     class="gif-btn gif-purple"     src="assets/mushroomassets/ZJQBCACGTXF3UVVXHS5V6XOGZF7TQSGO.gif" alt="click me">
+  <img id="gif-shroomtiny" class="gif-btn gif-shroomtiny" src="assets/mushroomassets/CEV4GN65DD2CD4ETJOIWA6HXABFHHVGN.gif" alt="click me">
+  <img id="gif-dot"        class="gif-btn gif-dot"        src="assets/mushroomassets/1775777122333_SSOHUTVIVHKZGDD3SBEHG6ED7PLDC3KQ.gif" alt="click me">
   <img id="gif-hat"        class="gif-btn gif-hat"        src="assets/mushroomassets/4YJ6UZPS3QJ7XMGJZFZ5P3SFSUSXHXF.gif" alt="click me">
+  <img id="gif-purple"     class="gif-btn gif-purple"     src="assets/mushroomassets/ZJQBCACGTXF3UVVXHS5V6XOGZF7TQSGO.gif" alt="click me">
+  <img id="gif-shroomhouse"class="gif-btn gif-shroomhouse"src="assets/mushroomassets/1775777122329_U5QYSDA2ONPT6ZFKEWPPN6APNTZDACZF.gif" alt="click me">
+  <img id="gif-egg"        class="gif-btn gif-egg"        src="assets/mushroomassets/1775777122330_WFBXH2K6QQXF7ICMX436QJZR5ZB6BKEF.gif" alt="click me">
+  <img id="gif-hat2"       class="gif-btn gif-hat2"       src="assets/mushroomassets/1775777122330_WLGMVOWF7E3VWEZ2MZ27NQQHGZSUJ3KB.gif" alt="click me">
   <img id="gif-mystery"    class="gif-btn gif-mystery"    src="assets/mushroomassets/BPRGYW3V44BPO22U5K646DBLDGK46PQE.gif" alt="click me">
+  <img id="gif-acorn"      class="gif-btn gif-acorn"      src="assets/mushroomassets/1775777122331_ZJLZ2MEKPBGM4ZDPIZ7QTKGCZOYV5PU4.gif" alt="click me">
+  <img id="gif-slime"      class="gif-btn gif-slime"      src="assets/mushroomassets/1775777122331_2WWU57WK7KKY2OLUBRHCNIWMMMENOFOU.gif" alt="click me">
+  <img id="gif-fairy"      class="gif-btn gif-fairy"      src="assets/mushroomassets/1775777122331_562RJMTO5ZQ6CUIPQI25BQCI57IUK4HH.gif" alt="click me">
+  <img id="gif-troll"      class="gif-btn gif-troll"      src="assets/mushroomassets/1775777122332_ASAHCAJTIHGZNZZQ2KHGGRLRB56GO3C7.gif" alt="click me">
   <img id="gif-girl"       class="gif-btn gif-girl"       src="assets/mushroomassets/PSRNCYN56S6M5VSLYRS7I4EZ3QVAIYYZ.gif" alt="click me">
+  <img id="gif-elf"        class="gif-btn gif-elf"        src="assets/mushroomassets/1775777122332_AZTOSQLI6ZII47J2JOSUYKAIUAWOKASD.gif" alt="click me">
+  <img id="gif-redhouse"   class="gif-btn gif-redhouse"   src="assets/mushroomassets/1775777122332_H2I7QYFM5S6BJ6QYGQZKI2R25GHNS52V.gif" alt="click me">
+  <img id="gif-bunny"      class="gif-btn gif-bunny"      src="assets/mushroomassets/1775777122333_OYJAO7IMFRPAVEPMTFMFR5JRICNJQBHD.gif" alt="click me">
   <img id="gif-house"      class="gif-btn gif-house"      src="assets/mushroomassets/SOMDR3ONROVBKVM4B6G5O6KCGO2L22IX.gif" alt="click me">
 
   <!-- TORN PAPER CARDS -->
-  <div id="card-redshroom" class="card" style="transform: rotate(-2deg)">
+  <div id="card-redshroom" class="card" style="transform:rotate(-2deg)">
     <button class="card-close" onclick="closeCard('redshroom')">✕</button>
     <span class="card-tag">🍄 shrine: mushrooms</span>
     <p>over <strong>14,000</strong> known species of mushroom exist — and scientists think we've found maybe 10% of all fungi on earth. the rest are out there. waiting.</p>
   </div>
 
-  <div id="card-shroomtiny" class="card" style="transform: rotate(1.5deg)">
-    <button class="card-close" onclick="closeCard('shroomtiny')">✕</button>
-    <span class="card-tag">🍄 shrine: fun fact</span>
-    <p>the largest living organism on earth is a honey fungus in oregon. it spans <strong>2.4 miles</strong> and is around 8,000 years old. we are living on an ancient mushroom.</p>
-  </div>
-
-  <div id="card-worm" class="card" style="transform: rotate(-1deg)">
+  <div id="card-worm" class="card" style="transform:rotate(-1deg)">
     <button class="card-close" onclick="closeCard('worm')">✕</button>
     <span class="card-tag">✿ about me</span>
     <p>hello!! i'm the keeper of the mushroom palace 🍄 i live in a cozy corner of the internet and i think about fungi way too much.</p>
   </div>
 
-  <div id="card-purple" class="card" style="transform: rotate(2deg)">
-    <button class="card-close" onclick="closeCard('purple')">✕</button>
-    <span class="card-tag">🍄 shrine: mycelium</span>
-    <p>underground, fungi form vast networks called mycelium that connect trees and help them share nutrients. some call it the wood wide web 🌲✨ i think about this constantly.</p>
+  <div id="card-shroomtiny" class="card" style="transform:rotate(1.5deg)">
+    <button class="card-close" onclick="closeCard('shroomtiny')">✕</button>
+    <span class="card-tag">🍄 shrine: fun fact</span>
+    <p>the largest living organism on earth is a honey fungus in oregon. it spans <strong>2.4 miles</strong> and is around 8,000 years old. we are living on an ancient mushroom.</p>
   </div>
 
-  <div id="card-hat" class="card" style="transform: rotate(-2.5deg)">
+  <div id="card-dot" class="card" style="transform:rotate(2deg)">
+    <button class="card-close" onclick="closeCard('dot')">✕</button>
+    <span class="card-tag">🏰 palace lore</span>
+    <p>the palace was not built. it grew. one morning it was simply here, smelling of rain and old wood. no one questions this.</p>
+  </div>
+
+  <div id="card-hat" class="card" style="transform:rotate(-2.5deg)">
     <button class="card-close" onclick="closeCard('hat')">✕</button>
     <span class="card-tag">✿ things i like</span>
     <ul>
@@ -295,19 +322,85 @@
     </ul>
   </div>
 
-  <div id="card-mystery" class="card" style="transform: rotate(1deg)">
+  <div id="card-purple" class="card" style="transform:rotate(2deg)">
+    <button class="card-close" onclick="closeCard('purple')">✕</button>
+    <span class="card-tag">🍄 shrine: mycelium</span>
+    <p>underground, fungi form vast networks called mycelium that connect trees and help them share nutrients. some call it the wood wide web 🌲✨ i think about this constantly.</p>
+  </div>
+
+  <div id="card-shroomhouse" class="card" style="transform:rotate(-1.5deg)">
+    <button class="card-close" onclick="closeCard('shroomhouse')">✕</button>
+    <span class="card-tag">🏰 palace lore</span>
+    <p>the east wing of the palace is occupied by a family of beetles. they pay rent in the form of small smooth pebbles. this is considered fair.</p>
+  </div>
+
+  <div id="card-egg" class="card" style="transform:rotate(1deg)">
+    <button class="card-close" onclick="closeCard('egg')">✕</button>
+    <span class="card-tag">🌿 cottagecore</span>
+    <p>there is something sacred about a shelf of glass jars. dried flowers. a candle that smells like pine. a window with rain against it. this is the dream.</p>
+  </div>
+
+  <div id="card-hat2" class="card" style="transform:rotate(-2deg)">
+    <button class="card-close" onclick="closeCard('hat2')">✕</button>
+    <span class="card-tag">🍄 shrine: spores</span>
+    <p>a single puffball mushroom can release <strong>7 trillion spores</strong> in its lifetime. if every spore survived, the resulting fungus would outweigh the earth. they do not all survive.</p>
+  </div>
+
+  <div id="card-mystery" class="card" style="transform:rotate(1deg)">
     <button class="card-close" onclick="closeCard('mystery')">✕</button>
     <span class="card-tag">❓ mystery corner</span>
     <p>i don't know what this little guy is. he lives here now. he seems content. please do not disturb him.</p>
   </div>
 
-  <div id="card-girl" class="card" style="transform: rotate(-1.5deg)">
+  <div id="card-acorn" class="card" style="transform:rotate(2.5deg)">
+    <button class="card-close" onclick="closeCard('acorn')">✕</button>
+    <span class="card-tag">🌿 cottagecore</span>
+    <p>the ideal morning: fog outside, something warm in your hands, no obligations, a small creature visiting your windowsill. you will see it again tomorrow.</p>
+  </div>
+
+  <div id="card-slime" class="card" style="transform:rotate(-1deg)">
+    <button class="card-close" onclick="closeCard('slime')">✕</button>
+    <span class="card-tag">🏰 palace lore</span>
+    <p>the palace library contains exactly one book. it is always open to a different page. no one has ever seen it turn. the current page reads: <em>"you are doing well."</em></p>
+  </div>
+
+  <div id="card-fairy" class="card" style="transform:rotate(1.5deg)">
+    <button class="card-close" onclick="closeCard('fairy')">✕</button>
+    <span class="card-tag">🌿 cottagecore</span>
+    <p>fairy rings — circles of mushrooms in grass — were once believed to be portals left by dancing fairies. scientists now know they're fungal growth patterns. both explanations are correct.</p>
+  </div>
+
+  <div id="card-troll" class="card" style="transform:rotate(-2deg)">
+    <button class="card-close" onclick="closeCard('troll')">✕</button>
+    <span class="card-tag">🏰 palace lore</span>
+    <p>there is a troll who lives under the garden bridge. he is grumpy but fair. he asks visitors one question. no one will say what the question is.</p>
+  </div>
+
+  <div id="card-girl" class="card" style="transform:rotate(-1.5deg)">
     <button class="card-close" onclick="closeCard('girl')">✕</button>
     <span class="card-tag">✿ more about me</span>
     <p>i love rpgs, rainy days, warm drinks, and books with maps in the front. if you have mushroom photos please send them to me immediately.</p>
   </div>
 
-  <div id="card-house" class="card" style="transform: rotate(2.5deg)">
+  <div id="card-elf" class="card" style="transform:rotate(2deg)">
+    <button class="card-close" onclick="closeCard('elf')">✕</button>
+    <span class="card-tag">🍄 shrine: decomposers</span>
+    <p>fungi are decomposers — they break down dead matter and return nutrients to the soil. without them, the forest floor would be buried under centuries of leaves. they are the cleanup crew of the world.</p>
+  </div>
+
+  <div id="card-redhouse" class="card" style="transform:rotate(-1deg)">
+    <button class="card-close" onclick="closeCard('redhouse')">✕</button>
+    <span class="card-tag">🏰 palace lore</span>
+    <p>the red mushroom by the gate is the oldest resident. she does not speak but she remembers everything. she was here before the palace. she will be here after.</p>
+  </div>
+
+  <div id="card-bunny" class="card" style="transform:rotate(1.5deg)">
+    <button class="card-close" onclick="closeCard('bunny')">✕</button>
+    <span class="card-tag">🌿 cottagecore</span>
+    <p>there is no better feeling than sitting very still in a forest until the animals forget you are there. you become part of it. you were always part of it.</p>
+  </div>
+
+  <div id="card-house" class="card" style="transform:rotate(2.5deg)">
     <button class="card-close" onclick="closeCard('house')">✕</button>
     <span class="card-tag">🍄 shrine: on mushrooms</span>
     <p>mushrooms don't photosynthesize. they eat. they digest the world quietly, in the dark. i find this deeply relatable.</p>
@@ -316,16 +409,25 @@
   <script>
     const GAP = 14;
 
-    // For each gif, preferred card placement relative to the gif
-    // try: array of positions to attempt in order until one fits
     const prefs = {
       redshroom:  ['right', 'below', 'left'],
-      shroomtiny: ['below', 'right', 'left'],
       worm:       ['left',  'below', 'right'],
+      shroomtiny: ['right', 'below', 'left'],
+      dot:        ['below', 'right', 'left'],
+      hat:        ['left',  'below', 'right'],
       purple:     ['right', 'above', 'below'],
-      hat:        ['above', 'right', 'left'],
+      shroomhouse:['right', 'above', 'below'],
+      egg:        ['above', 'right', 'left'],
+      hat2:       ['above', 'left',  'right'],
       mystery:    ['left',  'above', 'below'],
+      acorn:      ['left',  'above', 'below'],
+      slime:      ['above', 'right', 'left'],
+      fairy:      ['above', 'right', 'left'],
+      troll:      ['above', 'left',  'right'],
       girl:       ['above', 'right', 'left'],
+      elf:        ['above', 'right', 'left'],
+      redhouse:   ['above', 'right', 'left'],
+      bunny:      ['above', 'left',  'right'],
       house:      ['left',  'above', 'right'],
     };
 
@@ -339,7 +441,7 @@
       const vh   = window.innerHeight;
 
       const attempts = prefs[id] || ['right','below','left','above'];
-      let left = 0, top = 0, placed = false;
+      let left = 0, top = 0;
 
       for (const dir of attempts) {
         if (dir === 'right') {
@@ -355,10 +457,8 @@
           left = gr.left + gr.width / 2 - cw / 2;
           top  = gr.top - ch - GAP;
         }
-        // clamp & check fits
         left = Math.max(8, Math.min(vw - cw - 8, left));
         top  = Math.max(36, Math.min(vh - ch - 8, top));
-        placed = true;
         break;
       }
 
@@ -367,7 +467,6 @@
     }
 
     function openCard(id) {
-      // close others
       document.querySelectorAll('.card.open').forEach(c => {
         const cid = c.id.replace('card-', '');
         if (cid !== id) closeCard(cid);
@@ -376,9 +475,7 @@
       const card = document.getElementById('card-' + id);
       const gif  = document.getElementById('gif-'  + id);
 
-      if (card.classList.contains('open')) {
-        closeCard(id); return;
-      }
+      if (card.classList.contains('open')) { closeCard(id); return; }
 
       card.classList.add('open');
       gif.classList.add('active');
