@@ -6,8 +6,42 @@
   <title>A:\ > BOOKMARKS</title>
   <link rel="icon" type="image/png" href="assets/icon2.gif">
   <style>
+    /* ===================== BIOS SCREEN ===================== */
+    #bios-screen {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      color: #aaa;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      padding: 20px 30px;
+      z-index: 9999;
+      overflow: hidden;
+    }
+    #bios-screen .bios-line { opacity: 0; }
+    #bios-screen .bios-line.visible { opacity: 1; }
+    #bios-screen .bios-white { color: #fff; }
+    #bios-screen .bios-cyan { color: #0ff; }
+    #bios-screen .bios-yellow { color: #ff0; }
+    #bios-screen .bios-green { color: #0f0; }
+    #bios-screen .bios-red { color: #f00; }
+    #bios-screen .bios-bar-bg { color: #333; }
+    #bios-skip {
+      position: absolute;
+      bottom: 20px;
+      right: 30px;
+      color: #555;
+      font-size: 12px;
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* ===================== MAIN PAGE ===================== */
+    * { box-sizing: border-box; }
+
     body {
-      background-color: #b0aba0; /* Classic beige computer plastic */
+      background-color: #b0aba0;
       background-image: repeating-linear-gradient(
         45deg,
         rgba(0,0,0,0.02) 0px,
@@ -16,7 +50,7 @@
         transparent 4px
       );
       margin: 0;
-      padding: 40px 20px 150px 20px; /* Bottom padding for the drive slot */
+      padding: 40px 20px 150px 20px;
       font-family: 'Courier New', Courier, monospace;
       display: flex;
       flex-direction: column;
@@ -24,25 +58,129 @@
       overflow-x: hidden;
     }
 
+    #main-content { opacity: 0; transition: opacity 0.5s; }
+    #main-content.visible { opacity: 1; }
+
     h1 {
       color: #333;
       text-shadow: 1px 1px 0px #fff;
       border-bottom: 2px groove #fff;
       padding-bottom: 10px;
-      margin-bottom: 40px;
+      margin-bottom: 20px;
       text-transform: uppercase;
       letter-spacing: 2px;
     }
 
+    /* ===================== DOS SEARCH ===================== */
+    #search-bar {
+      width: 100%;
+      max-width: 1000px;
+      margin-bottom: 30px;
+      display: flex;
+      align-items: center;
+      gap: 0;
+      background: #000;
+      border: 2px inset #888;
+      padding: 6px 10px;
+    }
+    #search-prompt {
+      color: #0f0;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      white-space: nowrap;
+      margin-right: 6px;
+    }
+    #search-input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #0f0;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      flex: 1;
+      caret-color: #0f0;
+    }
+    #search-cursor {
+      width: 8px;
+      height: 14px;
+      background: #0f0;
+      animation: blink 0.7s step-end infinite;
+      flex-shrink: 0;
+    }
+    #result-count {
+      color: #0f0;
+      font-size: 11px;
+      font-family: 'Courier New', monospace;
+      margin-left: 10px;
+      opacity: 0.6;
+      white-space: nowrap;
+    }
+
+    /* ===================== TAG FILTER ===================== */
+    #tag-filter {
+      width: 100%;
+      max-width: 1000px;
+      margin-bottom: 30px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    #tag-filter span {
+      font-size: 11px;
+      color: #555;
+      margin-right: 4px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .tag-btn {
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      padding: 3px 10px;
+      border: 2px outset #ccc;
+      background: #d4d0c8;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #333;
+      transition: all 0.1s;
+      position: relative;
+    }
+    .tag-btn::before {
+      content: '';
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 5px;
+      vertical-align: middle;
+    }
+    .tag-btn[data-tag="art"]::before        { background: #c0392b; }
+    .tag-btn[data-tag="weird"]::before      { background: #8e44ad; }
+    .tag-btn[data-tag="learning"]::before   { background: #2980b9; }
+    .tag-btn[data-tag="tech"]::before       { background: #27ae60; }
+    .tag-btn[data-tag="reading"]::before    { background: #e67e22; }
+    .tag-btn[data-tag="tools"]::before      { background: #7f8c8d; }
+    .tag-btn[data-tag="rabbit hole"]::before { background: #c0392b; filter: hue-rotate(160deg); }
+    .tag-btn.active {
+      border-style: inset;
+      background: #bbb;
+      box-shadow: inset 1px 1px 3px rgba(0,0,0,0.3);
+    }
+
+    /* ===================== GRID ===================== */
     #disk-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
       gap: 30px;
       width: 100%;
       max-width: 1000px;
+      align-items: end;
     }
 
-    /* --- THE FLOPPY DISK CSS ART --- */
+    .disk-hidden { display: none !important; }
+
+    /* ===================== 3.5" FLOPPY ===================== */
     .floppy {
       width: 140px;
       height: 140px;
@@ -50,7 +188,7 @@
       border-radius: 5px;
       position: relative;
       cursor: pointer;
-      box-shadow: 
+      box-shadow:
         inset -2px -2px 4px rgba(0,0,0,0.5),
         inset 2px 2px 4px rgba(255,255,255,0.1),
         4px 4px 10px rgba(0,0,0,0.4);
@@ -58,66 +196,125 @@
       top: 0;
       margin: 0 auto;
     }
-
     .floppy:hover {
       transform: translateY(-5px);
-      box-shadow: 
+      box-shadow:
         inset -2px -2px 4px rgba(0,0,0,0.5),
         inset 2px 2px 4px rgba(255,255,255,0.1),
         8px 8px 15px rgba(0,0,0,0.5);
     }
-
-    /* Metal Shutter */
+    /* Metal shutter */
     .floppy::before {
       content: '';
       position: absolute;
-      top: 0;
-      left: 25px;
-      width: 45px;
-      height: 35px;
+      top: 0; left: 25px;
+      width: 45px; height: 35px;
       background: linear-gradient(to right, #ccc, #eee, #ccc);
       border-radius: 0 0 3px 3px;
       box-shadow: 1px 1px 3px rgba(0,0,0,0.5);
     }
-
-    /* Bottom indent */
+    /* Bottom write-protect notch */
     .floppy::after {
       content: '';
       position: absolute;
-      bottom: 0;
-      right: 15px;
-      width: 15px;
-      height: 15px;
+      bottom: 0; right: 15px;
+      width: 15px; height: 15px;
       background: #111;
       border-radius: 2px 2px 0 0;
     }
 
-    /* The Paper Label */
+    /* ===================== 5.25" FLOPPY ===================== */
+    .floppy-525 {
+      width: 130px;
+      height: 130px;
+      background: #2a2a2a;
+      border-radius: 3px;
+      position: relative;
+      cursor: pointer;
+      box-shadow:
+        inset -2px -2px 4px rgba(0,0,0,0.5),
+        inset 2px 2px 4px rgba(255,255,255,0.1),
+        4px 4px 10px rgba(0,0,0,0.4);
+      transition: transform 0.2s;
+      margin: 0 auto;
+      top: 0;
+    }
+    .floppy-525:hover {
+      transform: translateY(-5px);
+      box-shadow:
+        inset -2px -2px 4px rgba(0,0,0,0.5),
+        inset 2px 2px 4px rgba(255,255,255,0.1),
+        8px 8px 15px rgba(0,0,0,0.5);
+    }
+    /* Hub hole */
+    .floppy-525::before {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 30px; height: 30px;
+      background: radial-gradient(circle, #888 40%, #555 60%, #2a2a2a 100%);
+      border-radius: 50%;
+      border: 2px solid #444;
+      box-shadow: 0 0 0 6px rgba(0,0,0,0.3);
+      z-index: 2;
+    }
+    /* Write protect notch */
+    .floppy-525::after {
+      content: '';
+      position: absolute;
+      top: 20px; right: 0;
+      width: 0; height: 0;
+      border-top: 12px solid transparent;
+      border-right: 12px solid #b0aba0;
+      border-bottom: 12px solid transparent;
+    }
+    /* Fabric sleeve opening */
+    .floppy-525 .sleeve-opening {
+      position: absolute;
+      bottom: 10px; left: 15px; right: 15px;
+      height: 12px;
+      background: #111;
+      border-radius: 2px;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.8);
+      z-index: 2;
+    }
+
+    /* The paper label on 5.25" */
+    .floppy-525 .label {
+      position: absolute;
+      top: 8px; left: 8px; right: 8px;
+      height: 55px;
+      background-color: #f4f4f0;
+      background-image: repeating-linear-gradient(
+        to bottom, transparent, transparent 11px, #88b 11px, #88b 12px
+      );
+      border-radius: 2px;
+      padding: 4px;
+      box-shadow: inset 1px 1px 2px rgba(0,0,0,0.2);
+      z-index: 3;
+    }
+
+    /* ===================== LABEL (shared) ===================== */
     .label {
       position: absolute;
-      bottom: 15px;
-      left: 15px;
-      right: 15px;
+      bottom: 15px; left: 15px; right: 15px;
       height: 75px;
       background-color: #f4f4f0;
       background-image: repeating-linear-gradient(
-        to bottom,
-        transparent,
-        transparent 14px,
-        #88b 14px,
-        #88b 15px
+        to bottom, transparent, transparent 14px, #88b 14px, #88b 15px
       );
       border-radius: 3px;
       padding: 5px;
-      box-sizing: border-box;
       box-shadow: inset 1px 1px 2px rgba(0,0,0,0.2);
+      overflow: hidden;
     }
 
     .label-text {
       font-size: 10px;
       font-weight: bold;
       color: #000;
-      font-family: "Comic Sans MS", "Arial", sans-serif; /* For that handwritten feel */
+      font-family: "Comic Sans MS", "Arial", sans-serif;
       line-height: 14px;
       overflow: hidden;
       display: -webkit-box;
@@ -125,39 +322,175 @@
       -webkit-box-orient: vertical;
     }
 
-    /* Multi-colored plastics */
-    .color-0 { background: #2a2a2a; } /* Black */
-    .color-1 { background: #1b3b5a; } /* Blue */
-    .color-2 { background: #5a1b1b; } /* Red */
-    .color-3 { background: #e0dcd3; } /* Beige */
-    .color-4 { background: #225533; } /* Green */
+    /* Favicon sticker on label */
+    .label-favicon {
+      position: absolute;
+      bottom: 4px; right: 4px;
+      width: 16px; height: 16px;
+      border: 1px solid rgba(0,0,0,0.15);
+      border-radius: 2px;
+      background: white;
+      image-rendering: pixelated;
+    }
 
-    /* --- THE RANDOM DISK --- */
+    /* ===================== PIXEL ART STICKERS ===================== */
+    .sticker {
+      position: absolute;
+      z-index: 5;
+      pointer-events: none;
+    }
+    .sticker svg { display: block; }
+
+    /* ===================== WEAR & AGING ===================== */
+    .scuff-1::after { /* subtle scratch overlay via box-shadow — handled inline */ }
+
+    .label.worn {
+      background-color: #e8e4dc;
+      filter: contrast(0.9) sepia(0.1);
+    }
+    .label.coffee-ring::before {
+      content: '';
+      position: absolute;
+      top: 10px; right: 8px;
+      width: 28px; height: 20px;
+      border: 2px solid rgba(100,60,20,0.25);
+      border-radius: 50%;
+      box-shadow: inset 0 0 4px rgba(100,60,20,0.1);
+      transform: rotate(-15deg);
+      pointer-events: none;
+    }
+    .label.dog-ear {
+      clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+    }
+
+    /* ===================== DISK COLORS ===================== */
+    /* tag-based */
+    .tag-art         { background: #5a1b1b; }
+    .tag-weird       { background: #3b1b5a; }
+    .tag-learning    { background: #1b3b5a; }
+    .tag-tech        { background: #1b4a2a; }
+    .tag-reading     { background: #4a3010; }
+    .tag-tools       { background: #3a3a3a; }
+    .tag-rabbit-hole { background: #4a1a35; }
+
+    /* fallback colors */
+    .color-0 { background: #2a2a2a; }
+    .color-1 { background: #1b3b5a; }
+    .color-2 { background: #5a1b1b; }
+    .color-3 { background: #e0dcd3; }
+    .color-4 { background: #225533; }
+
+    /* beige disks need dark label lines */
+    .color-3 .label {
+      background-image: repeating-linear-gradient(
+        to bottom, transparent, transparent 14px, #9999bb 14px, #9999bb 15px
+      );
+    }
+
+    /* ===================== IRIDESCENT RANDOM DISK ===================== */
     .floppy.iridescent {
       background: linear-gradient(124deg, #ff2400, #e81d1d, #e8b71d, #e3e81d, #1de840, #1ddde8, #2b1de8, #dd00f3, #dd00f3);
       background-size: 1800% 1800%;
       animation: rainbow 6s ease infinite;
-      transform: scale(1.15); /* Makes it slightly larger */
+      transform: scale(1.15);
       z-index: 10;
     }
-
-    .floppy.iridescent:hover {
-      transform: scale(1.15) translateY(-4px);
-    }
-
-    @keyframes rainbow { 
-      0% { background-position: 0% 82% }
-      50% { background-position: 100% 19% }
+    .floppy.iridescent:hover { transform: scale(1.15) translateY(-4px); }
+    @keyframes rainbow {
+      0%   { background-position: 0% 82% }
+      50%  { background-position: 100% 19% }
       100% { background-position: 0% 82% }
     }
 
-    /* --- THE DRIVE SLOT --- */
+    /* ===================== CONFIDENTIAL DISK ===================== */
+    .floppy.confidential {
+      background: repeating-linear-gradient(
+        45deg, #cc0000, #cc0000 10px, #aa0000 10px, #aa0000 20px
+      );
+    }
+    .floppy.confidential .label {
+      background-color: #fff0f0;
+      background-image: none;
+    }
+    .floppy.confidential .label-text {
+      color: #cc0000;
+      text-align: center;
+      font-size: 9px;
+      font-family: 'Courier New', monospace;
+      letter-spacing: 1px;
+      margin-top: 8px;
+    }
+
+    /* spark animation */
+    .spark {
+      position: fixed;
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: #ff0;
+      pointer-events: none;
+      z-index: 200;
+      animation: spark-fly 0.4s ease-out forwards;
+    }
+    @keyframes spark-fly {
+      0%   { opacity: 1; transform: translate(0,0) scale(1); }
+      100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0); }
+    }
+
+    /* ===================== WIN95 TOOLTIP ===================== */
+    #win95-tooltip {
+      position: fixed;
+      z-index: 500;
+      display: none;
+      width: 220px;
+      background: #d4d0c8;
+      border: 2px solid;
+      border-color: #fff #808080 #808080 #fff;
+      box-shadow: 2px 2px 0 #000;
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      pointer-events: none;
+    }
+    #win95-tooltip .tt-titlebar {
+      background: linear-gradient(to right, #000080, #1084d0);
+      color: #fff;
+      font-weight: bold;
+      padding: 3px 6px;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    #win95-tooltip .tt-titlebar .tt-icon {
+      width: 14px; height: 14px;
+      background: #d4d0c8;
+      border: 1px solid #000;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      flex-shrink: 0;
+    }
+    #win95-tooltip .tt-body {
+      padding: 8px;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 2px 8px;
+    }
+    #win95-tooltip .tt-key { color: #555; }
+    #win95-tooltip .tt-val { color: #000; word-break: break-all; }
+    #win95-tooltip .tt-divider {
+      grid-column: 1/-1;
+      height: 1px;
+      background: #808080;
+      margin: 4px 0;
+      box-shadow: 0 1px 0 #fff;
+    }
+
+    /* ===================== DRIVE BAY ===================== */
     #drive-bay {
       position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 80px;
+      bottom: 0; left: 0;
+      width: 100%; height: 80px;
       background: #d4d0c8;
       border-top: 3px solid #fff;
       box-shadow: 0 -5px 15px rgba(0,0,0,0.3);
@@ -166,48 +499,98 @@
       align-items: center;
       z-index: 100;
     }
-
     .drive-slot {
-      width: 200px;
-      height: 15px;
+      width: 200px; height: 15px;
       background: #000;
       border-bottom: 2px solid #fff;
       border-radius: 2px;
       position: relative;
     }
-
     .drive-led {
       position: absolute;
-      right: -25px;
-      top: 2px;
-      width: 10px;
-      height: 10px;
+      right: -25px; top: 2px;
+      width: 10px; height: 10px;
       background: #330000;
       border-radius: 50%;
       border: 1px solid #555;
       box-shadow: inset 1px 1px 2px rgba(0,0,0,0.5);
     }
-
     .drive-led.active {
       background: #ff0000;
       box-shadow: 0 0 10px #ff0000, inset 1px 1px 2px rgba(255,255,255,0.5);
     }
+    .drive-led.flicker {
+      animation: led-flicker 0.1s step-end 6;
+    }
+    @keyframes led-flicker {
+      0%,100% { background: #330000; box-shadow: none; }
+      50%      { background: #ff6600; box-shadow: 0 0 8px #ff6600; }
+    }
 
-    /* Animation Classes */
+    /* ===================== INSERT ANIMATION ===================== */
     .inserting {
       position: fixed !important;
       z-index: 90;
       transform: scale(1.2) !important;
       transition: all 0.8s cubic-bezier(0.5, 0, 0.5, 1);
     }
+
+    /* ===================== EJECT ANIMATION ===================== */
+    .ejecting {
+      position: fixed !important;
+      z-index: 90;
+      transition: all 0.6s cubic-bezier(0.2, 0.8, 0.3, 1.2) !important;
+    }
+
+    /* ===================== NAV LINK ===================== */
+    #nav-link {
+      margin-top: 50px;
+      text-align: center;
+    }
+    #nav-link a {
+      color: #333;
+      text-decoration: none;
+      border-bottom: 1px dashed #333;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
 
-  <h1>A:\ > DIRECTORY_LISTING</h1>
+  <!-- BIOS SCREEN -->
+  <div id="bios-screen">
+    <div id="bios-content"></div>
+    <div id="bios-skip">PRESS ANY KEY TO SKIP</div>
+  </div>
 
-  <div id="disk-grid">
+  <!-- MAIN CONTENT -->
+  <div id="main-content">
+    <h1>A:\ > DIRECTORY_LISTING</h1>
+
+    <div id="search-bar">
+      <span id="search-prompt">A:\BOOKMARKS&gt;&nbsp;</span>
+      <input type="text" id="search-input" placeholder="TYPE TO SEARCH..." autocomplete="off" spellcheck="false">
+      <div id="search-cursor"></div>
+      <span id="result-count"></span>
     </div>
+
+    <div id="tag-filter">
+      <span>FILTER:</span>
+      <button class="tag-btn" data-tag="art">art</button>
+      <button class="tag-btn" data-tag="weird">weird</button>
+      <button class="tag-btn" data-tag="learning">learning</button>
+      <button class="tag-btn" data-tag="tech">tech</button>
+      <button class="tag-btn" data-tag="reading">reading</button>
+      <button class="tag-btn" data-tag="tools">tools</button>
+      <button class="tag-btn" data-tag="rabbit hole">rabbit hole</button>
+    </div>
+
+    <div id="disk-grid"></div>
+
+    <div id="nav-link">
+      <a href="index.html">[ EJECT &amp; RETURN TO CAVE ]</a>
+    </div>
+  </div>
 
   <div id="drive-bay">
     <div class="drive-slot">
@@ -215,207 +598,758 @@
     </div>
   </div>
 
-  <div style="margin-top: 50px; text-align: center;">
-    <a href="index.html" style="color: #333; text-decoration: none; border-bottom: 1px dashed #333; font-weight: bold;">[ EJECT & RETURN TO CAVE ]</a>
+  <!-- WIN95 TOOLTIP -->
+  <div id="win95-tooltip">
+    <div class="tt-titlebar">
+      <span class="tt-icon">📄</span>
+      <span id="tt-title">Properties</span>
+    </div>
+    <div class="tt-body" id="tt-body"></div>
   </div>
 
   <script>
-    // System Variables
-    let audioCtx = null;
-    const grid = document.getElementById('disk-grid');
-    const led = document.getElementById('drive-led');
+  // ================================================================
+  //  BIOS BOOT SEQUENCE
+  // ================================================================
+  const biosLines = [
+    { text: 'CAVE-BIOS v2.4.1  (C) 1994 CaveWare Inc.', cls: 'bios-white', delay: 0 },
+    { text: 'CPU: 486DX2-66   Math Coprocessor: Present', delay: 120 },
+    { text: 'Memory Test: ', delay: 240, append: true, appendText: '640K OK', appendCls: 'bios-green', pause: 400 },
+    { text: 'Extended Memory: 8192K OK', cls: 'bios-green', delay: 700 },
+    { text: '', delay: 800 },
+    { text: 'Detecting IDE Drives...', delay: 900 },
+    { text: '  Primary Master  : ST3120026A    [120GB]', cls: 'bios-cyan', delay: 1100 },
+    { text: '  Primary Slave   : NONE', delay: 1200 },
+    { text: '  Secondary Master: CD-ROM DRIVE', cls: 'bios-cyan', delay: 1300 },
+    { text: '', delay: 1400 },
+    { text: 'Floppy Drive A: 3.5" 1.44MB', delay: 1500 },
+    { text: 'Floppy Drive B: 5.25" 360KB', delay: 1600 },
+    { text: '', delay: 1700 },
+    { text: 'Loading CAVE.SYS...', delay: 1800 },
+    { text: 'Loading BOOKMARKS.DRV...', delay: 1950 },
+    { text: 'Loading WEIRD.SYS...', delay: 2050 },
+    { text: '', delay: 2150 },
+    { text: '████████████████████████ 100%', cls: 'bios-green', delay: 2200, isBar: true },
+    { text: '', delay: 2500 },
+    { text: 'ALL SYSTEMS NOMINAL. STARTING CAVE SHELL...', cls: 'bios-yellow', delay: 2600 },
+    { text: '', delay: 2700 },
+    { text: 'C:\\> _', cls: 'bios-white', delay: 2800 },
+  ];
 
-    // Extracted Bookmarks Array
-    const bookmarks = [
-      { title: "On the Infestation of Small-Souled Bugmen", url: "https://hackernoon.com/on-the-infestation-of-small-souled-bugmen-6561ae922e07" },
-      { title: "Home - midifreak.online", url: "https://midifreak.online/flash/" },
-      { title: "Cassette tape in CSS", url: "https://mrtoxas.github.io/cassette-tape-css/" },
-      { title: "The 88x31 GIF Collection | Part 1", url: "https://cyber.dabamos.de/88x31/index.html" },
-      { title: "pixel safari - directory", url: "https://pixelsafari.neocities.org/links/directory/" },
-      { title: "The Million Dollar Homepage", url: "https://milliondollarhomepage.com/" },
-      { title: "Floor796", url: "https://floor796.com/#t5l1,239,109" },
-      { title: "Cameron's World", url: "https://www.cameronsworld.net/" },
-      { title: "codingfont.com", url: "https://www.codingfont.com/" },
-      { title: "The Geocities Gallery", url: "https://geocities.restorativland.org/" },
-      { title: "Holotypic Occlupanid Research Group", url: "https://www.horg.com/horg/" },
-      { title: "Jiji - Bilibili Video Download", url: "https://www.jijidown.com/" },
-      { title: "Retro Wireframe Arcade Background", url: "https://codepen.io/mattjroberts/pen/pazNdx" },
-      { title: "Retro CRT terminal screen in CSS + JS", url: "https://dev.to/ekeijl/retro-crt-terminal-screen-in-css-js-4afh" },
-      { title: "CRT Monitor Styled Codeblocks", url: "https://publish.obsidian.md/xybre/permalink/6b8a4441-c676-40bb-a422-74179e6759f6" },
-      { title: "CSS CRT screen effect", url: "https://codepen.io/lbebber/pen/XJRdrV/" },
-      { title: "system.css | Apple-inspired interfaces", url: "https://sakofchit.github.io/system.css/#radio-buttons" },
-      { title: "matt-auckland/retro-css", url: "https://github.com/matt-auckland/retro-css" },
-      { title: "PSone.css", url: "https://micah5.github.io/PSone.css/" },
-      { title: "Skeuomorphic spacecraft control panel", url: "https://codepen.io/Margarita-the-solid/pen/qENzBWN" },
-      { title: "alonsarias/pureslop", url: "https://github.com/alonsarias/pureslop" },
-      { title: "Sparkling Boxes", url: "https://codepen.io/soju22/pen/pvyaomb" },
-      { title: "A Single Div", url: "https://a.singlediv.com/" },
-      { title: "Bramus on CodePen", url: "https://codepen.io/bramus" },
-      { title: "vhs retro style", url: "https://codepen.io/creme/pen/aPJwEz" },
-      { title: "CSS only animated angled pattern", url: "https://codepen.io/t_afif/pen/xxaOXQr" },
-      { title: "Keep the Web Free, Say No to Web3", url: "https://yesterweb.org/no-to-web3/" },
-      { title: "web-badges-world", url: "https://web.badges.world/" },
-      { title: "The Pug In A Rug", url: "https://puginarug.com/" },
-      { title: "FUTILE", url: "https://futile.ch/en/" },
-      { title: "Koalas to the Max dot Com", url: "https://www.koalastothemax.com/" },
-      { title: "Checkbox Olympics", url: "https://checkbox.toys/#total" },
-      { title: "ant toys", url: "https://ant.toys/" },
-      { title: "EVERY DAY I'M", url: "http://www.everydayim.com/" },
-      { title: "Rotating Sandwiches", url: "https://rotatingsandwiches.com/" }
-	  { title: "Networking For Beginners : HomeNetworking", url: "https://www.reddit.com/r/HomeNetworking/comments/2905p1/networking_for_beginners/" },
-  { title: "Full stack open 2022", url: "https://fullstackopen.com/en/" },
-  { title: "Why Learning to Code is So Damn Hard | Thinkful", url: "https://www.thinkful.com/blog/why-learning-to-code-is-so-damn-hard/" },
-  { title: "The Hacks of Mr. Robot: How to Build a Hacking Raspberry Pi « Null Byte :: WonderHowTo", url: "https://null-byte.wonderhowto.com/how-to/hacks-mr-robot-build-hacking-raspberry-pi-0163143/" },
-  { title: "Expanded Main Page - OSDev Wiki", url: "https://wiki.osdev.org/Expanded_Main_Page" },
-  { title: "RaspAP — Simple wireless router setup for Debian-based devices", url: "https://raspap.com/#quick" },
-  { title: "What is ired.team notes? | Red Team Notes", url: "https://www.ired.team/" },
-  { title: "Vx Underground", url: "https://vx-underground.org/" },
-  { title: "About Me | Crow's Nest", url: "https://www.crow.rip/crows-nest" },
-  { title: "Challenging projects every programmer should try - Austin Z. Henley", url: "https://austinhenley.com/blog/challengingprojects.html" },
-  { title: "tresc/STS2_Tracker: An STS2 stat tracker", url: "https://github.com/tresc/STS2_Tracker" },
-  { title: "I Have No Mouth and I Must Scream", url: "https://galacticjourney.org/stories/I_Have_No_Mouth_and_I_Must_Scream_-_Harlan_Ellison.pdf" },
-  { title: "EverythingMoe - Index of best Anime/Manga sites", url: "https://everythingmoe.com/" },
-  { title: "Welcome • freemediaheckyeah", url: "https://fmhy.net/" },
-  { title: "Akinator, the mind reading genie", url: "https://en.akinator.com/" },
-  { title: "Corrupt a file - Corrupt file online, deliver on time!", url: "https://corrupt-a-file.net/" },
-  { title: "Stratechery by Ben Thompson – On the business, strategy, and impact of technology.", url: "https://stratechery.com/" },
-  { title: "Have I Been Pwned: Check if your email address has been exposed in a data breach", url: "https://haveibeenpwned.com/" },
-  { title: "IFTTT - Automate business & home", url: "https://ifttt.com/" },
-  { title: "Linux Journey: Learn Linux with Free Linux Tutorial & Course", url: "https://labex.io/linuxjourney" },
-  { title: "Steve's Computer Collection", url: "https://oldcomputers.net/" },
-  { title: "Text faces | Lenny face ( ͡° ͜ʖ ͡°), shrug face ¯\\_(ツ)_/¯, look of disapproval ಠ_ಠ and more.", url: "https://textfac.es/" },
-  { title: "The Illustrated TLS Connection: Every Byte Explained", url: "https://tls12.xargs.org/" },
-  { title: "Test your IPv6.", url: "https://test-ipv6.com/" },
-  { title: "Zoomquilt - The infinitely zooming image", url: "https://zzz.zoomquilt.org/" },
-  { title: "Neal.fun", url: "https://neal.fun/" },
-  { title: "The Hydrant Directory", url: "https://www.dayroselane.com/hydrants?utm_source=weekly-dirt.beehiiv.com&utm_medium=newsletter&utm_campaign=sneaky-links" },
-  { title: "JSKIDPIX v1.0.2021 | JS KidPix for the web", url: "https://kidpix.app/" },
-  { title: "Cameron's World", url: "https://www.cameronsworld.net/" },
-  { title: "LOW←TECH MAGAZINE", url: "https://solar.lowtechmagazine.com/" },
-  { title: "xkcd: Overton", url: "https://xkcd.com/" },
-  { title: "The Wiki Game - Wikipedia Game - Explore Wikipedia!", url: "https://www.thewikigame.com/" },
-  { title: "GAM.ONL 🕹️ Play Retro Games Online", url: "https://gam.onl/" },
-  { title: "Glottolog 5.3 -", url: "https://glottolog.org/" },
-  { title: "The Museum of Modern Art, New York City | MoMA", url: "https://www.moma.org/" },
-  { title: "Vintage Obscura Radio", url: "https://vintageobscura.net/" },
-  { title: "WINDOWS93", url: "https://www.windows93.net/" },
-  { title: "Home | Library of Congress", url: "https://www.loc.gov/" },
-  { title: "Main - SCP Foundation", url: "https://scp-wiki.wikidot.com/" },
-  { title: "Anna's Secret Garden", url: "https://annasgarden.vercel.app/" },
-  { title: "Solitude and Leadership - The American Scholar", url: "https://theamericanscholar.org/solitude-and-leadership/" },
-  { title: "George Orwell: Some Thoughts on the Common Toad", url: "https://orwell.ru/library/articles/Common_Toad/english/e_ctoad" },
-  { title: "The strange, preachy, profitable saga of Billy Jack / The Dissolve", url: "https://thedissolve.com/features/forgotbusters/593-forgotbusters-billy-jackthe-trial-of-billy-jack/" },
-  { title: "The Kekulé Problem - Nautilus", url: "https://nautil.us/the-kekul-problem-236574?amp=" },
-  { title: "Stone Skipping Is a Lost Art. Kurt Steiner Wants the World to Find It.", url: "https://www.outsideonline.com/outdoor-adventure/water-activities/stone-skipping-kurt-steiner/" },
-  { title: "This is Water by David Foster Wallace (Full Transcript and Audio)", url: "https://fs.blog/david-foster-wallace-this-is-water/" },
-  { title: "406-706-Looking-Back-Moving-Forward-Jessica-Handler.pdf", url: "https://sanmiguelwritersconference.org/wp-content/uploads/2017/10/406-706-Looking-Back-Moving-Forward-Jessica-Handler.pdf" },
-  { title: "index.cfm", url: "https://www.bookbrowse.com/excerpts/index.cfm?fuseaction=printable&book_number=2058" },
-  { title: "web.mit.edu/tibbetts/Public/fear_and_loathing.txt", url: "https://web.mit.edu/tibbetts/Public/fear_and_loathing.txt" },
-  { title: "Reading Stash: 9 Superb Short Novels You Can Finish Over The Weekend - Book recommendations and suggestions", url: "http://readingstash.com/9-superb-short-novels-you-can-finish-over-the-weekend" },
-  { title: "Disney movies", url: "http://cornel1801.com/disney/movies.html" },
-  { title: "The H. P. Lovecraft Historical Society", url: "http://www.cthulhulives.org/" },
-  { title: "Short Stories by Clark Ashton Smith", url: "http://www.eldritchdark.com/writings/short-stories/" },
-  { title: "Rebel Force Radio: Star Wars Podcast", url: "http://rebelforceradio.libsyn.com/" },
-  { title: "Space Station 13", url: "https://spacestation13.com/about/" },
-  { title: "Why Linux is better", url: "http://whylinuxisbetter.net/en/" },
-  { title: "Die, Workwear! —", url: "https://dieworkwear.com/" },
-  { title: "Courses - CS50's Introduction to Databases with SQL", url: "https://cs50.harvard.edu/sql/2024/courses/" }
-    ];
+  function runBios(onDone) {
+    const container = document.getElementById('bios-content');
+    let timers = [];
+    let done = false;
 
-    // 1. Create the Iridescent Random Disk First
-    const randomDisk = document.createElement('div');
-    randomDisk.className = 'floppy iridescent';
-    randomDisk.innerHTML = `
-      <div class="label">
-        <div class="label-text" style="text-align: center; font-size: 12px; margin-top: 15px;">? ? ?<br><br>FEELING<br>LUCKY</div>
-      </div>
-    `;
-    
-    randomDisk.onclick = (e) => {
-      const randomUrl = bookmarks[Math.floor(Math.random() * bookmarks.length)].url;
-      insertDisk(randomDisk, randomUrl, e);
-    };
-    grid.appendChild(randomDisk);
+    function finish() {
+      if (done) return;
+      done = true;
+      timers.forEach(clearTimeout);
+      document.getElementById('bios-screen').style.transition = 'opacity 0.6s';
+      document.getElementById('bios-screen').style.opacity = '0';
+      setTimeout(() => {
+        document.getElementById('bios-screen').style.display = 'none';
+        onDone();
+      }, 600);
+    }
 
-    // 2. Render the rest of the bookmarks
-    bookmarks.forEach((bm, index) => {
-      const disk = document.createElement('div');
-      const colorClass = `color-${Math.floor(Math.random() * 5)}`;
-      disk.className = `floppy ${colorClass}`;
-      
-      disk.innerHTML = `
-        <div class="label">
-          <div class="label-text">${bm.title}</div>
-        </div>
-      `;
+    document.addEventListener('keydown', finish, { once: true });
+    document.getElementById('bios-screen').addEventListener('click', finish, { once: true });
 
-      disk.onclick = (e) => insertDisk(disk, bm.url, e);
-      grid.appendChild(disk);
+    biosLines.forEach(line => {
+      const t = setTimeout(() => {
+        if (done) return;
+        const div = document.createElement('div');
+        div.className = 'bios-line visible' + (line.cls ? ' ' + line.cls : '');
+
+        if (line.isBar) {
+          // animate the bar
+          div.innerHTML = '';
+          div.style.color = '#0f0';
+          container.appendChild(div);
+          let pct = 0;
+          const barInterval = setInterval(() => {
+            if (done) { clearInterval(barInterval); return; }
+            pct = Math.min(pct + 4, 100);
+            const filled = Math.floor(pct / 4);
+            div.textContent = '█'.repeat(filled) + '░'.repeat(25 - filled) + ' ' + pct + '%';
+            if (pct >= 100) clearInterval(barInterval);
+          }, 30);
+        } else if (line.append) {
+          div.textContent = line.text;
+          container.appendChild(div);
+          setTimeout(() => {
+            const span = document.createElement('span');
+            span.className = line.appendCls || '';
+            span.textContent = line.appendText;
+            div.appendChild(span);
+          }, line.pause || 300);
+        } else {
+          div.textContent = line.text || '\u00a0';
+          container.appendChild(div);
+        }
+
+        container.scrollTop = container.scrollHeight;
+      }, line.delay);
+      timers.push(t);
     });
 
-    // Audio Engine: Synthesized Floppy Drive Grinding
-    function playDriveSound() {
-      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      if (audioCtx.state === 'suspended') audioCtx.resume();
-      
-      const now = audioCtx.currentTime;
-      
-      // We create a rapid series of harsh square waves to simulate the mechanical stepping motor
-      for (let i = 0; i < 8; i++) {
-        const osc = audioCtx.createOscillator();
-        osc.type = 'square';
-        osc.frequency.setValueAtTime(150 + (Math.random() * 50), now + (i * 0.1));
-        
-        const gain = audioCtx.createGain();
-        gain.gain.setValueAtTime(0, now + (i * 0.1));
-        gain.gain.linearRampToValueAtTime(0.3, now + (i * 0.1) + 0.02);
-        gain.gain.linearRampToValueAtTime(0, now + (i * 0.1) + 0.08);
+    // Auto-finish after all lines + buffer
+    const lastDelay = Math.max(...biosLines.map(l => l.delay)) + 1200;
+    const autoT = setTimeout(finish, lastDelay);
+    timers.push(autoT);
+  }
 
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        
-        osc.start(now + (i * 0.1));
-        osc.stop(now + (i * 0.1) + 0.09);
-      }
+  // ================================================================
+  //  PIXEL ART STICKER LIBRARY  (inline SVG snippets)
+  // ================================================================
+  const stickers = [
+    // star
+    `<svg width="18" height="18" viewBox="0 0 9 9"><polygon points="4.5,0.5 5.5,3.5 8.5,3.5 6,5.5 7,8.5 4.5,6.5 2,8.5 3,5.5 0.5,3.5 3.5,3.5" fill="#f1c40f" stroke="none"/></svg>`,
+    // smiley
+    `<svg width="16" height="16" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3.5" fill="#f9e100" stroke="#c8a800" stroke-width="0.5"/><rect x="2.5" y="2.5" width="1" height="1.5" fill="#333"/><rect x="4.5" y="2.5" width="1" height="1.5" fill="#333"/><path d="M2.5 5.5 Q4 7 5.5 5.5" stroke="#333" stroke-width="0.5" fill="none"/></svg>`,
+    // heart
+    `<svg width="16" height="14" viewBox="0 0 8 7"><path d="M4 6.5 C4 6.5 0.5 4 0.5 2 C0.5 0.5 2 0 3 1 C3.5 1.5 4 2 4 2 C4 2 4.5 1.5 5 1 C6 0 7.5 0.5 7.5 2 C7.5 4 4 6.5 4 6.5Z" fill="#e74c3c"/></svg>`,
+    // lightning bolt
+    `<svg width="12" height="18" viewBox="0 0 6 9"><polygon points="4,0 1,4.5 3.5,4.5 2,9 5,4 3,4" fill="#f39c12"/></svg>`,
+    // peace sign
+    `<svg width="16" height="16" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3.5" fill="none" stroke="#2c3e50" stroke-width="0.7"/><line x1="4" y1="0.5" x2="4" y2="7.5" stroke="#2c3e50" stroke-width="0.7"/><line x1="4" y1="4" x2="1" y2="7" stroke="#2c3e50" stroke-width="0.7"/><line x1="4" y1="4" x2="7" y2="7" stroke="#2c3e50" stroke-width="0.7"/></svg>`,
+    // skull
+    `<svg width="14" height="16" viewBox="0 0 7 8"><rect x="1" y="0" width="5" height="5" rx="2" fill="#ecf0f1" stroke="#bdc3c7" stroke-width="0.3"/><rect x="1.5" y="1.5" width="1.5" height="1.5" fill="#333"/><rect x="4" y="1.5" width="1.5" height="1.5" fill="#333"/><rect x="2" y="5" width="3" height="2.5" rx="0.5" fill="#ecf0f1" stroke="#bdc3c7" stroke-width="0.3"/><rect x="2.5" y="5.5" width="0.7" height="1.5" fill="#bdc3c7"/><rect x="3.8" y="5.5" width="0.7" height="1.5" fill="#bdc3c7"/></svg>`,
+    // flower
+    `<svg width="16" height="16" viewBox="0 0 8 8"><circle cx="4" cy="2" r="1.2" fill="#e91e63"/><circle cx="6" cy="3.2" r="1.2" fill="#e91e63"/><circle cx="6" cy="5.2" r="1.2" fill="#e91e63"/><circle cx="4" cy="6.4" r="1.2" fill="#e91e63"/><circle cx="2" cy="5.2" r="1.2" fill="#e91e63"/><circle cx="2" cy="3.2" r="1.2" fill="#e91e63"/><circle cx="4" cy="4" r="1.5" fill="#f9e100"/></svg>`,
+    // arrow
+    `<svg width="18" height="12" viewBox="0 0 9 6"><polygon points="5,0 9,3 5,6 5,4 0,4 0,2 5,2" fill="#3498db"/></svg>`,
+    null, null, null, // nulls = no sticker (weighted toward no sticker)
+  ];
+
+  // ================================================================
+  //  WEAR HELPERS
+  // ================================================================
+  function applyWear(diskEl, labelEl, rng) {
+    if (rng() < 0.3) labelEl.classList.add('worn');
+    if (rng() < 0.15) labelEl.classList.add('coffee-ring');
+    if (rng() < 0.2) labelEl.classList.add('dog-ear');
+
+    // Slight label rotation
+    const skew = (rng() * 4 - 2);
+    if (Math.abs(skew) > 0.5) {
+      labelEl.style.transform = `rotate(${skew.toFixed(1)}deg)`;
     }
+  }
 
-    // Interaction Logic
-    function insertDisk(element, url, event) {
-      // Prevent clicking multiple disks
-      if (document.querySelector('.inserting')) return;
+  function applySticker(labelEl, rng) {
+    const sticker = stickers[Math.floor(rng() * stickers.length)];
+    if (!sticker) return;
+    const div = document.createElement('div');
+    div.className = 'sticker';
+    div.style.top = (rng() * 30 + 5) + 'px';
+    div.style.right = (rng() * 10 + 2) + 'px';
+    div.style.transform = `rotate(${(rng() * 30 - 15).toFixed(0)}deg)`;
+    div.innerHTML = sticker;
+    labelEl.appendChild(div);
+  }
 
-      // Get initial position to handle the fixed transition smoothly
-      const rect = element.getBoundingClientRect();
-      element.style.left = rect.left + 'px';
-      element.style.top = rect.top + 'px';
-      element.style.margin = '0';
-      
-      // Trigger animation state
-      element.classList.add('inserting');
-      led.classList.add('active');
-      playDriveSound();
+  // ================================================================
+  //  SEEDED RNG (so wear is stable per title, not random on reload)
+  // ================================================================
+  function seededRng(seed) {
+    let s = seed;
+    return function() {
+      s = (s * 1664525 + 1013904223) & 0xffffffff;
+      return (s >>> 0) / 0xffffffff;
+    };
+  }
+  function hashStr(str) {
+    let h = 5381;
+    for (let i = 0; i < str.length; i++) h = ((h << 5) + h) + str.charCodeAt(i);
+    return h >>> 0;
+  }
 
-      // Force reflow
-      void element.offsetWidth;
+  // ================================================================
+  //  WIN95 TOOLTIP
+  // ================================================================
+  const tooltip = document.getElementById('win95-tooltip');
+  const ttTitle = document.getElementById('tt-title');
+  const ttBody = document.getElementById('tt-body');
+  let tooltipTarget = null;
+  let tooltipTimer = null;
 
-      // Move down into the slot
-      const windowHeight = window.innerHeight;
-      const targetLeft = (window.innerWidth / 2) - 70; // Center it
-      element.style.left = targetLeft + 'px';
-      element.style.top = (windowHeight + 20) + 'px'; // Move below screen
+  function showTooltip(bm, x, y) {
+    const domain = (() => { try { return new URL(bm.url).hostname; } catch(e) { return bm.url; } })();
+    const fakeSizes = ['12 KB','16 KB','4 KB','64 KB','128 KB','8 KB','256 KB','32 KB'];
+    const fakeSize = fakeSizes[hashStr(bm.title) % fakeSizes.length];
+    const fakeDate = (() => {
+      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      const h = hashStr(bm.title);
+      return months[h % 12] + ' ' + (1 + (h >> 4) % 28) + ', 199' + (3 + (h >> 8) % 7);
+    })();
 
-      // Redirect after animation finishes
+    ttTitle.textContent = domain;
+    ttBody.innerHTML = `
+      <span class="tt-key">File:</span><span class="tt-val">${bm.title.slice(0,24)}${bm.title.length>24?'…':''}</span>
+      <span class="tt-key">Type:</span><span class="tt-val">URL Shortcut</span>
+      <div class="tt-divider"></div>
+      <span class="tt-key">Location:</span><span class="tt-val">${domain}</span>
+      <span class="tt-key">Size:</span><span class="tt-val">${fakeSize}</span>
+      <span class="tt-key">Accessed:</span><span class="tt-val">${fakeDate}</span>
+      <span class="tt-key">Tag:</span><span class="tt-val">${bm.tag || 'misc'}</span>
+    `;
+
+    // Position: offset from cursor, keep on screen
+    const tw = 220, th = 130;
+    let lx = x + 14, ly = y + 14;
+    if (lx + tw > window.innerWidth) lx = x - tw - 4;
+    if (ly + th > window.innerHeight) ly = y - th - 4;
+    tooltip.style.left = lx + 'px';
+    tooltip.style.top = ly + 'px';
+    tooltip.style.display = 'block';
+  }
+
+  function hideTooltip() {
+    tooltip.style.display = 'none';
+    clearTimeout(tooltipTimer);
+  }
+
+  document.addEventListener('mousemove', (e) => {
+    if (tooltip.style.display === 'block') {
+      const tw = 220, th = 130;
+      let lx = e.clientX + 14, ly = e.clientY + 14;
+      if (lx + tw > window.innerWidth) lx = e.clientX - tw - 4;
+      if (ly + th > window.innerHeight) ly = e.clientY - th - 4;
+      tooltip.style.left = lx + 'px';
+      tooltip.style.top = ly + 'px';
+    }
+  });
+
+  // ================================================================
+  //  AUDIO ENGINE
+  // ================================================================
+  let audioCtx = null;
+  function getAudio() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    return audioCtx;
+  }
+
+  function playDriveSound() {
+    const ctx = getAudio();
+    const now = ctx.currentTime;
+    for (let i = 0; i < 8; i++) {
+      const osc = ctx.createOscillator();
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(150 + (Math.random() * 50), now + i * 0.1);
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0, now + i * 0.1);
+      gain.gain.linearRampToValueAtTime(0.3, now + i * 0.1 + 0.02);
+      gain.gain.linearRampToValueAtTime(0, now + i * 0.1 + 0.08);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start(now + i * 0.1); osc.stop(now + i * 0.1 + 0.09);
+    }
+  }
+
+  function playErrorSound() {
+    const ctx = getAudio();
+    const now = ctx.currentTime;
+    // harsh buzz + screech
+    const osc = ctx.createOscillator();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(80, now);
+    osc.frequency.linearRampToValueAtTime(40, now + 0.3);
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.5, now);
+    gain.gain.linearRampToValueAtTime(0, now + 0.4);
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.start(now); osc.stop(now + 0.4);
+
+    const osc2 = ctx.createOscillator();
+    osc2.type = 'square';
+    osc2.frequency.setValueAtTime(220, now + 0.1);
+    osc2.frequency.linearRampToValueAtTime(110, now + 0.35);
+    const gain2 = ctx.createGain();
+    gain2.gain.setValueAtTime(0.4, now + 0.1);
+    gain2.gain.linearRampToValueAtTime(0, now + 0.35);
+    osc2.connect(gain2); gain2.connect(ctx.destination);
+    osc2.start(now + 0.1); osc2.stop(now + 0.35);
+  }
+
+  function playEjectSound() {
+    const ctx = getAudio();
+    const now = ctx.currentTime;
+    // short mechanical clunk
+    const osc = ctx.createOscillator();
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(200, now);
+    osc.frequency.linearRampToValueAtTime(400, now + 0.05);
+    osc.frequency.linearRampToValueAtTime(100, now + 0.15);
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.25, now);
+    gain.gain.linearRampToValueAtTime(0, now + 0.18);
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.start(now); osc.stop(now + 0.2);
+  }
+
+  // ================================================================
+  //  SPARK EFFECT (for confidential disk)
+  // ================================================================
+  function spawnSparks(x, y) {
+    for (let i = 0; i < 18; i++) {
+      const spark = document.createElement('div');
+      spark.className = 'spark';
+      const angle = Math.random() * Math.PI * 2;
+      const dist = 20 + Math.random() * 60;
+      spark.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
+      spark.style.setProperty('--dy', Math.sin(angle) * dist + 'px');
+      spark.style.left = x + 'px';
+      spark.style.top = y + 'px';
+      spark.style.background = ['#ff0','#f90','#fff','#ff4400'][Math.floor(Math.random()*4)];
+      spark.style.animationDuration = (0.2 + Math.random() * 0.3) + 's';
+      document.body.appendChild(spark);
+      setTimeout(() => spark.remove(), 600);
+    }
+  }
+
+  // ================================================================
+  //  EJECT LOGIC (tab refocus)
+  // ================================================================
+  let lastInsertedDisk = null;
+  let lastInsertedOrigin = null;
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && lastInsertedDisk) {
+      const disk = lastInsertedDisk;
+      lastInsertedDisk = null;
+      lastInsertedOrigin = null;
+      ejectDisk(disk);
+    }
+  });
+
+  function ejectDisk(diskEl) {
+    playEjectSound();
+    const led = document.getElementById('drive-led');
+    led.classList.remove('active');
+
+    // Strip .inserting first — its CSS applies position:fixed which would fight us
+    diskEl.classList.remove('inserting');
+
+    // Place it at the slot to start the animation from
+    const slotRect = document.querySelector('.drive-slot').getBoundingClientRect();
+    diskEl.style.cssText = '';
+    diskEl.style.position = 'fixed';
+    diskEl.style.left = (slotRect.left + slotRect.width / 2 - 70) + 'px';
+    diskEl.style.top = (window.innerHeight + 20) + 'px';
+    diskEl.style.zIndex = '90';
+    diskEl.style.margin = '0';
+    diskEl.style.transition = 'none';
+    diskEl.style.transform = 'scale(1.1)';
+
+    void diskEl.offsetWidth; // force reflow before animating
+
+    // Fly up to center of viewport
+    diskEl.style.transition = 'all 0.6s cubic-bezier(0.2, 0.8, 0.3, 1.2)';
+    diskEl.style.left = (window.innerWidth / 2 - 70) + 'px';
+    diskEl.style.top = (window.innerHeight / 2 - 80) + 'px';
+    diskEl.style.transform = 'scale(1.1) rotate(-8deg)';
+
+    // Fade out
+    setTimeout(() => {
+      diskEl.style.transition = 'all 0.3s ease-in';
+      diskEl.style.opacity = '0';
+      diskEl.style.transform = 'scale(0.9) rotate(0deg)';
+    }, 500);
+
+    // Full reset back into grid flow
+    setTimeout(() => {
+      diskEl.style.cssText = '';
+      diskEl.style.margin = '0 auto';
+      diskEl.style.opacity = '1';
+    }, 850);
+  }
+
+  // ================================================================
+  //  INSERT LOGIC
+  // ================================================================
+  function insertDisk(element, url, event) {
+    if (document.querySelector('.inserting')) return;
+    const led = document.getElementById('drive-led');
+
+    const rect = element.getBoundingClientRect();
+    lastInsertedDisk = element;
+    lastInsertedOrigin = rect;
+
+    element.style.left = rect.left + 'px';
+    element.style.top = rect.top + 'px';
+    element.style.margin = '0';
+
+    element.classList.add('inserting');
+    led.classList.add('active');
+    playDriveSound();
+
+    void element.offsetWidth;
+
+    const targetLeft = (window.innerWidth / 2) - 70;
+    element.style.left = targetLeft + 'px';
+    element.style.top = (window.innerHeight + 20) + 'px';
+
+    setTimeout(() => {
+      window.open(url, '_blank');
+      // If tab visibility never changes (popup blocked, same-tab nav, etc),
+      // clear the lock after a safe delay so the user isn't stuck
       setTimeout(() => {
-        window.open(url, '_blank');
-        
-        // Reset the UI in case they come back to this tab
-        element.classList.remove('inserting');
-        element.style.left = '';
-        element.style.top = '0';
-        element.style.margin = '0 auto';
-        led.classList.remove('active');
-      }, 900);
+        if (lastInsertedDisk === element) {
+          element.classList.remove('inserting');
+          element.style.cssText = '';
+          element.style.margin = '0 auto';
+          led.classList.remove('active');
+          lastInsertedDisk = null;
+          lastInsertedOrigin = null;
+        }
+      }, 3000);
+    }, 900);
+  }
+
+  // ================================================================
+  //  CONFIDENTIAL DISK INTERACTION
+  // ================================================================
+  function insertConfidential(element, event) {
+    if (document.querySelector('.inserting')) return;
+    const led = document.getElementById('drive-led');
+
+    const rect = element.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+
+    // Slide toward slot a little
+    const origTop = rect.top;
+    element.style.position = 'fixed';
+    element.style.left = rect.left + 'px';
+    element.style.top = rect.top + 'px';
+    element.style.margin = '0';
+    element.style.transition = 'top 0.3s ease-in';
+
+    void element.offsetWidth;
+    element.style.top = (origTop + 30) + 'px';
+
+    // Sparks + error sound + LED flicker
+    setTimeout(() => {
+      spawnSparks(cx, cy + 30);
+      playErrorSound();
+      led.classList.add('flicker');
+      element.style.transition = 'top 0.15s ease-out';
+      element.style.top = origTop + 'px'; // snap back
+    }, 300);
+
+    setTimeout(() => {
+      led.classList.remove('flicker');
+      element.style.cssText = '';
+      element.style.margin = '0 auto';
+    }, 800);
+  }
+
+  // ================================================================
+  //  SEARCH & FILTER
+  // ================================================================
+  const searchInput = document.getElementById('search-input');
+  const resultCount = document.getElementById('result-count');
+  let activeTag = null;
+
+  function applyFilters() {
+    const q = searchInput.value.toLowerCase().trim();
+    const diskEls = document.querySelectorAll('.disk-item');
+    let visible = 0;
+    diskEls.forEach(el => {
+      const title = (el.dataset.title || '').toLowerCase();
+      const tag = (el.dataset.tag || '').toLowerCase();
+      const matchSearch = !q || title.includes(q);
+      const matchTag = !activeTag || tag === activeTag;
+      if (matchSearch && matchTag) {
+        el.classList.remove('disk-hidden');
+        visible++;
+      } else {
+        el.classList.add('disk-hidden');
+      }
+    });
+    resultCount.textContent = q || activeTag ? `[${visible} FOUND]` : '';
+  }
+
+  searchInput.addEventListener('input', applyFilters);
+
+  document.querySelectorAll('.tag-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tag = btn.dataset.tag;
+      if (activeTag === tag) {
+        activeTag = null;
+        btn.classList.remove('active');
+      } else {
+        document.querySelectorAll('.tag-btn').forEach(b => b.classList.remove('active'));
+        activeTag = tag;
+        btn.classList.add('active');
+      }
+      applyFilters();
+    });
+  });
+
+  // ================================================================
+  //  FAVICON HELPER  — tries DDG, then falls back silently
+  // ================================================================
+  function makeFavicon(domain) {
+    const img = document.createElement('img');
+    img.className = 'label-favicon';
+    // DuckDuckGo's favicon service is reliable and doesn't 404 loudly
+    img.src = `https://icons.duckduckgo.com/ip3/${domain}.ico`;
+    img.onerror = () => { img.style.display = 'none'; };
+    return img;
+  }
+
+  // ================================================================
+  //  BOOKMARKS DATA
+  // ================================================================
+  const bookmarks = [
+    { title: "On the Infestation of Small-Souled Bugmen", url: "https://hackernoon.com/on-the-infestation-of-small-souled-bugmen-6561ae922e07", tag: "reading" },
+    { title: "Home - midifreak.online", url: "https://midifreak.online/flash/", tag: "weird" },
+    { title: "Cassette tape in CSS", url: "https://mrtoxas.github.io/cassette-tape-css/", tag: "art" },
+    { title: "The 88x31 GIF Collection | Part 1", url: "https://cyber.dabamos.de/88x31/index.html", tag: "rabbit hole" },
+    { title: "pixel safari - directory", url: "https://pixelsafari.neocities.org/links/directory/", tag: "rabbit hole" },
+    { title: "The Million Dollar Homepage", url: "https://milliondollarhomepage.com/", tag: "weird" },
+    { title: "Floor796", url: "https://floor796.com/#t5l1,239,109", tag: "art" },
+    { title: "codingfont.com", url: "https://www.codingfont.com/", tag: "tools" },
+    { title: "The Geocities Gallery", url: "https://geocities.restorativland.org/", tag: "rabbit hole" },
+    { title: "Holotypic Occlupanid Research Group", url: "https://www.horg.com/horg/", tag: "weird" },
+    { title: "Jiji - Bilibili Video Download", url: "https://www.jijidown.com/", tag: "tools" },
+    { title: "Retro Wireframe Arcade Background", url: "https://codepen.io/mattjroberts/pen/pazNdx", tag: "art" },
+    { title: "Retro CRT terminal screen in CSS + JS", url: "https://dev.to/ekeijl/retro-crt-terminal-screen-in-css-js-4afh", tag: "art" },
+    { title: "CRT Monitor Styled Codeblocks", url: "https://publish.obsidian.md/xybre/permalink/6b8a4441-c676-40bb-a422-74179e6759f6", tag: "art" },
+    { title: "CSS CRT screen effect", url: "https://codepen.io/lbebber/pen/XJRdrV/", tag: "art" },
+    { title: "system.css | Apple-inspired interfaces", url: "https://sakofchit.github.io/system.css/#radio-buttons", tag: "art" },
+    { title: "matt-auckland/retro-css", url: "https://github.com/matt-auckland/retro-css", tag: "art" },
+    { title: "PSone.css", url: "https://micah5.github.io/PSone.css/", tag: "art" },
+    { title: "Skeuomorphic spacecraft control panel", url: "https://codepen.io/Margarita-the-solid/pen/qENzBWN", tag: "art" },
+    { title: "alonsarias/pureslop", url: "https://github.com/alonsarias/pureslop", tag: "art" },
+    { title: "Sparkling Boxes", url: "https://codepen.io/soju22/pen/pvyaomb", tag: "art" },
+    { title: "A Single Div", url: "https://a.singlediv.com/", tag: "art" },
+    { title: "Bramus on CodePen", url: "https://codepen.io/bramus", tag: "art" },
+    { title: "vhs retro style", url: "https://codepen.io/creme/pen/aPJwEz", tag: "art" },
+    { title: "CSS only animated angled pattern", url: "https://codepen.io/t_afif/pen/xxaOXQr", tag: "art" },
+    { title: "Keep the Web Free, Say No to Web3", url: "https://yesterweb.org/no-to-web3/", tag: "weird" },
+    { title: "web-badges-world", url: "https://web.badges.world/", tag: "weird" },
+    { title: "The Pug In A Rug", url: "https://puginarug.com/", tag: "weird" },
+    { title: "FUTILE", url: "https://futile.ch/en/", tag: "weird" },
+    { title: "Koalas to the Max dot Com", url: "https://www.koalastothemax.com/", tag: "weird" },
+    { title: "Checkbox Olympics", url: "https://checkbox.toys/#total", tag: "weird" },
+    { title: "ant toys", url: "https://ant.toys/", tag: "weird" },
+    { title: "EVERY DAY I'M", url: "http://www.everydayim.com/", tag: "weird" },
+    { title: "Rotating Sandwiches", url: "https://rotatingsandwiches.com/", tag: "weird" },
+    { title: "Full stack open 2022", url: "https://fullstackopen.com/en/", tag: "learning" },
+    { title: "Why Learning to Code is So Damn Hard", url: "https://www.thinkful.com/blog/why-learning-to-code-is-so-damn-hard/", tag: "learning" },
+    { title: "The Hacks of Mr. Robot: Raspberry Pi", url: "https://null-byte.wonderhowto.com/how-to/hacks-mr-robot-build-hacking-raspberry-pi-0163143/", tag: "tech" },
+    { title: "Expanded Main Page - OSDev Wiki", url: "https://wiki.osdev.org/Expanded_Main_Page", tag: "tech" },
+    { title: "RaspAP — Simple wireless router setup", url: "https://raspap.com/#quick", tag: "tech" },
+    { title: "What is ired.team notes? | Red Team Notes", url: "https://www.ired.team/", tag: "tech" },
+    { title: "Vx Underground", url: "https://vx-underground.org/", tag: "tech" },
+    { title: "About Me | Crow's Nest", url: "https://www.crow.rip/crows-nest", tag: "rabbit hole" },
+    { title: "Challenging projects every programmer should try", url: "https://austinhenley.com/blog/challengingprojects.html", tag: "learning" },
+    { title: "tresc/STS2_Tracker", url: "https://github.com/tresc/STS2_Tracker", tag: "tools" },
+    { title: "I Have No Mouth and I Must Scream", url: "https://galacticjourney.org/stories/I_Have_No_Mouth_and_I_Must_Scream_-_Harlan_Ellison.pdf", tag: "reading" },
+    { title: "EverythingMoe", url: "https://everythingmoe.com/", tag: "rabbit hole" },
+    { title: "Welcome • freemediaheckyeah", url: "https://fmhy.net/", tag: "tools" },
+    { title: "Akinator, the mind reading genie", url: "https://en.akinator.com/", tag: "weird" },
+    { title: "Corrupt a file", url: "https://corrupt-a-file.net/", tag: "tools" },
+    { title: "Stratechery by Ben Thompson", url: "https://stratechery.com/", tag: "reading" },
+    { title: "Have I Been Pwned", url: "https://haveibeenpwned.com/", tag: "tools" },
+    { title: "IFTTT - Automate business & home", url: "https://ifttt.com/", tag: "tools" },
+    { title: "Linux Journey", url: "https://labex.io/linuxjourney", tag: "learning" },
+    { title: "Steve's Computer Collection", url: "https://oldcomputers.net/", tag: "rabbit hole" },
+    { title: "Text faces | Lenny face", url: "https://textfac.es/", tag: "weird" },
+    { title: "The Illustrated TLS Connection", url: "https://tls12.xargs.org/", tag: "tech" },
+    { title: "Test your IPv6", url: "https://test-ipv6.com/", tag: "tech" },
+    { title: "Zoomquilt", url: "https://zzz.zoomquilt.org/", tag: "weird" },
+    { title: "Neal.fun", url: "https://neal.fun/", tag: "weird" },
+    { title: "The Hydrant Directory", url: "https://www.dayroselane.com/hydrants", tag: "rabbit hole" },
+    { title: "JSKIDPIX v1.0.2021", url: "https://kidpix.app/", tag: "weird" },
+    { title: "Cameron's World", url: "https://www.cameronsworld.net/", tag: "rabbit hole" },
+    { title: "LOW←TECH MAGAZINE", url: "https://solar.lowtechmagazine.com/", tag: "reading" },
+    { title: "xkcd", url: "https://xkcd.com/", tag: "weird" },
+    { title: "The Wiki Game", url: "https://www.thewikigame.com/", tag: "rabbit hole" },
+    { title: "GAM.ONL 🕹️ Play Retro Games Online", url: "https://gam.onl/", tag: "rabbit hole" },
+    { title: "Glottolog 5.3", url: "https://glottolog.org/", tag: "rabbit hole" },
+    { title: "The Museum of Modern Art", url: "https://www.moma.org/", tag: "art" },
+    { title: "Vintage Obscura Radio", url: "https://vintageobscura.net/", tag: "rabbit hole" },
+    { title: "WINDOWS93", url: "https://www.windows93.net/", tag: "weird" },
+    { title: "Home | Library of Congress", url: "https://www.loc.gov/", tag: "rabbit hole" },
+    { title: "Main - SCP Foundation", url: "https://scp-wiki.wikidot.com/", tag: "rabbit hole" },
+    { title: "Anna's Secret Garden", url: "https://annasgarden.vercel.app/", tag: "art" },
+    { title: "Solitude and Leadership", url: "https://theamericanscholar.org/solitude-and-leadership/", tag: "reading" },
+    { title: "George Orwell: Some Thoughts on the Common Toad", url: "https://orwell.ru/library/articles/Common_Toad/english/e_ctoad", tag: "reading" },
+    { title: "The strange, preachy, profitable saga of Billy Jack", url: "https://thedissolve.com/features/forgotbusters/593-forgotbusters-billy-jackthe-trial-of-billy-jack/", tag: "reading" },
+    { title: "The Kekulé Problem - Nautilus", url: "https://nautil.us/the-kekul-problem-236574?amp=", tag: "reading" },
+    { title: "Stone Skipping Is a Lost Art", url: "https://www.outsideonline.com/outdoor-adventure/water-activities/stone-skipping-kurt-steiner/", tag: "reading" },
+    { title: "This is Water — David Foster Wallace", url: "https://fs.blog/david-foster-wallace-this-is-water/", tag: "reading" },
+    { title: "Looking Back Moving Forward — Jessica Handler", url: "https://sanmiguelwritersconference.org/wp-content/uploads/2017/10/406-706-Looking-Back-Moving-Forward-Jessica-Handler.pdf", tag: "reading" },
+    { title: "BookBrowse excerpt", url: "https://www.bookbrowse.com/excerpts/index.cfm?fuseaction=printable&book_number=2058", tag: "reading" },
+    { title: "Fear and Loathing (MIT txt)", url: "https://web.mit.edu/tibbetts/Public/fear_and_loathing.txt", tag: "reading" },
+    { title: "Reading Stash: 9 Superb Short Novels", url: "http://readingstash.com/9-superb-short-novels-you-can-finish-over-the-weekend", tag: "reading" },
+    { title: "Disney movies", url: "http://cornel1801.com/disney/movies.html", tag: "rabbit hole" },
+    { title: "The H. P. Lovecraft Historical Society", url: "http://www.cthulhulives.org/", tag: "rabbit hole" },
+    { title: "Short Stories by Clark Ashton Smith", url: "http://www.eldritchdark.com/writings/short-stories/", tag: "reading" },
+    { title: "Rebel Force Radio", url: "http://rebelforceradio.libsyn.com/", tag: "rabbit hole" },
+    { title: "Space Station 13", url: "https://spacestation13.com/about/", tag: "rabbit hole" },
+    { title: "Why Linux is Better", url: "http://whylinuxisbetter.net/en/", tag: "tech" },
+    { title: "Die, Workwear!", url: "https://dieworkwear.com/", tag: "rabbit hole" },
+    { title: "CS50's Introduction to Databases with SQL", url: "https://cs50.harvard.edu/sql/2024/courses/", tag: "learning" },
+  ];
+
+  // ================================================================
+  //  SHUFFLE  (Fisher-Yates, runs once per page load)
+  // ================================================================
+  for (let i = bookmarks.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [bookmarks[i], bookmarks[j]] = [bookmarks[j], bookmarks[i]];
+  }
+
+  // ================================================================
+  //  DETERMINE WHICH DISKS ARE 5.25"  (random ~20%, stable per load)
+  // ================================================================
+  const fiveInchSet = new Set();
+  bookmarks.forEach((bm, i) => {
+    if (Math.random() < 0.2) fiveInchSet.add(i);
+  });
+
+  // ================================================================
+  //  TAG -> COLOR CLASS
+  // ================================================================
+  const tagColorMap = {
+    'art':         'tag-art',
+    'weird':       'tag-weird',
+    'learning':    'tag-learning',
+    'tech':        'tag-tech',
+    'reading':     'tag-reading',
+    'tools':       'tag-tools',
+    'rabbit hole': 'tag-rabbit-hole',
+  };
+
+  // ================================================================
+  //  BUILD GRID
+  // ================================================================
+  const grid = document.getElementById('disk-grid');
+  const led = document.getElementById('drive-led');
+
+  // Confidential disk — pick random position in 0..bookmarks.length
+  const confidentalPos = Math.floor(Math.random() * (bookmarks.length + 2));
+
+  // 1. Random disk
+  const randomDisk = document.createElement('div');
+  randomDisk.className = 'floppy iridescent disk-item';
+  randomDisk.dataset.title = 'feeling lucky random';
+  randomDisk.dataset.tag = '';
+  randomDisk.innerHTML = `
+    <div class="label">
+      <div class="label-text" style="text-align:center;font-size:12px;margin-top:15px;">? ? ?<br><br>FEELING<br>LUCKY</div>
+    </div>
+  `;
+  randomDisk.onclick = (e) => {
+    const randomUrl = bookmarks[Math.floor(Math.random() * bookmarks.length)].url;
+    insertDisk(randomDisk, randomUrl, e);
+  };
+  randomDisk.addEventListener('mouseenter', (e) => {
+    clearTimeout(tooltipTimer);
+    tooltipTimer = setTimeout(() => showTooltip({ title:'??? RANDOM ???', url:'javascript:void(0)', tag:'???' }, e.clientX, e.clientY), 500);
+  });
+  randomDisk.addEventListener('mouseleave', hideTooltip);
+  grid.appendChild(randomDisk);
+
+  // 2. Bookmarks + confidential disk interspersed
+  bookmarks.forEach((bm, index) => {
+    // Insert confidential disk at random position
+    if (index === confidentalPos) {
+      insertConfidentialDisk();
     }
+
+    const is525 = fiveInchSet.has(index);
+    const disk = document.createElement('div');
+    const colorClass = tagColorMap[bm.tag] || `color-${Math.floor(Math.random() * 5)}`;
+    disk.className = (is525 ? 'floppy-525' : 'floppy') + ' ' + colorClass + ' disk-item';
+    disk.dataset.title = bm.title.toLowerCase();
+    disk.dataset.tag = bm.tag || '';
+
+    const rng = seededRng(hashStr(bm.title));
+    const domain = (() => { try { return new URL(bm.url).hostname; } catch(e) { return ''; } })();
+
+    if (is525) {
+      const label = document.createElement('div');
+      label.className = 'label';
+      applyWear(disk, label, rng);
+      const labelText = document.createElement('div');
+      labelText.className = 'label-text';
+      labelText.textContent = bm.title;
+      label.appendChild(labelText);
+      applySticker(label, rng);
+      if (domain) label.appendChild(makeFavicon(domain));
+      disk.appendChild(label);
+      const sleeve = document.createElement('div');
+      sleeve.className = 'sleeve-opening';
+      disk.appendChild(sleeve);
+    } else {
+      const label = document.createElement('div');
+      label.className = 'label';
+      applyWear(disk, label, rng);
+      const labelText = document.createElement('div');
+      labelText.className = 'label-text';
+      labelText.textContent = bm.title;
+      label.appendChild(labelText);
+      applySticker(label, rng);
+      if (domain) label.appendChild(makeFavicon(domain));
+      disk.appendChild(label);
+    }
+
+    disk.onclick = (e) => insertDisk(disk, bm.url, e);
+    disk.addEventListener('mouseenter', (e) => {
+      clearTimeout(tooltipTimer);
+      tooltipTimer = setTimeout(() => showTooltip(bm, e.clientX, e.clientY), 500);
+    });
+    disk.addEventListener('mouseleave', hideTooltip);
+
+    grid.appendChild(disk);
+  });
+
+  // Insert at end if position was beyond array
+  if (confidentalPos >= bookmarks.length) insertConfidentialDisk();
+
+  function insertConfidentialDisk() {
+    const confDisk = document.createElement('div');
+    confDisk.className = 'floppy confidential disk-item';
+    confDisk.dataset.title = 'confidential';
+    confDisk.dataset.tag = '';
+    confDisk.innerHTML = `
+      <div class="label">
+        <div class="label-text">⚠ CONFIDENTIAL ⚠<br>ACCESS DENIED<br>CLEARANCE REQUIRED</div>
+      </div>
+    `;
+    confDisk.onclick = (e) => {
+      const rect = confDisk.getBoundingClientRect();
+      insertConfidential(confDisk, e);
+    };
+    confDisk.addEventListener('mouseenter', (e) => {
+      clearTimeout(tooltipTimer);
+      tooltipTimer = setTimeout(() => showTooltip({ title:'CLASSIFIED', url:'REDACTED', tag:'???' }, e.clientX, e.clientY), 500);
+    });
+    confDisk.addEventListener('mouseleave', hideTooltip);
+    grid.appendChild(confDisk);
+  }
+
+  // ================================================================
+  //  BOOT SEQUENCE ENTRY POINT
+  // ================================================================
+  const hasBooted = localStorage.getItem('cave_booted');
+
+  if (hasBooted) {
+    document.getElementById('bios-screen').style.display = 'none';
+    document.getElementById('main-content').classList.add('visible');
+  } else {
+    runBios(() => {
+      localStorage.setItem('cave_booted', '1');
+      document.getElementById('main-content').classList.add('visible');
+    });
+  }
   </script>
 </body>
 </html>
