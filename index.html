@@ -6,774 +6,1087 @@
   <title>· · · ● · · ● · · · · · · · · ●  · · · · · · · · ●</title>
   <link rel="icon" type="image/png" href="assets/icon2.gif">
   <style>
-    /* =========================================
-       1. GLOBAL & BASE STYLES
-       ========================================= */
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cyan:    #00ffff;
+      --magenta: #ff00ff;
+      --green:   #00ff00;
+      --dark:    rgba(4, 0, 18, 0.91);
+      --border:  rgba(0, 255, 255, 0.28);
+      --glow-c:  rgba(0, 255, 255, 0.18);
+      --glow-m:  rgba(255, 0, 255, 0.18);
+    }
+
+    html, body { width: 100%; height: 100%; overflow: hidden; }
+
     body {
-      background-color: #000000; 
-      color: #00ff00; 
-      font-family: "Courier New", Courier, monospace; 
-      text-align: center;
-      background-image: url('BA1CK.png'); 
-      background-size: 100% 100%;   
-      background-repeat: no-repeat; 
-      background-position: center;  
-      background-attachment: fixed; 
-      cursor: url('assets/mouse.png'), auto; 
-      margin: 0;
-      padding: 0;
-    }
-
-    a {
-      cursor: url('assets/mouse.png'), pointer; 
-    }
-
-    /* =========================================
-       2. CUSTOM CYBER SCROLLBARS
-       ========================================= */
-    html {
-      scrollbar-width: auto;
-      scrollbar-color: #ff00ff #111;
-    }
-
-    ::-webkit-scrollbar {
-      width: 20px; 
-    }
-    
-    ::-webkit-scrollbar-track {
-      background: #111;
-      border-left: 3px inset #808080; 
-    }
-    
-    ::-webkit-scrollbar-thumb {
-      background-color: #ff00ff; 
-      border-top: 3px solid #ffccff;
-      border-left: 3px solid #ffccff;
-      border-bottom: 3px solid #800080;
-      border-right: 3px solid #800080;
-    }
-    
-    ::-webkit-scrollbar-thumb:hover {
-      background-color: #00ffff; 
-      border-top: 3px solid #ccffff;
-      border-left: 3px solid #ccffff;
-      border-bottom: 3px solid #008080;
-      border-right: 3px solid #008080;
-    }
-
-    ::-webkit-scrollbar-button {
-      background-color: #c0c0c0;
-      height: 20px;
-      border-top: 3px solid #ffffff;
-      border-left: 3px solid #ffffff;
-      border-bottom: 3px solid #808080;
-      border-right: 3px solid #808080;
-    }
-    
-    ::-webkit-scrollbar-button:active {
-      border-top: 3px solid #808080;
-      border-left: 3px solid #808080;
-      border-bottom: 3px solid #ffffff;
-      border-right: 3px solid #ffffff;
-      background-color: #a0a0a0;
-    }
-
-    /* =========================================
-       3. SCANLINE OVERLAY
-       ========================================= */
-    .scanlines {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: repeating-linear-gradient(
-        to bottom,
-        rgba(255, 255, 255, 0),
-        rgba(255, 255, 255, 0) 2px,
-        rgba(0, 0, 0, 0.3) 2px,
-        rgba(0, 0, 0, 0.3) 4px
-      );
-      z-index: 9999; 
-      pointer-events: none; 
-    }
-
-    /* =========================================
-       4. TYPOGRAPHY & LAYOUT
-       ========================================= */
-    .container {
-      width: 80%;
-      max-width: 1000px;
-      margin: 20px auto;
-      background-color: rgba(17, 17, 17, 0.8); 
-      border: 5px ridge #ff00ff;
-      padding: 20px;
-    }
-
-    h1 { 
-      color: #00ffff; 
-      text-shadow: 2px 2px #ff00ff;
-      margin-top: 10px;
-    }
-
-    h2 {
-      background-color: #000080;
-      color: #ffffff;
-      border: 2px solid #fff;
-      padding: 5px;
-      display: inline-block;
-      margin-top: 30px;
-    }
-
-    .divider-gif {
-      height: 120px; 
-      width: 80%; 
-      margin: 15px auto; 
-      background: url('assets/K3QC5HKUYNGPBM2EIMEC6SLC6SHSWGFV.gif') repeat-x center; 
-      border: 3px solid #ff00ff; 
-      image-rendering: pixelated;
-    }
-
-    /* =========================================
-       5. CYBER PORTALS (GIF BUTTONS)
-       ========================================= */
-    .gif-portals {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      align-items: center;
-      gap: 25px;
-      margin: 20px auto;
-      width: 90%;
-    }
-
-    .gif-portals a {
-      display: inline-block;
-      text-decoration: none;
-      transition: all 0.2s ease-in-out;
-      position: relative; 
-    }
-
-    .gif-portals img {
-      max-height: 110px; 
-      width: auto;
-      image-rendering: pixelated; 
-    }
-
-    .gif-portals a:hover {
-      transform: scale(1.1) translateY(-5px);
-      filter: drop-shadow(0px 0px 10px #ff00ff);
-    }
-
-    .gif-portals a::after {
-      content: attr(data-title);
-      position: absolute;
-      bottom: -30px; 
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: #000080; 
-      color: #00ff00; 
-      border: 1px ridge #ff00ff; 
-      padding: 3px 6px;
-      font-size: 12px;
-      font-weight: bold;
-      white-space: nowrap;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.2s ease-in-out;
-      pointer-events: none; 
-      z-index: 10;
-      box-shadow: 2px 2px #000; 
-    }
-
-    .gif-portals a:hover::after {
-      opacity: 1;
-      visibility: visible;
-      bottom: -20px; 
-    }
-
-    /* =========================================
-       5.5 OFFICIAL STREAM LINKS
-       ========================================= */
-    .stream-links {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      align-items: center; 
-      gap: 25px; 
-      margin: 10px auto 40px auto; 
-      width: 90%;
-    }
-
-    .stream-links a {
-      display: flex; 
-      align-items: center; 
-      justify-content: center;
-      height: 125px; 
-      text-decoration: none;
-      transition: all 0.2s ease-in-out;
-      position: relative;
-    }
-
-    /* Base setup for images */
-    .stream-links img {
-      width: auto;
-      image-rendering: pixelated; 
-    }
-
-    /* Targetted Size Controls */
-    .stream-links img.sz-spotify { height: 125px; } 
-    .stream-links img.sz-apple   { height: 110px; }   
-    .stream-links img.sz-youtube { height: 65px;  }  
-    .stream-links img.sz-insta   { height: 70px;  }    
-    .stream-links img.sz-tiktok  { height: 85px;  }   
-    .stream-links img.sz-twitter { height: 90px;  }  
-    .stream-links img.sz-fb      { height: 105px; }      
-
-    .stream-links a:hover {
-      transform: scale(1.15) translateY(-4px);
-      filter: drop-shadow(0px 0px 8px #00ff00);
-    }
-
-    .stream-links a::after {
-      content: attr(data-title);
-      position: absolute;
-      bottom: -15px; 
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: #000080; 
-      color: #00ff00; 
-      border: 1px ridge #ff00ff; 
-      padding: 2px 5px;
-      font-size: 11px;
-      font-weight: bold;
-      white-space: nowrap;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.2s ease-in-out;
-      pointer-events: none; 
-      z-index: 10;
-      box-shadow: 2px 2px #000; 
-    }
-
-    .stream-links a:hover::after {
-      opacity: 1;
-      visibility: visible;
-      bottom: -5px; 
-    }
-
-    /* =========================================
-       6. MEME OF THE DAY (WIN95 STYLE)
-       ========================================= */
-    .win95-window {
-      margin: 20px auto;
-      background-color: #c0c0c0;
-      border-top: 2px solid #ffffff;
-      border-left: 2px solid #ffffff;
-      border-right: 2px solid #000000;
-      border-bottom: 2px solid #000000;
-      box-shadow: inset -1px -1px #808080, inset 1px 1px #dfdfdf;
-      width: 80%;
-      max-width: 500px;
-      padding: 2px;
-      font-family: "Arial", sans-serif;
-    }
-
-    .win95-titlebar {
-      background: linear-gradient(to right, #000080, #1084d0);
-      padding: 3px 3px 3px 5px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      color: white;
-      font-weight: bold;
-      font-size: 14px;
-      letter-spacing: 1px;
-    }
-
-    .win95-controls {
-      display: flex;
-      gap: 2px;
-    }
-
-    .win95-btn {
-      background-color: #c0c0c0;
-      border-top: 1px solid #ffffff;
-      border-left: 1px solid #ffffff;
-      border-right: 1px solid #000000;
-      border-bottom: 1px solid #000000;
-      box-shadow: inset -1px -1px #808080;
-      font-size: 11px;
-      font-weight: bold;
-      padding: 1px 5px;
-      cursor: inherit;
-      color: black;
-      min-width: 20px;
-    }
-
-    .win95-btn:active {
-      border-top: 1px solid #000000;
-      border-left: 1px solid #000000;
-      border-right: 1px solid #ffffff;
-      border-bottom: 1px solid #ffffff;
-      box-shadow: inset 1px 1px #808080;
-      padding: 2px 4px 0px 6px; 
-    }
-
-    .win95-content {
-      padding: 12px;
-      background-color: #c0c0c0;
-    }
-
-    .win95-content img {
-      width: 100%;
-      height: auto;
-      border-top: 2px solid #808080;
-      border-left: 2px solid #808080;
-      border-right: 2px solid #ffffff;
-      border-bottom: 2px solid #ffffff;
-      display: block;
-      margin: 0 auto;
-    }
-
-    .win95-content p {
-      margin-top: 10px;
-      margin-bottom: 0;
-      font-family: "Courier New", Courier, monospace; 
-      font-weight: bold;
-      color: #000080; 
-    }
-
-    /* =========================================
-       7. AUDIO PLAYER (SOUND-BOY 2000)
-       ========================================= */
-    .walkman {
-      width: 350px;
-      margin: 20px auto 40px auto;
-      background-color: #c0c0c0; 
-      padding: 25px;
-      border-top: 5px solid #ffffff;
-      border-left: 5px solid #ffffff;
-      border-bottom: 5px solid #808080;
-      border-right: 5px solid #808080;
-      text-align: center;
+      background: #04000f url('BA1CK.png') center center / cover fixed no-repeat;
+      color: var(--cyan);
       font-family: "Courier New", Courier, monospace;
+      cursor: url('assets/mouse.png'), auto;
+    }
+    a { cursor: url('assets/mouse.png'), pointer; text-decoration: none; }
+
+    /* ── SCROLLBARS ── */
+    ::-webkit-scrollbar { width: 20px; }
+    ::-webkit-scrollbar-track { background: #111; border-left: 3px inset #808080; }
+    ::-webkit-scrollbar-thumb {
+      background-color: var(--magenta);
+      border-top: 3px solid #ffccff; border-left: 3px solid #ffccff;
+      border-bottom: 3px solid #800080; border-right: 3px solid #800080;
+    }
+    ::-webkit-scrollbar-button {
+      background-color: #c0c0c0; height: 20px;
+      border-top: 3px solid #fff; border-left: 3px solid #fff;
+      border-bottom: 3px solid #808080; border-right: 3px solid #808080;
     }
 
-    .branding {
-      color: #000080;
-      font-family: "Arial Black", sans-serif;
-      font-style: italic;
-      font-size: 24px;
-      text-align: left;
-      margin-top: 0;
-      margin-bottom: 10px;
-      letter-spacing: -1px;
+    /* ── SCANLINES ── */
+    #scanlines {
+      position: fixed; inset: 0; z-index: 9990; pointer-events: none;
+      background: repeating-linear-gradient(
+        to bottom, transparent 0, transparent 2px,
+        rgba(0,0,0,0.22) 2px, rgba(0,0,0,0.22) 4px
+      );
     }
 
-    .tape-deck {
-      background-color: #111;
-      border: 5px inset #808080;
-      height: 120px;
-      margin-bottom: 25px;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .tape-deck p {
-      color: #ff0000;
-      font-size: 14px;
-      font-weight: bold;
-      margin: 5px 0;
-      text-shadow: 0px 0px 5px #ff0000;
-    }
-
-    .tape-deck img {
-      height: 60px; 
-      visibility: hidden; 
-    }  
-
-    .controls {
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .mech-button {
-      background-color: #c0c0c0;
-      border-top: 4px solid #ffffff;
-      border-left: 4px solid #ffffff;
-      border-bottom: 4px solid #808080;
-      border-right: 4px solid #808080;
-      padding: 15px 20px;
-      font-size: 20px;
-      font-weight: bold;
-      color: #000;
-      cursor: pointer; 
-    }
-
-    .mech-button:active {
-      border-top: 4px solid #808080;
-      border-left: 4px solid #808080;
-      border-bottom: 4px solid #ffffff;
-      border-right: 4px solid #ffffff;
-      background-color: #b0b0b0;
-    }
-
-    .play-btn { color: #008000; }
-    .stop-btn { color: #ff0000; }
-
-    /* =========================================
-       8. WEBRING & FOOTER
-       ========================================= */
-    .webring-container {
-      margin: 40px auto;
-      padding: 10px;
-      border-top: 3px dashed #ff00ff;
-      width: 80%;
-    }
-
-    .webring-header {
-      display: block; 
-      margin: 0 auto 20px auto; 
-      max-width: 100%; 
-      height: auto;
-    }
-
-    .eighty-eight {
-      width: 88px;
-      height: 31px;
-      border: 1px solid #00ff00;
-      margin: 5px;
-      image-rendering: pixelated; 
-    }
-
-    .eighty-eight:hover {
-      border: 1px solid #ffffff;
-    }
-
-    /* =========================================
-       9. MOUSE SPARKLES
-       ========================================= */
+    /* ── SPARKLES ── */
     .sparkle {
-      position: absolute;
-      width: 6px;
-      height: 6px;
-      background-color: #00ff00; 
-      box-shadow: 0 0 5px #00ff00; 
-      pointer-events: none; 
-      z-index: 10000; 
-      border-radius: 50%; 
+      position: fixed; width: 5px; height: 5px;
+      background: var(--green); box-shadow: 0 0 5px var(--green);
+      border-radius: 50%; pointer-events: none; z-index: 9999;
     }
 
-    /* =========================================
-       10. KEYFRAME ANIMATIONS
-       ========================================= */
-    @keyframes crt-flicker {
-      0%   { opacity: 1;   filter: contrast(1.4) brightness(1); }
-      5%   { opacity: 0.8; filter: contrast(1.8) brightness(1.3); }
-      10%  { opacity: 1;   filter: contrast(1.4) brightness(1); }
-      95%  { opacity: 1;   filter: contrast(1.4) brightness(1); }
-      96%  { opacity: 0.9; filter: contrast(2.0) brightness(0.8); }
-      100% { opacity: 1;   filter: contrast(1.4) brightness(1); }
+    /* ── TITLE ── */
+    #site-title {
+      position: fixed; top: 14px; left: 50%; transform: translateX(-50%);
+      z-index: 100; white-space: nowrap; text-align: center;
+    }
+    #site-title h1 {
+      font-size: clamp(1.1rem, 3vw, 2rem); color: var(--cyan);
+      text-shadow: 3px 3px var(--magenta), 0 0 22px var(--cyan);
+      letter-spacing: 6px; text-transform: uppercase;
+      animation: title-glitch 9s infinite;
+    }
+    #site-title .sub {
+      font-size: 10px; color: rgba(255,255,255,0.35);
+      letter-spacing: 4px; text-transform: uppercase; margin-top: 2px;
+    }
+    @keyframes title-glitch {
+      0%,90%,100% { transform:translate(0); filter:none; }
+      91%  { transform:translate(-3px,1px);  filter:hue-rotate(90deg); }
+      92%  { transform:translate(3px,-1px);  filter:hue-rotate(-90deg) brightness(1.5); }
+      93%  { transform:translate(0);         filter:none; }
+      97%  { transform:translate(2px,2px);   filter:hue-rotate(45deg); }
+      98%  { transform:translate(0);         filter:none; }
     }
 
-    @keyframes glitch-spasm {
-      0%   { transform: translate(0); filter: hue-rotate(0deg) contrast(2); }
-      20%  { transform: translate(-2px, 1px); filter: hue-rotate(90deg) invert(10%); }
-      40%  { transform: translate(2px, -1px); filter: hue-rotate(0deg) contrast(1.5); }
-      60%  { transform: translate(-1px, -2px); filter: hue-rotate(-90deg) invert(20%); }
-      80%  { transform: translate(1px, 2px); filter: hue-rotate(0deg) contrast(2); }
-      100% { transform: translate(0); filter: hue-rotate(0deg); }
+    /* ── BEST VIEWED ── */
+    #best-viewed {
+      position: fixed; top: 12px; right: 14px; z-index: 100;
+      opacity: 0.55; image-rendering: pixelated; width: 150px;
+      transition: opacity 0.2s;
     }
-    
-    /* --- THE ODOMETER HIT COUNTER --- */
-    .hit-counter {
-      background-color: #000;
-      border: 3px inset #808080;
-      display: inline-block;
-      padding: 5px 10px;
-      margin: 10px 0;
-      font-family: 'Courier New', Courier, monospace;
+    #best-viewed:hover { opacity: 1; }
+
+    /* ── MOUSE-FOLLOWING TOOLTIP ── */
+    #tooltip {
+      position: fixed; z-index: 9980; pointer-events: none;
+      background: #000080; color: var(--green);
+      border: 1px solid var(--magenta);
+      padding: 3px 8px; font-size: 11px; font-weight: bold;
+      letter-spacing: 2px; text-transform: uppercase;
+      white-space: nowrap;
+      box-shadow: 0 0 8px var(--glow-m);
+      opacity: 0; transition: opacity 0.12s;
+      transform: translate(14px, -50%);
     }
-    .hit-number {
-      color: #00ff00;
-      font-size: 20px;
-      font-weight: bold;
-      letter-spacing: 4px;
-      text-shadow: 0 0 5px #00ff00;
+    #tooltip.visible { opacity: 1; }
+
+    /* ============================================================
+       PANEL BASE
+       ============================================================ */
+    .panel {
+      position: fixed;
+      background: var(--dark);
+      border: 1px solid var(--border);
+      box-shadow: 0 0 12px var(--glow-c), 0 0 40px rgba(0,0,0,0.65),
+                  inset 0 0 20px rgba(0,255,255,0.03);
+      z-index: 50; overflow: hidden;
     }
 
-    /* =========================================
-       11. MOBILE RESPONSIVENESS (THE Y2K PATCH)
-       ========================================= */
-    @media (max-width: 768px) {
-      .container {
-        width: 95%;
-        padding: 10px;
-      }
-      
-      .gif-portals img {
-        max-height: 80px;
-      }
-      
-      .win95-window {
-        width: 95%;
-        box-sizing: border-box;
-      }
-
-      .walkman {
-        width: 90%;
-        max-width: 350px;
-        box-sizing: border-box;
-        padding: 15px;
-      }
-      
-      .mech-button {
-        padding: 10px 15px;
-      }
-
-      .sparkle {
-        display: none !important;
-      }
+    .panel::after {
+      content: ''; position: absolute; top: 0; left: -120%;
+      width: 60%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0,255,255,0.04), transparent);
+      animation: shimmer 7s ease-in-out infinite; pointer-events: none;
     }
+    @keyframes shimmer { to { left: 160%; } }
+
+    /* corner brackets */
+    .panel .c { position: absolute; width: 14px; height: 14px; }
+    .panel .c.tl { top:-1px;    left:-1px;  border-top:2px solid var(--cyan); border-left:2px solid var(--cyan); }
+    .panel .c.tr { top:-1px;    right:-1px; border-top:2px solid var(--cyan); border-right:2px solid var(--cyan); }
+    .panel .c.bl { bottom:-1px; left:-1px;  border-bottom:2px solid var(--cyan); border-left:2px solid var(--cyan); }
+    .panel .c.br { bottom:-1px; right:-1px; border-bottom:2px solid var(--cyan); border-right:2px solid var(--cyan); }
+
+    .panel-label {
+      color: var(--cyan); text-shadow: 2px 2px var(--magenta);
+      font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+    }
+
+    /* ── MINIMIZE SYSTEM ── */
+
+    /* Every panel gets a thin header bar for the minimize button */
+    .panel-bar {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 6px 10px 5px;
+      border-bottom: 1px solid rgba(0,255,255,0.15);
+      cursor: default;
+    }
+
+    /* The collapsible body */
+    .panel-body {
+      overflow: hidden;
+      max-height: 600px; /* large enough for any panel */
+      transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1),
+                  padding 0.35s ease,
+                  opacity 0.25s ease;
+      opacity: 1;
+    }
+
+    .panel.minimized .panel-body {
+      max-height: 0;
+      opacity: 0;
+    }
+
+    /* Minimize button */
+    .min-btn {
+      background: none;
+      border: 1px solid rgba(0,255,255,0.35);
+      color: var(--cyan); font-family: inherit;
+      font-size: 11px; font-weight: bold;
+      width: 20px; height: 18px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: url('assets/mouse.png'), pointer;
+      transition: all 0.15s; flex-shrink: 0;
+      padding: 0; line-height: 1;
+    }
+    .min-btn:hover {
+      background: rgba(0,255,255,0.12);
+      border-color: var(--cyan);
+      box-shadow: 0 0 8px var(--glow-c);
+    }
+
+    /* ============================================================
+       SOCIALS PANEL
+       ============================================================ */
+    #panel-socials {
+      top: 72px; left: 50%; transform: translateX(-50%);
+      width: 560px;
+      border-color: rgba(255,0,255,0.3);
+      box-shadow: 0 0 16px var(--glow-m), 0 0 45px rgba(0,0,0,0.7),
+                  inset 0 0 22px rgba(255,0,255,0.03);
+    }
+    #panel-socials .c { border-color: var(--magenta); }
+    #panel-socials::after {
+      background: linear-gradient(90deg, transparent, rgba(255,0,255,0.04), transparent);
+    }
+    #panel-socials .min-btn { border-color: rgba(255,0,255,0.4); color: var(--magenta); }
+    #panel-socials .min-btn:hover { background: rgba(255,0,255,0.12); border-color: var(--magenta); box-shadow: 0 0 8px var(--glow-m); }
+
+    .socials-header { display: block; margin: 0 auto 10px; max-width: 100%; image-rendering: pixelated; }
+
+    .stream-links {
+      display: flex; flex-wrap: wrap;
+      justify-content: center; align-items: center; gap: 14px;
+    }
+    .stream-links a {
+      display: flex; align-items: center; justify-content: center;
+      height: 85px; position: relative;
+      transition: transform 0.2s, filter 0.2s;
+    }
+    .stream-links img { width: auto; image-rendering: pixelated; }
+    .stream-links img.sz-spotify { height: 85px; }
+    .stream-links img.sz-apple   { height: 72px; }
+    .stream-links img.sz-youtube { height: 48px; }
+    .stream-links img.sz-insta   { height: 52px; }
+    .stream-links img.sz-tiktok  { height: 62px; }
+    .stream-links img.sz-twitter { height: 66px; }
+    .stream-links img.sz-fb      { height: 74px; }
+    .stream-links a:hover {
+      transform: scale(1.12) translateY(-4px);
+      filter: drop-shadow(0 0 10px var(--magenta));
+    }
+
+    /* ============================================================
+       PORTALS PANEL
+       ============================================================ */
+    #panel-portals { bottom: 48px; left: 18px; width: 490px; }
+
+    .gif-portals {
+      display: flex; flex-wrap: wrap;
+      justify-content: center; align-items: flex-end; gap: 16px;
+    }
+    .gif-portals a {
+      display: inline-block; position: relative;
+      transition: transform 0.2s, filter 0.2s;
+    }
+    .gif-portals img { max-height: 88px; width: auto; image-rendering: pixelated; }
+    .gif-portals a:hover {
+      transform: scale(1.12) translateY(-6px);
+      filter: drop-shadow(0 0 12px var(--magenta));
+    }
+
+    /* ============================================================
+       MEME VIEWER
+       ============================================================ */
+    #panel-meme { top: 82px; right: 18px; width: 265px; }
+
+    .meme-header {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 8px;
+    }
+
+    .meme-dot-wrap { display: flex; align-items: center; gap: 8px; }
+
+    .meme-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--cyan); box-shadow: 0 0 6px var(--cyan);
+      animation: dot-pulse 2s ease-in-out infinite; flex-shrink: 0;
+    }
+    @keyframes dot-pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.3;transform:scale(0.7)} }
+
+    .meme-label {
+      font-size: 9px; letter-spacing: 3px; color: var(--cyan);
+      text-shadow: 0 0 8px var(--cyan); text-transform: uppercase;
+      animation: label-glitch 6s infinite;
+    }
+    @keyframes label-glitch {
+      0%,94%,100% { opacity:1; transform:none; }
+      95% { opacity:0.4; transform:skewX(-8deg); }
+      96% { opacity:1; transform:none; }
+    }
+
+    .meme-display { position: relative; overflow: hidden; background: #000; }
+    .meme-display img {
+      width: 100%; height: 190px; object-fit: cover; display: block;
+      filter: contrast(1.05) saturate(1.1); transition: filter 0.3s;
+    }
+    .meme-display img:hover { filter: contrast(1.15) saturate(1.25) brightness(1.05); }
+    .meme-display::after {
+      content: ''; position: absolute; inset: 0; pointer-events: none;
+      background: repeating-linear-gradient(
+        to bottom, transparent 0, transparent 3px,
+        rgba(0,0,0,0.18) 3px, rgba(0,0,0,0.18) 4px
+      );
+    }
+
+    .meme-corner {
+      position: absolute; font-size: 7px;
+      color: rgba(0,255,255,0.5); letter-spacing: 1px;
+      pointer-events: none; z-index: 2;
+    }
+    .meme-corner.tl { top:5px; left:6px; }
+    .meme-corner.tr { top:5px; right:6px; text-align:right; }
+    .meme-corner.bl { bottom:5px; left:6px; }
+    .meme-corner.br { bottom:5px; right:6px; }
+
+    .meme-footer {
+      padding: 7px 12px 9px;
+      border-top: 1px solid rgba(0,255,255,0.12);
+      font-size: 8px; color: rgba(0,255,255,0.5);
+      letter-spacing: 2px; text-transform: uppercase;
+    }
+
+    /* ============================================================
+       AUDIO PLAYER
+       ============================================================ */
+    #panel-audio { bottom: 48px; right: 18px; width: 265px; }
+
+    .audio-header {
+      display: flex; justify-content: space-between; align-items: center;
+    }
+
+    .audio-title {
+      font-size: 9px; letter-spacing: 3px; color: var(--cyan);
+      text-shadow: 0 0 8px var(--cyan); text-transform: uppercase;
+    }
+
+    .audio-right { display: flex; align-items: center; gap: 8px; }
+
+    .status-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #333; box-shadow: 0 0 4px #333; transition: all 0.3s;
+    }
+    .status-dot.on {
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green), 0 0 16px var(--green);
+      animation: sblink 1s ease-in-out infinite;
+    }
+    @keyframes sblink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+    .eq-stage {
+      padding: 12px 14px 6px;
+      display: flex; align-items: flex-end; justify-content: center;
+      gap: 5px; height: 72px;
+      border-bottom: 1px solid rgba(0,255,255,0.1);
+    }
+    .eq-bar {
+      flex: 1; height: 3px; max-width: 22px;
+      background: linear-gradient(to top, var(--green) 0%, var(--cyan) 60%, var(--magenta) 100%);
+      box-shadow: 0 0 4px var(--green);
+      border-radius: 1px 1px 0 0; transform-origin: bottom;
+    }
+    #panel-audio.is-playing .eq-bar:nth-child(1) { animation: eq 0.45s ease-in-out infinite alternate; --h:46px; }
+    #panel-audio.is-playing .eq-bar:nth-child(2) { animation: eq 0.30s ease-in-out infinite alternate; --h:58px; }
+    #panel-audio.is-playing .eq-bar:nth-child(3) { animation: eq 0.55s ease-in-out infinite alternate; --h:36px; }
+    #panel-audio.is-playing .eq-bar:nth-child(4) { animation: eq 0.25s ease-in-out infinite alternate; --h:62px; }
+    #panel-audio.is-playing .eq-bar:nth-child(5) { animation: eq 0.40s ease-in-out infinite alternate; --h:50px; }
+    #panel-audio.is-playing .eq-bar:nth-child(6) { animation: eq 0.35s ease-in-out infinite alternate; --h:42px; }
+    #panel-audio.is-playing .eq-bar:nth-child(7) { animation: eq 0.50s ease-in-out infinite alternate; --h:55px; }
+    #panel-audio.is-playing .eq-bar:nth-child(8) { animation: eq 0.28s ease-in-out infinite alternate; --h:38px; }
+    @keyframes eq { to { height: var(--h, 40px); } }
+
+    .track-display {
+      padding: 10px 14px 8px;
+      border-bottom: 1px solid rgba(0,255,255,0.1);
+    }
+    .track-name {
+      color: var(--green); font-size: 10px; letter-spacing: 2px;
+      text-shadow: 0 0 8px var(--green);
+      white-space: nowrap; overflow: hidden;
+    }
+    .track-name.scrolling span { display: inline-block; animation: tscroll 8s linear infinite; }
+    @keyframes tscroll { 0%{transform:translateX(100%)} 100%{transform:translateX(-100%)} }
+
+    .track-sub { font-size: 8px; color: rgba(0,255,255,0.4); letter-spacing: 2px; margin-top: 4px; }
+
+    .waveform { height: 18px; margin-top: 8px; display: flex; align-items: center; gap: 2px; }
+    .wv-bar { flex: 1; background: rgba(0,255,0,0.22); border-radius: 1px; transition: background 0.3s; }
+    #panel-audio.is-playing .wv-bar {
+      background: rgba(0,255,0,0.55);
+      animation: wvanim var(--s,0.5s) ease-in-out infinite alternate;
+    }
+    @keyframes wvanim { to { transform: scaleY(var(--sy,3)); } }
+
+    .audio-controls { padding: 10px 14px 12px; display: flex; justify-content: center; gap: 14px; }
+
+    .ctl-btn {
+      background: transparent; border: 1px solid rgba(0,255,255,0.4);
+      color: var(--cyan); width: 42px; height: 42px;
+      border-radius: 50%; font-size: 14px;
+      cursor: url('assets/mouse.png'), pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s; box-shadow: 0 0 6px rgba(0,255,255,0.15);
+      font-family: inherit;
+    }
+    .ctl-btn:hover {
+      border-color: var(--cyan); background: rgba(0,255,255,0.1);
+      box-shadow: 0 0 14px var(--cyan), inset 0 0 8px rgba(0,255,255,0.1); color: #fff;
+    }
+    .ctl-btn:active { background: rgba(0,255,255,0.2); transform: scale(0.93); }
+    .ctl-btn.play-btn { border-color:rgba(0,255,0,0.5); color:var(--green); box-shadow:0 0 6px rgba(0,255,0,0.2); }
+    .ctl-btn.play-btn:hover { border-color:var(--green); background:rgba(0,255,0,0.1); box-shadow:0 0 14px var(--green); }
+    .ctl-btn.stop-btn { border-color:rgba(255,0,100,0.5); color:#ff0055; }
+    .ctl-btn.stop-btn:hover { border-color:#ff0055; background:rgba(255,0,100,0.1); box-shadow:0 0 14px #ff0055; }
+
+    /* ============================================================
+       88x31 TICKER
+       ============================================================ */
+    #ticker {
+      position: fixed; bottom: 0; left: 0; width: 100%; height: 44px;
+      z-index: 60; background: rgba(4,0,18,0.92);
+      border-top: 1px solid var(--border);
+      overflow: hidden; display: flex; align-items: center;
+    }
+    #ticker::before {
+      content: ''; position: absolute; top: 0; left: 0;
+      width: 200%; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--cyan), var(--magenta), transparent);
+      animation: tickerline 4s linear infinite;
+    }
+    @keyframes tickerline { from{transform:translateX(-50%)} to{transform:translateX(0)} }
+
+    .ticker-track {
+      display: flex; gap: 8px; align-items: center;
+      animation: tickscroll 35s linear infinite; width: max-content;
+    }
+    .ticker-track:hover { animation-play-state: paused; }
+    @keyframes tickscroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+    .ticker-track a { display: inline-block; flex-shrink: 0; }
+    .eighty-eight {
+      width: 88px; height: 31px; border: 1px solid rgba(0,255,0,0.3);
+      image-rendering: pixelated; display: block; transition: border-color 0.15s, filter 0.15s;
+    }
+    .eighty-eight:hover { border-color: #fff; filter: brightness(1.2); }
+
+    /* ============================================================
+       AMBIENT GIFS  —  opacity raised to 0.92
+       ============================================================ */
+    .ambient-gif {
+      position: fixed; image-rendering: pixelated;
+      z-index: 20; cursor: url('assets/mouse.png'), pointer;
+      transition: filter 0.2s, opacity 0.2s;
+      opacity: 0.92;
+    }
+    .ambient-gif:hover {
+      opacity: 1; z-index: 30;
+      filter: drop-shadow(0 0 8px var(--cyan)) brightness(1.18);
+    }
+
+    @keyframes bob         { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+    @keyframes sway        { 0%,100%{transform:translateX(0) rotate(-2deg)} 50%{transform:translateX(14px) rotate(2deg)} }
+    @keyframes shake       { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-4px) rotate(-3deg)} 75%{transform:translateX(4px) rotate(3deg)} }
+    @keyframes pulse       { 0%,100%{transform:scale(1)} 50%{transform:scale(1.07)} }
+    @keyframes floatRotate { 0%{transform:translateY(0) rotate(0deg)} 33%{transform:translateY(-16px) rotate(7deg)} 66%{transform:translateY(-7px) rotate(-5deg)} 100%{transform:translateY(0) rotate(0deg)} }
+    @keyframes blinkBob    { 0%{opacity:1;transform:translateY(0)} 40%{opacity:0.2;transform:translateY(-5px)} 60%{opacity:1;transform:translateY(-5px)} 100%{opacity:1;transform:translateY(0)} }
+    @keyframes spinDrift   { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
+    @keyframes bounce      { from{transform:translateY(0)} to{transform:translateY(-18px)} }
+
+    /* ============================================================
+       VIDEO POPUP
+       ============================================================ */
+    #video-popup {
+      display: none; position: fixed; z-index: 5000;
+      width: 480px; top: 20vh; left: 50%; transform: translateX(-50%);
+      background: var(--dark); border: 1px solid var(--border);
+      box-shadow: 0 0 20px var(--glow-c), 0 0 60px rgba(0,0,0,0.8);
+    }
+    .vp-bar {
+      padding: 7px 10px; background: rgba(0,255,255,0.06);
+      border-bottom: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+      cursor: move; user-select: none;
+    }
+    .vp-title {
+      font-size: 10px; letter-spacing: 3px;
+      color: var(--cyan); text-shadow: 0 0 8px var(--cyan); text-transform: uppercase;
+    }
+    .vp-close {
+      background: none; border: 1px solid rgba(255,0,0,0.5);
+      color: #ff4444; font-size: 11px; font-weight: bold;
+      padding: 1px 7px; cursor: url('assets/mouse.png'), pointer;
+      font-family: inherit; letter-spacing: 1px; transition: all 0.15s;
+    }
+    .vp-close:hover { background: rgba(255,0,0,0.2); border-color: #ff4444; box-shadow: 0 0 8px rgba(255,0,0,0.5); }
+    .vp-screen { width: 100%; aspect-ratio: 16/9; background: #000; }
+    .vp-screen iframe, .vp-screen video { width: 100%; height: 100%; border: none; display: block; }
+    #video-popup .c { position:absolute; width:12px; height:12px; }
+    #video-popup .c.tl { top:-1px; left:-1px;  border-top:2px solid var(--cyan); border-left:2px solid var(--cyan); }
+    #video-popup .c.tr { top:-1px; right:-1px; border-top:2px solid var(--cyan); border-right:2px solid var(--cyan); }
+    #video-popup .c.bl { bottom:-1px; left:-1px;  border-bottom:2px solid var(--cyan); border-left:2px solid var(--cyan); }
+    #video-popup .c.br { bottom:-1px; right:-1px; border-bottom:2px solid var(--cyan); border-right:2px solid var(--cyan); }
+
+    /* ============================================================
+       IMAGE LIGHTBOX  —  with maximize support
+       ============================================================ */
+    #img-lightbox {
+      display: none; position: fixed; inset: 0; z-index: 4000;
+      background: rgba(0,0,0,0.92);
+      align-items: center; justify-content: center;
+    }
+    #img-lightbox.open { display: flex; }
+
+    /* wrapper so toolbar can sit on top of image */
+    .lb-frame {
+      position: relative; display: inline-flex;
+      flex-direction: column; align-items: stretch;
+    }
+
+    .lb-toolbar {
+      display: flex; gap: 0; z-index: 2;
+      background: rgba(4,0,18,0.92);
+      border: 1px solid var(--border);
+      border-bottom: none;
+    }
+
+    .lb-btn {
+      background: none; border: none;
+      border-right: 1px solid rgba(0,255,255,0.2);
+      color: var(--cyan); font-family: inherit; font-size: 10px;
+      letter-spacing: 2px; padding: 6px 14px;
+      cursor: url('assets/mouse.png'), pointer;
+      transition: all 0.15s; text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .lb-btn:last-child { border-right: none; }
+    .lb-btn:hover {
+      background: rgba(0,255,255,0.12);
+      color: #fff; box-shadow: inset 0 0 10px var(--glow-c);
+    }
+    .lb-btn.close-btn { color: #ff4444; }
+    .lb-btn.close-btn:hover { background: rgba(255,0,0,0.15); color: #ff6666; }
+
+    #lightbox-img {
+      display: block;
+      max-width: 88vw; max-height: 82vh;
+      border: 1px solid var(--border); box-shadow: 0 0 30px var(--glow-c);
+      image-rendering: pixelated;
+      transition: max-width 0.3s ease, max-height 0.3s ease;
+      cursor: url('assets/mouse.png'), zoom-out;
+    }
+    #lightbox-img.maximized {
+      max-width: 98vw; max-height: 94vh;
+    }
+
+    .lb-hint {
+      font-size: 9px; color: rgba(0,255,255,0.25);
+      letter-spacing: 3px; text-transform: uppercase;
+      background: rgba(4,0,18,0.92);
+      border: 1px solid var(--border); border-top: none;
+      padding: 4px 10px; text-align: center;
+    }
+
   </style>
 </head>
 <body>
 
-  <div class="scanlines"></div>
+  <div id="scanlines"></div>
 
-  <div class="container">
-    
-    <h1>>>> Welcome to The Cave <<<</h1>    
+  <!-- FLOATING TOOLTIP (follows mouse) -->
+  <div id="tooltip"></div>
 
-    <div class="divider-gif"></div>
+  <!-- TITLE -->
+  <div id="site-title">
+    <h1>&gt;&gt;&gt; The Cave &lt;&lt;&lt;</h1>
+    <div class="sub">a clusterfuck of refined tastes &amp; raw pixels</div>
+  </div>
 
-    <p><b>WARNING:</b> You have stumbled into my digital brain. A clusterfuck of refined tastes and raw pixels.</p>
-	<center><image src="88x31/bestvieweddesktop.gif" width="200"></image></center>
-    
-    <hr size="5" width="80%" color="#ff00ff">
+  <img src="88x31/bestvieweddesktop.gif" alt="Best Viewed on Desktop" id="best-viewed">
 
-    <img src="assets/MQE7JUBYYUU2HCDIKY5H7DD765UJ7OJT.gif" alt="Official Links" class="webring-header" style="margin-top: 30px;">
-    <div class="stream-links">
-      <a href="https://music.apple.com/us/artist/electric-light-beetles/1887309635" data-title="APPLE MUSIC"><img src="assets/officialstreamlinks/giphy.gif" alt="Apple Music" class="sz-apple"></a>
-      <a href="https://www.youtube.com/@beetlesinelectriclight" data-title="YOUTUBE"><img src="assets/officialstreamlinks/play-youtube.gif" alt="YouTube" class="sz-youtube"></a>
-      <a href="https://www.instagram.com/beetlesinelectriclight" data-title="INSTAGRAM"><img src="assets/officialstreamlinks/source_1.gif" alt="Instagram" class="sz-insta"></a>
-	  <a href="https://open.spotify.com/album/11ZxpOdLY2mwuj3JGEyVlR" data-title="SPOTIFY"><img src="assets/officialstreamlinks/source.gif" alt="Spotify" class="sz-spotify"></a>
-      <a href="https://www.tiktok.com/@beetlesinelectriclight" data-title="TIKTOK"><img src="assets/officialstreamlinks/giphy_1.gif" alt="TikTok" class="sz-tiktok"></a>
-      <a href="404.html" data-title="TWITTER"><img src="assets/officialstreamlinks/d9ad13_80198a2a59b746928c805a9b796f3eadmv2.gif" alt="Twitter" class="sz-twitter"></a>
-      <a href="404.html" data-title="FACEBOOK"><img src="assets/officialstreamlinks/twitter-png.gif" alt="Facebook" class="sz-fb"></a>
+  <!-- ================================================================
+       SOCIALS PANEL
+       ================================================================ -->
+  <div class="panel" id="panel-socials">
+    <span class="c tl"></span><span class="c tr"></span>
+    <span class="c bl"></span><span class="c br"></span>
+
+    <div class="panel-bar">
+      <span class="panel-label" style="color:var(--magenta);text-shadow:2px 2px var(--cyan);">
+        +++ Official Links +++
+      </span>
+      <button class="min-btn" onclick="togglePanel('panel-socials',this)" title="minimize">−</button>
     </div>
 
-    <br>
-
-    <h2>+++ CYBER PORTALS +++</h2>
-    <div class="gif-portals">
-      <a href="arcade.html" data-title="ARCADE"><img src="assets/source-ezgif.com-resize.gif" alt="Nyan Cat Portal"></a>
-      <a href="stream.html" data-title="STREAM"><img src="assets/4shx-transparent-gif-ezgif.com-resize.gif" alt="Guitar Cat Portal"></a>
-      <a href="space.html" data-title="SPACE"><img src="assets/93533501-53aa0d80-f943-11ea-90d1-e6e70eca2e29-ezgif.com-resize.gif" alt="Retro Sun Portal"></a>
-      <a href="lagalerie.html" data-title="LA GALERIE"><img src="assets/f5baef4b6b6677020ab8d091ef78a3bc-ezgif.com-resize.gif" alt="Duck Portal"></a>
-      <a href="404.html" data-title="MERCH"><img src="assets/giphy-ezgif.com-resize.gif" alt="Monkey Portal"></a>
-      <a href="memeportal.html" data-title="ME ME"><img src="assets/huh-cat-ezgif.com-crop.gif" alt="Huh Cat Portal"></a>
-      <a href="vod.html" data-title="VOD"><img src="assets/napoleon-dynamite-dance-ezgif.com-resize.gif" alt="Napoleon Portal"></a>
-    </div>
-
-    <br><br>
-
-    <h2>+++ MOTD +++</h2>
-    <div class="win95-window">
-      <div class="win95-titlebar">
-        <span class="win95-title">MEME_VIEWER.EXE</span>
-        <div class="win95-controls">
-          <button class="win95-btn">_</button>
-          <button class="win95-btn">[]</button>
-          <button class="win95-btn">X</button>
-        </div>
-      </div>
-      <div class="win95-content">
-        <img src="assets/motd/meme1.png" alt="Meme of the Day">
-        <p><small id="meme-log-date">LOGGED: LOADING...</small></p>
+    <div class="panel-body" style="padding:12px 16px 14px;">
+      <img src="assets/MQE7JUBYYUU2HCDIKY5H7DD765UJ7OJT.gif" alt="My Links" class="socials-header">
+      <div class="stream-links">
+        <a href="https://music.apple.com/us/artist/electric-light-beetles/1887309635" data-title="APPLE MUSIC">
+          <img src="assets/officialstreamlinks/giphy.gif" class="sz-apple" alt="Apple Music">
+        </a>
+        <a href="https://www.youtube.com/@beetlesinelectriclight" data-title="YOUTUBE">
+          <img src="assets/officialstreamlinks/play-youtube.gif" class="sz-youtube" alt="YouTube">
+        </a>
+        <a href="https://www.instagram.com/beetlesinelectriclight" data-title="INSTAGRAM">
+          <img src="assets/officialstreamlinks/source_1.gif" class="sz-insta" alt="Instagram">
+        </a>
+        <a href="https://open.spotify.com/album/11ZxpOdLY2mwuj3JGEyVlR" data-title="SPOTIFY">
+          <img src="assets/officialstreamlinks/source.gif" class="sz-spotify" alt="Spotify">
+        </a>
+        <a href="https://www.tiktok.com/@beetlesinelectriclight" data-title="TIKTOK">
+          <img src="assets/officialstreamlinks/giphy_1.gif" class="sz-tiktok" alt="TikTok">
+        </a>
+        <a href="404.html" data-title="TWITTER">
+          <img src="assets/officialstreamlinks/d9ad13_80198a2a59b746928c805a9b796f3eadmv2.gif" class="sz-twitter" alt="Twitter">
+        </a>
+        <a href="404.html" data-title="FACEBOOK">
+          <img src="assets/officialstreamlinks/twitter-png.gif" class="sz-fb" alt="Facebook">
+        </a>
       </div>
     </div>
+  </div>
 
-    <br><br>
+  <!-- ================================================================
+       PORTALS PANEL
+       ================================================================ -->
+  <div class="panel" id="panel-portals">
+    <span class="c tl"></span><span class="c tr"></span>
+    <span class="c bl"></span><span class="c br"></span>
 
-    <h2>+++ AUDIO TRANSMISSIONS +++</h2>
-    <div class="walkman">
-      <h3 class="branding">SOUND-BOY 2000</h3>
-      
-      <div class="tape-deck">
-        <img src="assets/spinning-tape.gif" id="cassette-gif" alt="Spinning Cassette">
-        <p id="status-text">TAPE STOPPED</p>
+    <div class="panel-bar">
+      <span class="panel-label">+++ Cyber Portals +++</span>
+      <button class="min-btn" onclick="togglePanel('panel-portals',this)" title="minimize">−</button>
+    </div>
+
+    <div class="panel-body" style="padding:12px 16px 16px;">
+      <div class="gif-portals">
+        <a href="arcade.html"     data-title="ARCADE">    <img src="assets/source-ezgif.com-resize.gif"                                        alt="Arcade"></a>
+        <a href="stream.html"     data-title="STREAM">    <img src="assets/4shx-transparent-gif-ezgif.com-resize.gif"                          alt="Stream"></a>
+        <a href="space.html"      data-title="SPACE">     <img src="assets/93533501-53aa0d80-f943-11ea-90d1-e6e70eca2e29-ezgif.com-resize.gif" alt="Space"></a>
+        <a href="lagalerie.html"  data-title="LA GALERIE"><img src="assets/f5baef4b6b6677020ab8d091ef78a3bc-ezgif.com-resize.gif"               alt="Galerie"></a>
+        <a href="404.html"        data-title="MERCH">     <img src="assets/giphy-ezgif.com-resize.gif"                                         alt="Merch"></a>
+        <a href="memeportal.html" data-title="ME ME">     <img src="assets/huh-cat-ezgif.com-crop.gif"                                         alt="Memes"></a>
+        <a href="vod.html"        data-title="VOD">       <img src="assets/napoleon-dynamite-dance-ezgif.com-resize.gif"                       alt="VOD"></a>
       </div>
+    </div>
+  </div>
 
+  <!-- ================================================================
+       MEME VIEWER
+       ================================================================ -->
+  <div class="panel" id="panel-meme">
+    <span class="c tl"></span><span class="c tr"></span>
+    <span class="c bl"></span><span class="c br"></span>
+
+    <div class="panel-bar meme-header">
+      <div class="meme-dot-wrap">
+        <div class="meme-dot"></div>
+        <span class="meme-label">NEURAL_FEED.EXE</span>
+      </div>
+      <button class="min-btn" onclick="togglePanel('panel-meme',this)" title="minimize">−</button>
+    </div>
+
+    <div class="panel-body">
+      <div class="meme-display">
+        <img src="assets/motd/meme1.png" alt="Meme of the Day"
+             onclick="openLightbox(this.src)" style="cursor:url('assets/mouse.png'),zoom-in;">
+        <div class="meme-corner tl">REC●</div>
+        <div class="meme-corner tr">CH_04</div>
+        <div class="meme-corner bl" id="meme-date-corner">--/--</div>
+        <div class="meme-corner br">MOTD</div>
+      </div>
+      <div class="meme-footer" id="meme-footer">LOGGED: --</div>
+    </div>
+  </div>
+
+  <!-- ================================================================
+       AUDIO PLAYER
+       ================================================================ -->
+  <div class="panel" id="panel-audio">
+    <span class="c tl"></span><span class="c tr"></span>
+    <span class="c bl"></span><span class="c br"></span>
+
+    <div class="panel-bar audio-header">
+      <span class="audio-title">SOUND_BOY_2000</span>
+      <div class="audio-right">
+        <div class="status-dot" id="status-dot"></div>
+        <button class="min-btn" onclick="togglePanel('panel-audio',this)" title="minimize">−</button>
+      </div>
+    </div>
+
+    <div class="panel-body">
+      <div class="eq-stage">
+        <div class="eq-bar"></div><div class="eq-bar"></div>
+        <div class="eq-bar"></div><div class="eq-bar"></div>
+        <div class="eq-bar"></div><div class="eq-bar"></div>
+        <div class="eq-bar"></div><div class="eq-bar"></div>
+      </div>
+      <div class="track-display">
+        <div class="track-name" id="track-name">TAPE STOPPED</div>
+        <div class="track-sub"  id="track-sub">// SELECT TRACK //</div>
+        <div class="waveform"   id="waveform"></div>
+      </div>
       <audio id="tape-audio"></audio>
-
-      <div class="controls">
-        <button class="mech-button play-btn" onclick="playTape()">►</button>
-        <button class="mech-button" onclick="pauseTape()">❚❚</button>
-        <button class="mech-button stop-btn" onclick="stopTape()">■</button>
+      <div class="audio-controls">
+        <button class="ctl-btn play-btn" onclick="playTape()">▶</button>
+        <button class="ctl-btn"          onclick="pauseTape()">❚❚</button>
+        <button class="ctl-btn stop-btn" onclick="stopTape()">■</button>
       </div>
     </div>
+  </div>
 
-    <br>
-    <hr size="5" width="80%" color="#ff00ff">
-    
-    <p>
-      <i>[Insert spinning flaming skull gif here]</i> 
-      &nbsp;&nbsp;&nbsp; 
-      <i>[Insert "Best viewed in 800x600" button here]</i>
-    </p>
-
-    <div class="webring-container">
-      <h2>+++ CLICK HERE? +++</h2>
-      <br>
-      <a href="index.html"><img src="88x31/anihome112g.gif" alt="Link 1" class="eighty-eight"></a>
-      <a href="gallery.html"><img src="88x31/anybrowser3.gif" alt="Link 2" class="eighty-eight"></a>
-      <a href="https://nerfthespire.com"><img src="88x31/ban-button.gif" alt="Link 3" class="eighty-eight"></a>
-      <a href="404.html"><img src="88x31/bikobatanari.gif" alt="Link 4" class="eighty-eight"></a>
-      <a href="overengineered.html"><img src="88x31/blog.gif" alt="Link 5" class="eighty-eight"></a>
-      <a href="404.html"><img src="88x31/coke.gif" alt="Link 6" class="eighty-eight"></a>
-      <a href="404.html"><img src="88x31/frank.gif" alt="Link 7" class="eighty-eight"></a>
-	  <a href="computeron.html"><img src="88x31/4k1.gif" alt="Link 8" class="eighty-eight"></a>
-	  <a href="panic.html"><img src="88x31/adobe_getflash2.gif" alt="Link 9" class="eighty-eight"></a>
-	  <a href=""><img src="88x31/amiga1200.gif" alt="Link 10" class="eighty-eight"></a>
-	  <a href=""><img src="88x31/anow.gif" alt="Link 11" class="eighty-eight"></a>
-	  <a href=""><img src="88x31/antinft_002.gif" alt="Link 12" class="eighty-eight"></a>
-	  <a href="bookmarks.html"><img src="88x31/archivers.gif" alt="Link 13" class="eighty-eight"></a>
-	  <a href=""><img src="88x31/asta_small.gif" alt="Link 14" class="eighty-eight"></a>
-	  <a href="https://tresc.github.io/interstitial/"><img src="88x31/besteyes.gif" alt="Link 15" class="eighty-eight"></a>
-	  <a href=""><img src="88x31/atarilogo.gif" alt="Link 16" class="eighty-eight"></a>
-	  <a href=""><img src="88x31/cavernscalledhome.png" alt="Link 17" class="eighty-eight"></a>
-	  <a href=""><img src="88x31/classicgaming.gif" alt="Link 18" class="eighty-eight"></a>
-	  <a href="whoops.html"><img src="88x31/candybarsnow.gif" alt="Link 19" class="eighty-eight"></a>
-	  <a href="dungeon.html"><img src="88x31/blizzlogo.gif" alt="Link 20" class="eighty-eight"></a>
+  <!-- ================================================================
+       88x31 TICKER
+       ================================================================ -->
+  <div id="ticker">
+    <div class="ticker-track">
+      <a href="index.html">         <img src="88x31/anihome112g.gif"       class="eighty-eight" alt="Home"></a>
+      <a href="gallery.html">       <img src="88x31/anybrowser3.gif"       class="eighty-eight" alt="Gallery"></a>
+      <a href="https://nerfthespire.com"><img src="88x31/ban-button.gif"   class="eighty-eight" alt="NerfSpire"></a>
+      <a href="404.html">           <img src="88x31/bikobatanari.gif"       class="eighty-eight" alt="Link"></a>
+      <a href="overengineered.html"><img src="88x31/blog.gif"              class="eighty-eight" alt="Blog"></a>
+      <a href="404.html">           <img src="88x31/coke.gif"              class="eighty-eight" alt="Coke"></a>
+      <a href="404.html">           <img src="88x31/frank.gif"             class="eighty-eight" alt="Frank"></a>
+      <a href="computeron.html">    <img src="88x31/4k1.gif"               class="eighty-eight" alt="4k"></a>
+      <a href="panic.html">         <img src="88x31/adobe_getflash2.gif"   class="eighty-eight" alt="Flash"></a>
+      <a href="">                   <img src="88x31/amiga1200.gif"          class="eighty-eight" alt="Amiga"></a>
+      <a href="">                   <img src="88x31/anow.gif"               class="eighty-eight" alt="Now"></a>
+      <a href="">                   <img src="88x31/antinft_002.gif"        class="eighty-eight" alt="AntiNFT"></a>
+      <a href="bookmarks.html">     <img src="88x31/archivers.gif"          class="eighty-eight" alt="Archive"></a>
+      <a href="">                   <img src="88x31/asta_small.gif"         class="eighty-eight" alt="Asta"></a>
+      <a href="https://tresc.github.io/interstitial/"><img src="88x31/besteyes.gif" class="eighty-eight" alt="BestEyes"></a>
+      <a href="">                   <img src="88x31/atarilogo.gif"          class="eighty-eight" alt="Atari"></a>
+      <a href="">                   <img src="88x31/cavernscalledhome.png"  class="eighty-eight" alt="Caverns"></a>
+      <a href="">                   <img src="88x31/classicgaming.gif"      class="eighty-eight" alt="ClassicGaming"></a>
+      <a href="whoops.html">        <img src="88x31/candybarsnow.gif"       class="eighty-eight" alt="Whoops"></a>
+      <a href="dungeon.html">       <img src="88x31/blizzlogo.gif"          class="eighty-eight" alt="Dungeon"></a>
+      <!-- duplicate set for seamless loop -->
+      <a href="index.html">         <img src="88x31/anihome112g.gif"       class="eighty-eight" alt="Home"></a>
+      <a href="gallery.html">       <img src="88x31/anybrowser3.gif"       class="eighty-eight" alt="Gallery"></a>
+      <a href="https://nerfthespire.com"><img src="88x31/ban-button.gif"   class="eighty-eight" alt="NerfSpire"></a>
+      <a href="404.html">           <img src="88x31/bikobatanari.gif"       class="eighty-eight" alt="Link"></a>
+      <a href="overengineered.html"><img src="88x31/blog.gif"              class="eighty-eight" alt="Blog"></a>
+      <a href="404.html">           <img src="88x31/coke.gif"              class="eighty-eight" alt="Coke"></a>
+      <a href="404.html">           <img src="88x31/frank.gif"             class="eighty-eight" alt="Frank"></a>
+      <a href="computeron.html">    <img src="88x31/4k1.gif"               class="eighty-eight" alt="4k"></a>
+      <a href="panic.html">         <img src="88x31/adobe_getflash2.gif"   class="eighty-eight" alt="Flash"></a>
+      <a href="">                   <img src="88x31/amiga1200.gif"          class="eighty-eight" alt="Amiga"></a>
+      <a href="">                   <img src="88x31/anow.gif"               class="eighty-eight" alt="Now"></a>
+      <a href="">                   <img src="88x31/antinft_002.gif"        class="eighty-eight" alt="AntiNFT"></a>
+      <a href="bookmarks.html">     <img src="88x31/archivers.gif"          class="eighty-eight" alt="Archive"></a>
+      <a href="">                   <img src="88x31/asta_small.gif"         class="eighty-eight" alt="Asta"></a>
+      <a href="https://tresc.github.io/interstitial/"><img src="88x31/besteyes.gif" class="eighty-eight" alt="BestEyes"></a>
+      <a href="">                   <img src="88x31/atarilogo.gif"          class="eighty-eight" alt="Atari"></a>
+      <a href="">                   <img src="88x31/cavernscalledhome.png"  class="eighty-eight" alt="Caverns"></a>
+      <a href="">                   <img src="88x31/classicgaming.gif"      class="eighty-eight" alt="ClassicGaming"></a>
+      <a href="whoops.html">        <img src="88x31/candybarsnow.gif"       class="eighty-eight" alt="Whoops"></a>
+      <a href="dungeon.html">       <img src="88x31/blizzlogo.gif"          class="eighty-eight" alt="Dungeon"></a>
     </div>
+  </div>
 
-    <footer>
-      <p><small>© 2026 The Artist. Do not steal my bandwidth.</small></p>
-    </footer>
+  <!-- ================================================================
+       AMBIENT GIFS
+       ================================================================
+       HOW TO FILL IN LINKS:
+         data-type="url"       data-src="https://example.com"
+         data-type="internal"  data-src="page.html"
+         data-type="image"     data-src="assets/image.jpg"
+         data-type="video"     data-src="https://youtube.com/watch?v=ID"
+         data-type="video"     data-src="assets/myvideo.mp4"
+       Leave data-type="" for decoration only (no click action).
+       ================================================================ -->
 
+  <img class="ambient-gif" src="assets/24UD63M6TCNQYC2XHMES5WM3HQPJWTAX.gif"
+       style="left:2%;top:8%;width:55px;animation:bob 3.8s ease-in-out infinite;"
+       data-type="video" data-src="assets/videos/STEAMBOAT.mp4" alt="steamboat mickey">
+
+  <img class="ambient-gif" src="assets/2AGVRENGK6V2EPUFGA4YBRQWGBPBOJBV.gif"
+       style="left:8%;top:32%;width:48px;animation:sway 5.2s ease-in-out infinite;"
+       data-type="" data-src="" alt="">
+
+  <img class="ambient-gif" src="assets/34XGTZ3CIBYF4QL73QNVLTGRG64CCVUY.gif"
+       style="left:1%;top:54%;width:62px;animation:floatRotate 6.5s ease-in-out infinite;"
+       data-type="" data-src="" alt="">
+
+  <img class="ambient-gif" src="assets/4MAZUWF522OK23JR5KHWQQHZOJMYJDYG.gif"
+       style="left:6%;bottom:58px;width:50px;animation:pulse 3.2s ease-in-out infinite;"
+       data-type="" data-src="" alt="">
+
+  <img class="ambient-gif" src="assets/56A4GNTUOCGZUOUYMNNKZFFUSB6E562W.gif"
+       style="left:20%;bottom:58px;width:56px;animation:bounce 1.3s ease-in-out infinite alternate;"
+       data-type="" data-src="" alt="">
+
+  <img class="ambient-gif" src="assets/5DYFYYV3DB3AJDOK7L5WQ5C4HHL6MWPD.gif"
+       style="left:36%;bottom:68px;width:44px;animation:shake 0.6s steps(2,end) infinite;"
+       data-type="" data-src="" alt="">
+
+  <img class="ambient-gif" src="assets/62IT3VUZ3642V7FS6W2Y65V644XX3GAB.gif"
+       style="left:44%;top:5%;width:52px;animation:bob 4.4s ease-in-out infinite;"
+       data-type="" data-src="" alt="">
+
+  <img class="ambient-gif" src="assets/6FDF5KMVPIL3FKBE22IISTVSLCZVNUAO.gif"
+       style="right:32%;bottom:60px;width:60px;animation:sway 4.8s ease-in-out infinite;"
+       data-type="" data-src="" alt="">
+
+  <img class="ambient-gif" src="assets/75QWGYALJL5ULRJWI3CYGUUNGCARJR56.gif"
+       style="right:2%;top:28%;width:66px;animation:floatRotate 7s ease-in-out infinite;"
+       data-type="" data-src="" alt="">
+
+  <img class="ambient-gif" src="assets/7HZ7TOPVEPXZ3U2JQQH76SLDCNTWQATB.gif"
+       style="right:9%;top:55%;width:50px;animation:pulse 3.8s ease-in-out infinite;"
+       data-type="" data-src="" alt="">
+
+  <img class="ambient-gif" src="assets/A6XP3WM6LYXIM3RJW7MSFAGERO4DEPJW.gif"
+       style="left:14%;top:10%;width:44px;animation:blinkBob 2.4s steps(3,end) infinite;"
+       data-type="" data-src="" alt="">
+
+  <img class="ambient-gif" src="assets/AGKAHSJPEFBOHP7AVBU2SXHAA65ZKC3E.gif"
+       style="left:3%;top:40%;width:54px;animation:shake 0.5s steps(2,end) infinite;"
+       data-type="" data-src="" alt="">
+
+  <img class="ambient-gif" src="assets/AM66FLEZPGS6ZEK6BWJ544SHQYNPB7KV.gif"
+       style="left:18%;bottom:70px;width:46px;animation:spinDrift 9s linear infinite;"
+       data-type="" data-src="" alt="">
+
+  <img class="ambient-gif" src="assets/B4NYIWNXZNCK2DPEUCPOV4PULMAIBWCL.gif"
+       style="right:16%;top:7%;width:58px;animation:bob 3.5s ease-in-out infinite;"
+       data-type="" data-src="" alt="">
+
+  <img class="ambient-gif" src="assets/BDYHJMTSOTTZVFBW34SQZVFLZMNSFEBY.gif"
+       style="right:24%;top:38%;width:50px;animation:sway 5.8s ease-in-out infinite;"
+       data-type="" data-src="" alt="">
+
+  <img class="ambient-gif" src="assets/C23ZKN7DSV27MXL4QUREFPX2CM6OUOQJ.gif"
+       style="left:2%;bottom:30%;width:64px;animation:floatRotate 5.5s ease-in-out infinite;"
+       data-type="" data-src="" alt="">
+
+  <img class="ambient-gif" src="assets/CC537IJB7Y7TUFF4DD3FPDMI2MEUJLVP.gif"
+       style="left:42%;bottom:56px;width:54px;animation:bounce 1.6s ease-in-out infinite alternate;"
+       data-type="" data-src="" alt="">
+
+  <img class="ambient-gif" src="assets/D4IV2TKGLW74BCDV2LEYAIU4DYMUTRDR.gif"
+       style="right:6%;top:10%;width:48px;animation:blinkBob 2.8s steps(3,end) infinite;"
+       data-type="" data-src="" alt="">
+
+  <img class="ambient-gif" src="assets/DEWML33HOZ74TY74CY6QT7R27WCHOKTH.gif"
+       style="left:11%;bottom:56px;width:52px;animation:shake 0.7s steps(2,end) infinite;"
+       data-type="" data-src="" alt="">
+
+  <img class="ambient-gif" src="assets/E3OSNY65COVOWMIJTPG46PTWW2BT6EFH.gif"
+       style="right:2%;top:48%;width:60px;animation:bob 4.2s ease-in-out infinite;"
+       data-type="" data-src="" alt="">
+
+  <img class="ambient-gif" src="assets/EMD334Z4VHZ33VX6SCKI2LUBFXWKAYBY.gif"
+       style="right:14%;bottom:60px;width:44px;animation:pulse 4s ease-in-out infinite;"
+       data-type="" data-src="" alt="">
+
+  <img class="ambient-gif" src="assets/GHDI53C6NKNWWUOWLM26TURXNHV5S5SG.gif"
+       style="right:27%;top:10%;width:46px;animation:spinDrift 11s linear infinite;"
+       data-type="" data-src="" alt="">
+
+  <img class="ambient-gif" src="assets/HAS2X7MCZOZLZYMJTR4F2KY2C7AT5A2S.gif"
+       style="left:23%;top:4%;width:50px;animation:bob 5s ease-in-out infinite;"
+       data-type="" data-src="" alt="">
+
+  <img class="ambient-gif" src="assets/I64HUZ4CTE2HQMKC24U6NEEERYDIUS5Q.gif"
+       style="left:30%;top:42%;width:54px;animation:floatRotate 8s ease-in-out infinite;"
+       data-type="" data-src="" alt="">
+
+  <img class="ambient-gif" src="assets/KLUHWSTRLTM2XXMNTZ46AEGQBVQBN5NB.gif"
+       style="right:20%;bottom:56px;width:58px;animation:blinkBob 3.2s steps(3,end) infinite;"
+       data-type="" data-src="" alt="">
+
+  <img class="ambient-gif" src="assets/BBVHEJHOQUN7UQSBZ6MRDNFAXUMIAH2H.gif"
+       style="left:27%;top:22%;width:42px;animation:pulse 2.8s ease-in-out infinite;"
+       data-type="" data-src="" alt="">
+
+  <img class="ambient-gif" src="assets/F2HQ5KKLRWVGDWGJP7FBTWPFZTHRLTKA.gif"
+       style="right:2%;bottom:56px;width:68px;animation:sway 6s ease-in-out infinite;"
+       data-type="" data-src="" alt="">
+
+  <!-- ================================================================
+       VIDEO POPUP
+       ================================================================ -->
+  <div id="video-popup">
+    <span class="c tl"></span><span class="c tr"></span>
+    <span class="c bl"></span><span class="c br"></span>
+    <div class="vp-bar" id="vp-drag-bar">
+      <span class="vp-title">VIDEO_STREAM.EXE</span>
+      <button class="vp-close" onclick="closeVideo()">[ X ]</button>
+    </div>
+    <div class="vp-screen" id="vp-screen"></div>
+  </div>
+
+  <!-- IMAGE LIGHTBOX -->
+  <div id="img-lightbox">
+    <div class="lb-frame">
+      <div class="lb-toolbar">
+        <button class="lb-btn" id="lb-max-btn" onclick="toggleMaximize()">⤢ MAXIMIZE</button>
+        <button class="lb-btn close-btn" onclick="closeLightbox()">✕ CLOSE</button>
+      </div>
+      <img id="lightbox-img" src="" alt="Preview" onclick="closeLightbox()">
+      <div class="lb-hint">click image to close &nbsp;·&nbsp; click backdrop to close</div>
+    </div>
   </div>
 
   <script>
-    // --- Walkman Variables ---
-    const tape = document.getElementById("tape-audio");
-    const statusText = document.getElementById("status-text");
-    const cassetteGif = document.getElementById("cassette-gif");
+    // ── MEME DATE ──────────────────────────────────────────────
+    (function() {
+      const opts = { weekday:'short', year:'numeric', month:'short', day:'numeric' };
+      const str  = new Date().toLocaleDateString('en-US', opts).toUpperCase();
+      document.getElementById('meme-date-corner').innerText = str.slice(0,6);
+      document.getElementById('meme-footer').innerText = 'LOGGED: ' + str;
+    })();
 
-    // --- Playlist Array ---
+    // ── WAVEFORM BARS ──────────────────────────────────────────
+    (function() {
+      const wv = document.getElementById('waveform');
+      for (let i = 0; i < 28; i++) {
+        const b = document.createElement('div');
+        b.className = 'wv-bar';
+        b.style.cssText = `height:${Math.floor(Math.random()*12)+3}px;`
+          + `--s:${(Math.random()*0.4+0.3).toFixed(2)}s;`
+          + `--sy:${(Math.random()*2.5+1.5).toFixed(1)};`;
+        wv.appendChild(b);
+      }
+    })();
+
+    // ── PANEL MINIMIZE ─────────────────────────────────────────
+    function togglePanel(id, btn) {
+      const panel = document.getElementById(id);
+      const minimized = panel.classList.toggle('minimized');
+      btn.textContent = minimized ? '+' : '−';
+      btn.title = minimized ? 'restore' : 'minimize';
+    }
+
+    // ── AUDIO PLAYER ───────────────────────────────────────────
+    const tape       = document.getElementById('tape-audio');
+    const trackName  = document.getElementById('track-name');
+    const trackSub   = document.getElementById('track-sub');
+    const statusDot  = document.getElementById('status-dot');
+    const audioPanel = document.getElementById('panel-audio');
+
     const playlist = [
-      "NEON_VOID",
-      "SYSTEM_CRASH_REMIX",
-      "VIRTUAL_TEARS"
+      { label:'NEON_VOID',          file:'NEON_VOID.mp3' },
+      { label:'SYSTEM_CRASH_REMIX', file:'SYSTEM_CRASH_REMIX.mp3' },
+      { label:'VIRTUAL_TEARS',      file:'VIRTUAL_TEARS.mp3' }
     ];
-    
     let currentTrack = 0;
-    
-    // Load the first track on standby
-    tape.src = playlist[currentTrack] + ".mp3";
+    tape.src = playlist[0].file;
 
-    // --- Walkman Controls ---
+    function setPlaying(on) {
+      audioPanel.classList.toggle('is-playing', on);
+      statusDot.classList.toggle('on', on);
+      trackName.classList.toggle('scrolling', on);
+    }
+
     function playTape() {
       tape.play();
-      statusText.innerText = ">> PLAYING: " + playlist[currentTrack] + ".mp3 >>";
-      statusText.style.color = "#00ff00"; 
-      cassetteGif.style.visibility = "visible"; 
+      trackName.innerHTML = `<span>${playlist[currentTrack].label}.MP3</span>`;
+      trackSub.innerText  = '// PLAYING //';
+      setPlaying(true);
     }
-
     function pauseTape() {
       tape.pause();
-      statusText.innerText = "|| PAUSED: " + playlist[currentTrack] + ".mp3 ||";
-      statusText.style.color = "#ffff00"; 
-      cassetteGif.style.visibility = "hidden"; 
+      trackName.innerHTML = playlist[currentTrack].label + '.MP3';
+      trackSub.innerText  = '// PAUSED //';
+      setPlaying(false);
     }
-
     function stopTape() {
-      tape.pause();
-      tape.currentTime = 0; 
-      statusText.innerText = "TAPE STOPPED";
-      statusText.style.color = "#ff0000"; 
-      cassetteGif.style.visibility = "hidden"; 
+      tape.pause(); tape.currentTime = 0;
+      trackName.innerHTML = 'TAPE STOPPED';
+      trackSub.innerText  = '// SELECT TRACK //';
+      setPlaying(false);
     }
-
-    // Automatically load and play the next song when current finishes
     tape.onended = function() {
-      currentTrack++; 
-      if (currentTrack >= playlist.length) {
-        currentTrack = 0; 
-      }
-      tape.src = playlist[currentTrack] + ".mp3";
+      currentTrack = (currentTrack + 1) % playlist.length;
+      tape.src = playlist[currentTrack].file;
       playTape();
     };
 
-    // --- Mouse Sparkle Trail Script ---
-    const trailLength = 12; 
-    const trailElements = [];
-    let mouseX = 0;
-    let mouseY = 0;
+    // ── MOUSE-FOLLOWING TOOLTIP ────────────────────────────────
+    const tooltip = document.getElementById('tooltip');
+    let tooltipTargets = [];
 
-    // Create the HTML elements dynamically
-    for (let i = 0; i < trailLength; i++) {
-      const dot = document.createElement('div');
-      dot.className = 'sparkle';
-      document.body.appendChild(dot);
-      trailElements.push({
-        element: dot,
-        x: window.innerWidth / 2, 
-        y: window.innerHeight / 2
+    function initTooltips() {
+      // Apply to all elements with data-title inside portals and socials panels
+      tooltipTargets = document.querySelectorAll(
+        '#panel-portals [data-title], #panel-socials [data-title]'
+      );
+
+      tooltipTargets.forEach(el => {
+        el.addEventListener('mouseenter', () => {
+          tooltip.textContent = el.dataset.title;
+          tooltip.classList.add('visible');
+        });
+        el.addEventListener('mouseleave', () => {
+          tooltip.classList.remove('visible');
+        });
       });
     }
 
-    // Track the mouse coordinates
-    document.addEventListener('mousemove', function(e) {
-      mouseX = e.pageX;
-      mouseY = e.pageY;
+    document.addEventListener('mousemove', e => {
+      tooltip.style.left = e.clientX + 'px';
+      tooltip.style.top  = e.clientY + 'px';
     });
 
-    // Animate the trail
-    function animateTrail() {
-      let targetX = mouseX;
-      let targetY = mouseY;
-      
-      trailElements.forEach(function(dot, index) {
-        dot.x += (targetX - dot.x) * 0.3; 
-        dot.y += (targetY - dot.y) * 0.3;
-        
-        dot.element.style.left = (dot.x + 5) + 'px';
-        dot.element.style.top = (dot.y + 10) + 'px';
-        
-        const scale = (trailLength - index) / trailLength;
-        dot.element.style.transform = `scale(${scale})`;
-        
-        targetX = dot.x;
-        targetY = dot.y;
+    initTooltips();
+
+    // ── AMBIENT GIF CLICKS ─────────────────────────────────────
+    document.querySelectorAll('.ambient-gif').forEach(gif => {
+      gif.addEventListener('click', function() {
+        const type = this.dataset.type;
+        const src  = this.dataset.src;
+        if (!type || !src) return;
+        if (type === 'url')      window.open(src, '_blank');
+        if (type === 'internal') window.location.href = src;
+        if (type === 'image')    openLightbox(src);
+        if (type === 'video')    openVideo(src);
       });
-      
-      requestAnimationFrame(animateTrail);
+    });
+
+    // ── VIDEO POPUP ────────────────────────────────────────────
+    const videoPopup = document.getElementById('video-popup');
+    const vpScreen   = document.getElementById('vp-screen');
+
+    function openVideo(src) {
+      vpScreen.innerHTML = '';
+      const ytMatch = src.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+      let el;
+      if (ytMatch) {
+        el = document.createElement('iframe');
+        el.src = `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1`;
+        el.allow = 'autoplay; encrypted-media';
+        el.allowFullscreen = true;
+      } else {
+        el = document.createElement('video');
+        el.src = src; el.controls = true; el.autoplay = true;
+      }
+      vpScreen.appendChild(el);
+      videoPopup.style.display = 'block';
     }
-    
-    // Kick off the animation
-    animateTrail();
-	
-	// --- AUTO-DATE SCRIPT ---
-    function updateMemeDate() {
-      const dateElement = document.getElementById('meme-log-date');
-      const now = new Date();
-      
-      // Formats to: Weekday, Month DD, YYYY
-      const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
-      const dateString = now.toLocaleDateString('en-US', options).toUpperCase();
-      
-      dateElement.innerText = "LOGGED: " + dateString;
+    function closeVideo() {
+      videoPopup.style.display = 'none';
+      vpScreen.innerHTML = '';
     }
 
-    // Run the function immediately on page load
-    updateMemeDate();
-    
+    // Draggable video popup
+    (function() {
+      const bar = document.getElementById('vp-drag-bar');
+      let drag = false, ox = 0, oy = 0;
+      bar.addEventListener('mousedown', e => {
+        drag = true;
+        const r = videoPopup.getBoundingClientRect();
+        videoPopup.style.transform = 'none';
+        videoPopup.style.left = r.left + 'px';
+        videoPopup.style.top  = r.top  + 'px';
+        ox = e.clientX - r.left; oy = e.clientY - r.top;
+        e.preventDefault();
+      });
+      document.addEventListener('mousemove', e => {
+        if (!drag) return;
+        videoPopup.style.left = (e.clientX - ox) + 'px';
+        videoPopup.style.top  = (e.clientY - oy) + 'px';
+      });
+      document.addEventListener('mouseup', () => { drag = false; });
+    })();
+
+    // ── IMAGE LIGHTBOX ─────────────────────────────────────────
+    const lightbox    = document.getElementById('img-lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const lbMaxBtn    = document.getElementById('lb-max-btn');
+
+    function openLightbox(src) {
+      lightboxImg.src = src;
+      lightboxImg.classList.remove('maximized');
+      lbMaxBtn.textContent = '[ MAXIMIZE ]';
+      lightbox.classList.add('open');
+    }
+    function closeLightbox() { lightbox.classList.remove('open'); }
+
+    function toggleMaximize() {
+      const isMax = lightboxImg.classList.toggle('maximized');
+      lbMaxBtn.textContent = isMax ? '[ RESTORE ]' : '[ MAXIMIZE ]';
+    }
+
+    // Close lightbox on backdrop click (not toolbar/image)
+    lightbox.addEventListener('click', function(e) {
+      if (e.target === lightbox) closeLightbox();
+    });
+
+    // ── SPARKLE TRAIL ──────────────────────────────────────────
+    const TRAIL = 12, dots = [];
+    let mx = innerWidth/2, my = innerHeight/2;
+    for (let i = 0; i < TRAIL; i++) {
+      const d = document.createElement('div');
+      d.className = 'sparkle'; document.body.appendChild(d);
+      dots.push({ el: d, x: mx, y: my });
+    }
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+    (function anim() {
+      let tx = mx, ty = my;
+      dots.forEach((dot, i) => {
+        dot.x += (tx - dot.x) * 0.3; dot.y += (ty - dot.y) * 0.3;
+        dot.el.style.left = dot.x + 'px'; dot.el.style.top = dot.y + 'px';
+        dot.el.style.transform = `scale(${(TRAIL-i)/TRAIL})`;
+        tx = dot.x; ty = dot.y;
+      });
+      requestAnimationFrame(anim);
+    })();
+
   </script>
-
 </body>
 </html>
