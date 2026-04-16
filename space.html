@@ -3,418 +3,1890 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Transmission: ORBITAL TRAJECTORY</title>
+  <title>UPLINK // HUNTER-CLASS VESSEL</title>
   <link rel="icon" type="image/png" href="assets/icon2.gif">
-  
+
   <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/asciinema-player@3.7.1/dist/bundle/asciinema-player.css" />
 
   <style>
     /* =========================================
-       BASE STYLES (DESKTOP FIRST)
+       TOKENS — one palette, one font, one mood
        ========================================= */
+    :root {
+      --bg-void:       #0a0612;   /* deep desaturated plum, not pure black */
+      --bg-panel:      rgba(18, 10, 6, 0.88);
+      --bg-panel-dim:  rgba(10, 6, 18, 0.75);
+
+      --amber:         #ffaa33;   /* primary phosphor — warm Western CRT */
+      --amber-dim:     #b87020;
+      --amber-faint:   #5a3810;
+      --amber-glow:    rgba(255, 170, 51, 0.45);
+
+      --cyan-dim:      #4499aa;   /* secondary, muted — not neon */
+      --cyan-faint:    #2a5a66;
+
+      --alert:         #ff3344;   /* reserved for genuine alerts */
+      --alert-glow:    rgba(255, 51, 68, 0.5);
+
+      --dust:          #8a7050;   /* muted tan for secondary text */
+      --dust-faint:    #4a3a2a;
+
+      --scan:          rgba(0, 0, 0, 0.28);
+    }
+
+    /* =========================================
+       BASE
+       ========================================= */
+    *, *::before, *::after { box-sizing: border-box; }
+
     body {
-      background-color: #000000;
-      background-image: url('assets/bg/space.jpg'); 
-      background-size: cover;
+      background-color: var(--bg-void);
+      background-image:
+        radial-gradient(ellipse at 20% 10%, rgba(255, 170, 51, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 90%, rgba(68, 153, 170, 0.06) 0%, transparent 50%),
+        url('assets/bg/space.jpg');
+      background-size: auto, auto, cover;
       background-position: center;
       background-attachment: fixed;
-      color: #ffffff;
+      background-blend-mode: normal, normal, multiply;
+      color: var(--amber);
       margin: 0;
-      padding: 40px 20px; 
-      box-sizing: border-box; 
+      padding: 30px 20px 40px 20px;
       font-family: "Courier New", Courier, monospace;
-      text-align: center;
       font-size: 14px;
+      line-height: 1.4;
+      min-height: 100vh;
+      position: relative;
     }
 
-    .dashboard-container {
+    /* Scanlines — the single texture that ties everything together */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent 2px,
+        var(--scan) 2px,
+        var(--scan) 3px
+      );
+      pointer-events: none;
+      z-index: 9998;
+      mix-blend-mode: multiply;
+    }
+
+    /* Faint CRT vignette */
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at center, transparent 50%, rgba(0, 0, 0, 0.55) 100%);
+      pointer-events: none;
+      z-index: 9997;
+    }
+
+    /* =========================================
+       MASTHEAD
+       ========================================= */
+    .masthead {
+      max-width: 1400px;
+      margin: 0 auto 20px auto;
+      padding: 12px 18px;
+      border: 1px solid var(--amber-dim);
+      border-left: 3px solid var(--amber);
+      background: var(--bg-panel);
+      color: var(--amber);
+      font-size: 13px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
       display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
+      justify-content: space-between;
+      align-items: center;
       gap: 20px;
-      max-width: 1600px;
-      margin: 0 auto;
-      align-items: flex-start;
+      text-shadow: 0 0 6px var(--amber-glow);
+    }
+    .masthead .heart {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background: var(--amber);
+      box-shadow: 0 0 8px var(--amber);
+      animation: heartbeat 1.6s ease-in-out infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+    @keyframes heartbeat {
+      0%, 40%, 100% { opacity: 1; }
+      20%, 60% { opacity: 0.3; }
+    }
+    .masthead-right {
+      color: var(--dust);
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-shadow: none;
     }
 
-    .terminal-window {
-      background-color: rgba(0, 0, 0, 0.85); 
-      padding: 20px 25px;
-      border: 2px solid #333;
-      border-radius: 8px;
-      box-shadow: 0px 0px 15px rgba(0, 255, 255, 0.1); 
+    /* =========================================
+       BOUNTY BOARD TICKER
+       ========================================= */
+    .ticker {
+      max-width: 1400px;
+      margin: 0 auto 20px auto;
+      background: #000;
+      border: 1px solid var(--amber-faint);
+      border-top: 1px solid var(--amber-dim);
+      padding: 6px 0;
+      overflow: hidden;
+      white-space: nowrap;
+      position: relative;
+    }
+    .ticker::before {
+      content: "[ BOUNTY BOARD ]";
+      position: absolute;
+      top: -9px;
+      left: 12px;
+      background: var(--bg-void);
+      padding: 0 8px;
+      font-size: 10px;
+      color: var(--amber-dim);
+      letter-spacing: 2px;
+    }
+    .ticker-text {
+      display: inline-block;
+      padding-left: 100%;
+      color: var(--amber);
+      font-size: 12px;
+      letter-spacing: 1px;
+      animation: scroll-ticker 45s linear infinite;
+      text-shadow: 0 0 4px var(--amber-glow);
+    }
+    .ticker-text .sep { color: var(--dust); margin: 0 14px; }
+    .ticker-text .alert { color: var(--alert); text-shadow: 0 0 4px var(--alert-glow); }
+    .ticker-text .cyan { color: var(--cyan-dim); }
+
+    @keyframes scroll-ticker {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
+
+    /* =========================================
+       DASHBOARD LAYOUT
+       ========================================= */
+    .dashboard {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 280px 1fr 280px;
+      grid-template-areas:
+        "status viewport local"
+        "log    log      log";
+      gap: 16px;
+    }
+
+    .panel-status   { grid-area: status; }
+    .panel-viewport { grid-area: viewport; }
+    .panel-local    { grid-area: local; }
+    .panel-log      { grid-area: log; }
+
+    /* =========================================
+       THE PANEL — one component, many uses
+       ========================================= */
+    .panel {
+      background: var(--bg-panel);
+      border: 1px solid var(--amber-dim);
+      color: var(--amber);
+      position: relative;
       display: flex;
       flex-direction: column;
-      text-align: left;
+      box-shadow:
+        inset 0 0 30px rgba(255, 170, 51, 0.04),
+        0 0 20px rgba(0, 0, 0, 0.5);
     }
 
-    .panel-title {
-      color: #55ffff;
-      border-bottom: 1px dashed #555;
-      margin-top: 0;
-      padding-bottom: 10px;
-      margin-bottom: 15px;
-      text-transform: uppercase;
-      font-weight: bold;
+    /* Corner brackets — subtle industrial detail */
+    .panel::before,
+    .panel::after {
+      content: "";
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-color: var(--amber);
+      pointer-events: none;
+    }
+    .panel::before {
+      top: -1px; left: -1px;
+      border-top: 2px solid;
+      border-left: 2px solid;
+    }
+    .panel::after {
+      bottom: -1px; right: -1px;
+      border-bottom: 2px solid;
+      border-right: 2px solid;
+    }
+
+    .panel-header {
+      padding: 8px 14px;
+      border-bottom: 1px dashed var(--amber-faint);
+      font-size: 11px;
       letter-spacing: 2px;
-      font-size: 14px;
-    }
-
-    pre {
-      margin: 0;
-      font-size: 14px;
-      line-height: 1.2;
-      letter-spacing: 1px;
-      text-shadow: 1px 1px 2px #000; 
-      overflow-x: auto;
-    }
-
-    /* Color Utility Classes */
-    .grey    { color: #aaaaaa; }
-    .blue    { color: #5555ff; text-shadow: 0 0 5px #5555ff; }
-    .green   { color: #00ff00; text-shadow: 0 0 5px #00ff00; }
-    .red     { color: #ff5555; text-shadow: 0 0 5px #ff5555; }
-    .yellow  { color: #ffff55; text-shadow: 0 0 5px #ffff55; }
-    .cyan    { color: #55ffff; text-shadow: 0 0 5px #55ffff; }
-    .magenta { color: #ff55ff; text-shadow: 0 0 5px #ff55ff; }
-    
-    .video-frame {
-      width: 100%;
+      color: var(--amber);
+      text-transform: uppercase;
       display: flex;
-      justify-content: center;
-      padding: 10px 0;
-      border-left: 2px dashed #444; 
-      border-right: 2px dashed #444;
-      margin: 2px 0;
-      background: #000;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 170, 51, 0.04);
+    }
+    .panel-header .tag {
+      color: var(--dust);
+      font-size: 10px;
+      letter-spacing: 1px;
+    }
+    .panel-body {
+      padding: 14px;
+      flex: 1;
     }
 
+    /* =========================================
+       PANEL: SHIP STATUS
+       ========================================= */
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+    }
+    .stat-row .label { color: var(--dust); text-transform: uppercase; }
+    .stat-row .value { color: var(--amber); text-shadow: 0 0 4px var(--amber-glow); }
+    .stat-row .value.alert { color: var(--alert); text-shadow: 0 0 4px var(--alert-glow); }
+    .stat-row .value.dim { color: var(--cyan-dim); text-shadow: none; }
+
+    .bar {
+      height: 6px;
+      background: var(--dust-faint);
+      border: 1px solid var(--amber-faint);
+      margin: 4px 0 12px 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      background: var(--amber);
+      box-shadow: 0 0 6px var(--amber-glow);
+    }
+    .bar-fill.warn  { background: var(--alert); box-shadow: 0 0 6px var(--alert-glow); }
+    .bar-fill.cool  { background: var(--cyan-dim); box-shadow: none; }
+
+    .divider {
+      border: none;
+      border-top: 1px dashed var(--amber-faint);
+      margin: 14px 0 10px 0;
+    }
+    .subhead {
+      color: var(--cyan-dim);
+      font-size: 10px;
+      letter-spacing: 2px;
+      margin: 0 0 8px 0;
+      text-transform: uppercase;
+    }
+
+    /* Revolver chamber visualization */
+    .chambers {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      margin: 8px 0;
+      padding: 8px;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--amber-faint);
+    }
+    .chamber {
+      aspect-ratio: 1;
+      border: 2px solid var(--amber-dim);
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--amber) 40%, var(--amber-dim) 60%, #1a0f08 100%);
+      box-shadow: 0 0 6px var(--amber-glow), inset 0 0 4px rgba(0,0,0,0.6);
+    }
+    .chamber.spent {
+      background: radial-gradient(circle, #1a0f08 40%, #0a0604 80%);
+      border-color: var(--dust-faint);
+      box-shadow: inset 0 0 6px rgba(0,0,0,0.8);
+    }
+
+    /* =========================================
+       PANEL: VIEWPORT (the hero)
+       ========================================= */
+    .panel-viewport {
+      min-height: 480px;
+    }
+    .viewport-frame {
+      flex: 1;
+      margin: 0;
+      padding: 20px;
+      background:
+        radial-gradient(ellipse at center, rgba(255, 170, 51, 0.05) 0%, transparent 70%),
+        #000;
+      border-top: 1px solid var(--amber-faint);
+      border-bottom: 1px solid var(--amber-faint);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    /* Curved CRT edges — faked with inset box-shadow */
+    .viewport-frame::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      box-shadow: inset 0 0 60px 20px rgba(0, 0, 0, 0.9);
+      pointer-events: none;
+      z-index: 2;
+      border-radius: 20px / 10px;
+    }
+    /* The signal-acquiring flicker */
+    .viewport-frame::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 0%, rgba(255, 170, 51, 0.03) 50%, transparent 100%);
+      animation: signal-sweep 6s linear infinite;
+      pointer-events: none;
+      z-index: 1;
+    }
+    @keyframes signal-sweep {
+      0%   { transform: translateY(-100%); }
+      100% { transform: translateY(100%); }
+    }
+
+    #star-wars-player {
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
     .asciinema-player-wrapper, .asciinema-terminal {
       background: transparent !important;
     }
 
-    .chrome-panel {
-      background: linear-gradient(135deg, #f2f2f2 0%, #a1a1a1 40%, #707070 50%, #9e9e9e 60%, #ffffff 100%);
-      border-top: 2px solid #ffffff;
-      border-left: 2px solid #ffffff;
-      border-right: 2px solid #444444;
-      border-bottom: 2px solid #444444;
-      border-radius: 15px; 
-      box-shadow: inset 1px 1px 5px rgba(255,255,255,0.8), inset -1px -1px 5px rgba(0,0,0,0.5), 5px 5px 15px rgba(0,0,0,0.9);
-      padding: 15px;
-      color: #000;
-      font-family: 'Arial Black', Impact, sans-serif;
-      text-align: center;
-    }
-
-    .chrome-title {
-      font-size: 16px;
+    .signal-status {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 14px;
+      font-size: 10px;
+      color: var(--dust);
       letter-spacing: 2px;
-      text-shadow: 1px 1px 0px #fff, -1px -1px 0px #888;
-      margin: 0 0 15px 0;
-      border-bottom: 2px groove #ccc;
-      padding-bottom: 5px;
+      background: rgba(0, 0, 0, 0.6);
+      border-top: 1px dashed var(--amber-faint);
     }
-
-    .digital-screen {
-      background-color: #051105;
-      border-top: 3px solid #000;
-      border-left: 3px solid #000;
-      border-right: 2px solid #aaa;
-      border-bottom: 2px solid #aaa;
-      border-radius: 5px;
-      padding: 10px;
-      color: #00ff00;
-      font-family: "Courier New", Courier, monospace;
-      text-shadow: 0px 0px 5px #00ff00;
-      position: relative;
-      margin-bottom: 15px;
-    }
-
-    .radar-container {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      border: 2px solid #00ff00;
-      margin: 10px auto;
-      position: relative;
-      background: repeating-radial-gradient(circle at center, transparent 0, transparent 20px, rgba(0,255,0,0.2) 21px);
-      overflow: hidden;
-    }
-
-    .radar-sweep {
-      width: 50%;
-      height: 50%;
-      background: linear-gradient(to right, transparent, rgba(0, 255, 0, 0.8));
-      position: absolute;
-      top: 0;
-      right: 0;
-      transform-origin: bottom left;
-      animation: sweep 3s linear infinite;
-    }
-
-    @keyframes sweep {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-
-    .chrome-btn {
-      background: linear-gradient(to bottom, #ffffff 0%, #aaaaaa 48%, #777777 50%, #cccccc 100%);
-      border: 2px outset #dddddd;
-      border-radius: 20px;
-      padding: 5px 15px;
-      font-weight: bold;
-      color: #000;
-      text-shadow: 1px 1px 0px #fff;
-      cursor: pointer;
-      box-shadow: 0px 3px 5px rgba(0,0,0,0.5);
-      font-size: 12px;
-    }
-
-    .chrome-btn:active {
-      border: 2px inset #dddddd;
-      background: linear-gradient(to bottom, #cccccc 0%, #777777 48%, #aaaaaa 50%, #ffffff 100%);
-      box-shadow: inset 0px 2px 5px rgba(0,0,0,0.5);
-      transform: translateY(2px);
-    }
-
-    .led-light {
+    .signal-status .dot {
       display: inline-block;
-      width: 12px;
-      height: 12px;
+      width: 6px;
+      height: 6px;
       border-radius: 50%;
-      background-color: #ff0000; 
-      box-shadow: inset -2px -2px 4px rgba(0,0,0,0.5), 0px 0px 10px #ff0000;
-      border: 1px solid #333;
+      background: var(--amber);
+      box-shadow: 0 0 6px var(--amber);
+      animation: heartbeat 1.6s ease-in-out infinite;
+      margin-right: 6px;
       vertical-align: middle;
-      margin-right: 5px;
-      animation: blink 2s infinite;
     }
-
-    @keyframes blink {
-      0%, 49% { background-color: #ff0000; box-shadow: inset -2px -2px 4px rgba(0,0,0,0.5), 0px 0px 10px #ff0000; }
-      50%, 100% { background-color: #440000; box-shadow: none; }
-    }
-
-    .ticker-box {
-      background-color: #000; border: 1px solid #333; padding: 5px; margin-bottom: 15px; overflow: hidden; white-space: nowrap;
-    }
-    
-    .ticker-text {
-      display: inline-block; color: #00ff00; animation: scrollTicker 20s linear infinite;
-    }
-
-    @keyframes scrollTicker {
-      0% { transform: translateX(100%); }
-      100% { transform: translateX(-100%); }
-    }
-
-    .progress-bar { width: 100%; background-color: #222; border: 1px solid #555; height: 14px; margin: 5px 0 10px 0; position: relative; }
-    .progress-fill { height: 100%; background-color: #00ff00; box-shadow: 0px 0px 10px #00ff00; }
-
-    /* Desktop Grid Sizing */
-    .main-feed { flex: 2 1 650px; max-width: 800px; align-items: center; }
-    .side-panel { flex: 1 1 300px; max-width: 380px; text-align: left; }
-    .wide-panel { flex: 1 1 100%; max-width: 1220px; }
-    
-    p { margin: 8px 0; line-height: 1.4; font-size: 14px; }
-
-    /* Hide the mobile elements by default on desktop */
-    .show-mobile { display: none; }
-
 
     /* =========================================
-       MOBILE OVERRIDES (MAX-WIDTH: 800px)
+       PANEL: LOCAL SPACE
        ========================================= */
-    @media screen and (max-width: 800px) {
-      body {
-        padding: 5px; 
+    .sector-map {
+      font-family: "Courier New", Courier, monospace;
+      font-size: 16px;
+      line-height: 1.1;
+      letter-spacing: 2px;
+      text-align: center;
+      color: var(--amber-dim);
+      padding: 8px 0;
+      text-shadow: 0 0 4px var(--amber-glow);
+    }
+    .sector-map .ship    { color: var(--amber); text-shadow: 0 0 8px var(--amber); animation: pulse 2s ease-in-out infinite; }
+    .sector-map .target  { color: var(--alert); text-shadow: 0 0 6px var(--alert-glow); animation: pulse 1s ease-in-out infinite; }
+    .sector-map .waypoint { color: var(--cyan-dim); }
+    .sector-map .unknown { color: var(--dust); }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%      { opacity: 0.5; }
+    }
+
+    .legend {
+      border-top: 1px dashed var(--amber-faint);
+      padding-top: 10px;
+      margin-top: 10px;
+      font-size: 10px;
+      letter-spacing: 1px;
+    }
+    .legend-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+      color: var(--dust);
+    }
+    .legend-row .glyph {
+      font-family: "Courier New", Courier, monospace;
+      font-size: 14px;
+      width: 16px;
+      text-align: center;
+    }
+    .legend-row .g-ship { color: var(--amber); text-shadow: 0 0 4px var(--amber-glow); }
+    .legend-row .g-target { color: var(--alert); }
+    .legend-row .g-waypoint { color: var(--cyan-dim); }
+
+    /* =========================================
+       PANEL: CAPTAIN'S LOG
+       ========================================= */
+    .log-entry {
+      padding: 16px 0;
+      border-bottom: 1px dashed var(--amber-faint);
+      position: relative;
+    }
+    .log-entry:last-child { border-bottom: none; padding-bottom: 0; }
+    .log-entry:first-child { padding-top: 0; }
+
+    .log-header {
+      display: flex;
+      gap: 12px;
+      align-items: baseline;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+      font-size: 11px;
+      letter-spacing: 1.5px;
+    }
+    .log-id    { color: var(--amber); font-weight: bold; text-shadow: 0 0 4px var(--amber-glow); }
+    .log-date  { color: var(--dust); }
+    .log-class { color: var(--cyan-dim); }
+    .log-class.secure    { color: var(--amber-dim); }
+    .log-class.encrypted { color: var(--alert); }
+    .log-class.private   { color: var(--dust); }
+
+    .log-body {
+      color: var(--amber);
+      font-size: 13px;
+      line-height: 1.6;
+      padding-left: 18px;
+      border-left: 2px solid var(--amber-faint);
+      text-shadow: 0 0 3px rgba(255, 170, 51, 0.3);
+    }
+    .log-body .red  { color: var(--alert); text-shadow: 0 0 4px var(--alert-glow); }
+    .log-body .dim  { color: var(--dust); }
+    .log-body .cyan { color: var(--cyan-dim); }
+
+    .log-body::first-letter {
+      font-size: 1.3em;
+      color: var(--amber);
+      text-shadow: 0 0 8px var(--amber);
+    }
+
+    /* =========================================
+       RETURN TO CAVE
+       ========================================= */
+    .return-home {
+      margin: 40px auto 0 auto;
+      text-align: center;
+      max-width: 1400px;
+    }
+    .return-home a {
+      display: inline-block;
+      padding: 8px;
+      border: 1px solid var(--amber-dim);
+      background: var(--bg-panel);
+      transition: all 0.2s;
+    }
+    .return-home a:hover {
+      border-color: var(--amber);
+      box-shadow: 0 0 12px var(--amber-glow);
+    }
+    .return-home img {
+      image-rendering: pixelated;
+      display: block;
+    }
+    .return-home p {
+      color: var(--dust);
+      font-size: 10px;
+      letter-spacing: 3px;
+      margin: 12px 0 0 0;
+      text-transform: uppercase;
+    }
+
+    /* =========================================
+       MOBILE
+       ========================================= */
+    @media screen and (max-width: 900px) {
+      body { padding: 12px 8px; font-size: 12px; }
+
+      .masthead {
+        flex-direction: column;
+        gap: 6px;
+        align-items: flex-start;
         font-size: 11px;
+        letter-spacing: 1px;
+        padding: 10px 12px;
+      }
+      .masthead-right { font-size: 10px; }
+
+      .dashboard {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+          "viewport"
+          "status"
+          "local"
+          "log";
+        gap: 12px;
       }
 
-      .dashboard-container {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 6px; 
-      }
+      .panel-viewport { min-height: 300px; }
+      .panel-header { font-size: 10px; padding: 6px 10px; }
+      .panel-body { padding: 10px; }
 
-      .terminal-window { padding: 8px; border-width: 1px; box-shadow: 0px 0px 8px rgba(0, 255, 255, 0.15); }
-      .panel-title { padding-bottom: 4px; margin-bottom: 6px; font-size: 10px; letter-spacing: 1px; }
+      .stat-row { font-size: 10px; }
+      .subhead { font-size: 9px; }
+      .log-body { font-size: 12px; padding-left: 12px; }
+      .log-header { font-size: 10px; gap: 8px; }
+      .sector-map { font-size: 14px; }
 
-      pre { font-size: 9px; line-height: 1.1; letter-spacing: 0; }
-      p { margin: 4px 0; line-height: 1.2; font-size: 10px; }
+      #star-wars-player { display: none; }
+      .mobile-fallback { display: block !important; }
+    }
 
-      .chrome-panel { padding: 6px; border-radius: 8px; border-width: 2px; }
-      .chrome-title { font-size: 11px; margin-bottom: 6px; padding-bottom: 2px; }
-      
-      .digital-screen { padding: 5px; border-width: 2px; margin-bottom: 6px; }
+    .mobile-fallback {
+      display: none;
+      text-align: center;
+      color: var(--dust);
+      font-size: 11px;
+      padding: 20px 10px;
+      letter-spacing: 1px;
+    }
+    .mobile-fallback .alert { color: var(--alert); display: block; margin-bottom: 8px; }
+    .mobile-fallback img { max-width: 200px; margin: 10px auto; display: block; border: 1px dashed var(--amber-faint); }
 
-      .radar-container { width: 60px; height: 60px; margin: 5px auto; }
-      .radar-container { background: repeating-radial-gradient(circle at center, transparent 0, transparent 10px, rgba(0,255,0,0.2) 11px); }
-      .radar-sweep { animation-duration: 2s; }
+    /* =========================================================
+       SCRAPBOOK SECTION
+       ========================================================= */
 
-      .chrome-btn { padding: 3px 6px; font-size: 9px; width: 48%; }
-      .led-light { width: 8px; height: 8px; }
-      
-      .ticker-box { padding: 2px; margin-bottom: 6px; }
-      .ticker-text { animation-duration: 15s; font-size: 10px; }
-      .progress-bar { height: 8px; margin: 2px 0 4px 0; }
+    /* --- Transition from console to scrapbook --- */
+    .transition-block {
+      max-width: 1400px;
+      margin: 60px auto 0 auto;
+      text-align: center;
+      color: var(--amber-dim);
+      font-family: "Courier New", Courier, monospace;
+      font-size: 12px;
+      letter-spacing: 2px;
+      line-height: 1.8;
+      text-shadow: 0 0 4px var(--amber-glow);
+    }
+    .transition-block .rule {
+      color: var(--amber-faint);
+      font-size: 14px;
+      letter-spacing: 4px;
+    }
+    .transition-block .label-block {
+      margin-top: 14px;
+      color: var(--dust);
+      font-size: 11px;
+    }
+    .transition-block .label-block div { margin: 2px 0; }
+    .transition-block .label-block .key { color: var(--amber-dim); }
 
-      .video-frame {
-        padding: 5px 0; border-width: 1px; border-left: none; border-right: none; border-top: 1px dashed #444; border-bottom: 1px dashed #444;
-      }
+    /* --- Scrapbook container --- */
+    .scrapbook {
+      max-width: 1100px;
+      margin: 30px auto 40px auto;
+      padding: 30px 30px 60px 30px;
+      position: relative;
+      background:
+        repeating-linear-gradient(
+          0deg,
+          transparent 0,
+          transparent 2px,
+          rgba(120, 80, 40, 0.015) 2px,
+          rgba(120, 80, 40, 0.015) 4px
+        ),
+        radial-gradient(ellipse at 30% 20%, rgba(160, 120, 70, 0.12) 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 80%, rgba(140, 100, 60, 0.12) 0%, transparent 50%),
+        linear-gradient(180deg, #f0e3c4 0%, #e8d9b3 100%);
+      box-shadow:
+        0 0 0 1px rgba(90, 60, 30, 0.2),
+        0 20px 60px rgba(0, 0, 0, 0.6),
+        inset 0 0 80px rgba(120, 80, 40, 0.15),
+        inset 0 0 30px rgba(80, 50, 20, 0.1);
+      color: #3a2818;
+      font-family: Georgia, "Times New Roman", serif;
+    }
 
-      .main-feed, .wide-panel { grid-column: span 2; max-width: 100%; }
-      .side-panel { grid-column: span 1; max-width: 100%; }
+    /* Paper grain — subtle noise via SVG data-uri */
+    .scrapbook::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.4 0 0 0 0 0.25 0 0 0 0 0.1 0 0 0 0.12 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+      opacity: 0.7;
+      pointer-events: none;
+      mix-blend-mode: multiply;
+    }
 
-      /* The switch! Hide the desktop elements, show the mobile ones */
-      .hide-mobile { display: none !important; }
-      .show-mobile { display: block !important; }
+    /* Coffee/age stains */
+    .scrapbook::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle 120px at 85% 15%, rgba(110, 70, 30, 0.18), transparent 70%),
+        radial-gradient(circle 80px at 12% 40%, rgba(100, 60, 20, 0.14), transparent 70%),
+        radial-gradient(circle 60px at 60% 70%, rgba(120, 75, 30, 0.1), transparent 70%),
+        radial-gradient(circle 30px at 25% 85%, rgba(90, 50, 20, 0.2), transparent 60%);
+      pointer-events: none;
+      border-radius: inherit;
+    }
+
+    /* --- Scrapbook cover --- */
+    .scrap-cover {
+      position: relative;
+      text-align: center;
+      padding: 20px 0 30px 0;
+      border-bottom: 3px double #8a6a3a;
+      margin-bottom: 40px;
+    }
+    .scrap-cover img {
+      max-width: 100%;
+      height: auto;
+      filter: sepia(0.3) contrast(1.05);
+    }
+    .scrap-cover .property-label {
+      margin-top: 20px;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 13px;
+      color: #4a3520;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .scrap-cover .strike {
+      text-decoration: line-through;
+      text-decoration-color: #8a2020;
+      text-decoration-thickness: 2px;
+      font-style: italic;
+    }
+    .scrap-cover .sig {
+      font-family: "Brush Script MT", "Segoe Script", cursive;
+      font-size: 22px;
+      color: #1a2550;
+      margin-left: 8px;
+      letter-spacing: 1px;
+    }
+    .scrap-cover .date-stamp {
+      display: inline-block;
+      margin-top: 14px;
+      padding: 6px 14px;
+      border: 2px solid #8a2020;
+      color: #8a2020;
+      font-family: "Courier New", Courier, monospace;
+      font-weight: bold;
+      font-size: 13px;
+      letter-spacing: 3px;
+      transform: rotate(-4deg);
+      opacity: 0.85;
+    }
+
+    /* --- Section titles within scrapbook --- */
+    .scrap-section-title {
+      text-align: center;
+      font-family: Georgia, serif;
+      font-size: 28px;
+      color: #2a1a08;
+      margin: 60px 0 10px 0;
+      letter-spacing: 4px;
+      font-variant: small-caps;
+      font-weight: normal;
+      position: relative;
+    }
+    .scrap-section-title::before,
+    .scrap-section-title::after {
+      content: "✦";
+      margin: 0 18px;
+      color: #8a6a3a;
+      font-size: 20px;
+      vertical-align: middle;
+    }
+    .scrap-section-sub {
+      text-align: center;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 11px;
+      color: #6a4a2a;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin: 0 0 30px 0;
+    }
+
+    /* --- Grid / layout for artifacts --- */
+    .scrap-row {
+      display: grid;
+      gap: 30px;
+      margin: 40px 0;
+      align-items: start;
+    }
+    .scrap-row.cols-1 { grid-template-columns: 1fr; }
+    .scrap-row.cols-2 { grid-template-columns: 1fr 1fr; }
+    .scrap-row.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+    .scrap-row.asym   { grid-template-columns: 1.6fr 1fr; }
+    .scrap-row.asym-r { grid-template-columns: 1fr 1.6fr; }
+
+    /* --- Shared: rotation + hover --- */
+    .tilt-left, .tilt-right, .tilt-slight-l, .tilt-slight-r {
+      transition: transform 0.35s ease, box-shadow 0.35s ease, filter 0.35s ease;
+    }
+    .tilt-left      { transform: rotate(-3deg); }
+    .tilt-right     { transform: rotate(2.5deg); }
+    .tilt-slight-l  { transform: rotate(-1.2deg); }
+    .tilt-slight-r  { transform: rotate(1.5deg); }
+
+    .tilt-left:hover, .tilt-right:hover,
+    .tilt-slight-l:hover, .tilt-slight-r:hover {
+      transform: rotate(0deg) translateY(-4px);
+      z-index: 5;
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.35) !important;
+    }
+
+    /* --- Tape --- */
+    .tape {
+      position: absolute;
+      width: 80px;
+      height: 22px;
+      background: rgba(240, 235, 180, 0.55);
+      border-left: 1px dashed rgba(180, 160, 100, 0.3);
+      border-right: 1px dashed rgba(180, 160, 100, 0.3);
+      box-shadow: 0 2px 3px rgba(0, 0, 0, 0.15);
+      z-index: 3;
+    }
+    .tape.tl { top: -10px; left: -15px; transform: rotate(-35deg); }
+    .tape.tr { top: -10px; right: -15px; transform: rotate(35deg); }
+    .tape.bl { bottom: -10px; left: -15px; transform: rotate(35deg); }
+    .tape.br { bottom: -10px; right: -15px; transform: rotate(-35deg); }
+    .tape.top-center { top: -12px; left: 50%; transform: translateX(-50%) rotate(2deg); }
+
+    /* --- Newspaper clipping --- */
+    .clipping {
+      position: relative;
+      background:
+        linear-gradient(180deg, #f5ead0 0%, #ead69e 100%);
+      padding: 20px 22px 24px 22px;
+      color: #1a1208;
+      font-family: Georgia, "Times New Roman", serif;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25), inset 0 0 30px rgba(140, 100, 50, 0.08);
+      /* torn/uneven edge */
+      clip-path: polygon(
+        0 3%, 2% 0, 8% 2%, 15% 0, 22% 1%, 30% 0, 38% 2%, 46% 0, 55% 1%,
+        65% 0, 75% 2%, 85% 0, 94% 1%, 100% 2%,
+        99% 10%, 100% 25%, 99% 40%, 100% 55%, 99% 70%, 100% 85%, 99% 97%,
+        95% 100%, 85% 98%, 72% 100%, 60% 99%, 48% 100%, 35% 99%, 22% 100%, 10% 98%, 3% 100%,
+        1% 92%, 0 78%, 1% 62%, 0 45%, 1% 28%, 0 15%
+      );
+    }
+    .clipping .masthead-line {
+      font-family: "Old English Text MT", "UnifrakturMaguntia", Georgia, serif;
+      font-size: 18px;
+      text-align: center;
+      border-bottom: 2px solid #1a1208;
+      border-top: 2px solid #1a1208;
+      padding: 4px 0;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+      line-height: 1.1;
+    }
+    .clipping .dateline {
+      font-family: "Courier New", monospace;
+      font-size: 10px;
+      color: #4a3520;
+      text-align: center;
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+    .clipping h3 {
+      font-family: "Impact", "Arial Black", sans-serif;
+      font-size: 26px;
+      line-height: 1.05;
+      margin: 0 0 8px 0;
+      color: #0a0603;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .clipping h3.mega {
+      font-size: 40px;
+      text-align: center;
+      letter-spacing: 2px;
+      border-bottom: 4px double #1a1208;
+      padding-bottom: 10px;
+    }
+    .clipping .subhead {
+      font-family: Georgia, serif;
+      font-style: italic;
+      font-size: 13px;
+      color: #3a2818;
+      margin: 0 0 12px 0;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+    .clipping .byline {
+      font-size: 11px;
+      color: #4a3520;
+      font-style: italic;
+      margin-bottom: 10px;
+    }
+    .clipping .body-text {
+      font-size: 13px;
+      line-height: 1.55;
+      color: #1a1208;
+      column-count: 2;
+      column-gap: 18px;
+      column-rule: 1px solid rgba(80, 50, 20, 0.2);
+      text-align: justify;
+    }
+    .clipping .body-text.single { column-count: 1; }
+    .clipping .body-text p { margin: 0 0 8px 0; }
+    .clipping .body-text p:first-child::first-letter {
+      font-family: "Times New Roman", serif;
+      font-size: 36px;
+      font-weight: bold;
+      float: left;
+      line-height: 0.9;
+      margin: 4px 6px 0 0;
+      color: #0a0603;
+    }
+    .clipping .photo-block {
+      background: linear-gradient(135deg, #7a6040 0%, #3a2810 100%);
+      height: 140px;
+      margin: 10px 0;
+      position: relative;
+      overflow: hidden;
+      filter: contrast(1.1) sepia(0.3);
+      box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+      background-image:
+        repeating-linear-gradient(0deg, rgba(0,0,0,0.25) 0, rgba(0,0,0,0.25) 1px, transparent 1px, transparent 3px);
+    }
+    .clipping .photo-block img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: sepia(0.4) contrast(1.05);
+      mix-blend-mode: multiply;
+    }
+    .clipping .photo-caption {
+      font-size: 10px;
+      font-style: italic;
+      color: #3a2818;
+      text-align: center;
+      margin: 4px 0 8px 0;
+    }
+
+    /* --- Official document --- */
+    .document {
+      position: relative;
+      background:
+        repeating-linear-gradient(
+          0deg,
+          transparent 0,
+          transparent 22px,
+          rgba(60, 90, 140, 0.08) 22px,
+          rgba(60, 90, 140, 0.08) 23px
+        ),
+        linear-gradient(180deg, #e4ecf4 0%, #cfd8e4 100%);
+      padding: 24px 28px 28px 28px;
+      color: #0f1a30;
+      font-family: "Courier New", Courier, monospace;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+      border: 1px solid #7a8aa0;
+    }
+    .document.cream {
+      background:
+        repeating-linear-gradient(
+          0deg,
+          transparent 0,
+          transparent 22px,
+          rgba(140, 100, 50, 0.08) 22px,
+          rgba(140, 100, 50, 0.08) 23px
+        ),
+        linear-gradient(180deg, #f5ead0 0%, #e8d9b3 100%);
+      color: #2a1a08;
+      border: 1px solid #8a6a3a;
+    }
+    .document .doc-header {
+      border-bottom: 2px solid currentColor;
+      padding-bottom: 10px;
+      margin-bottom: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .document .doc-header .org { font-weight: bold; }
+    .document .doc-header .form-no { font-size: 10px; opacity: 0.8; }
+    .document h4 {
+      font-size: 15px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin: 0 0 12px 0;
+      text-align: center;
+      font-weight: bold;
+    }
+    .document .doc-body {
+      font-size: 12px;
+      line-height: 1.9;
+    }
+    .document .doc-body p { margin: 0 0 10px 0; }
+    .document .field {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 10px;
+      font-size: 11px;
+      padding: 3px 0;
+      border-bottom: 1px dotted rgba(0, 0, 0, 0.2);
+    }
+    .document .field .f-label {
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .document .field .f-value { font-family: "Courier New", monospace; }
+
+    /* Stamps */
+    .stamp {
+      position: absolute;
+      padding: 8px 14px;
+      border: 3px solid;
+      font-family: "Impact", "Arial Black", sans-serif;
+      font-weight: bold;
+      font-size: 16px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      opacity: 0.75;
+      pointer-events: none;
+      line-height: 1;
+    }
+    .stamp.red {
+      color: #8a2020;
+      border-color: #8a2020;
+      transform: rotate(-8deg);
+      text-shadow: 1px 1px 0 rgba(138, 32, 32, 0.15);
+    }
+    .stamp.blue {
+      color: #1a3a70;
+      border-color: #1a3a70;
+      transform: rotate(4deg);
+    }
+    .stamp.green {
+      color: #1a5a30;
+      border-color: #1a5a30;
+      transform: rotate(-3deg);
+    }
+    .stamp.tr { top: 14px; right: 14px; }
+    .stamp.br { bottom: 14px; right: 20px; }
+    .stamp.bl { bottom: 20px; left: 20px; }
+
+    /* Signature line */
+    .sig-line {
+      margin-top: 18px;
+      padding-top: 4px;
+      border-top: 1px solid currentColor;
+      font-size: 10px;
+      letter-spacing: 1px;
+      display: flex;
+      justify-content: space-between;
+      text-transform: uppercase;
+    }
+    .sig-line .sig-name {
+      font-family: "Brush Script MT", cursive;
+      font-size: 18px;
+      color: #1a2550;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+
+    /* --- Polaroid --- */
+    .polaroid {
+      position: relative;
+      background: #f8f4e4;
+      padding: 10px 10px 45px 10px;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+      color: #2a1a08;
+    }
+    .polaroid .photo {
+      background: linear-gradient(135deg, #3a4a6a 0%, #0a1220 100%);
+      aspect-ratio: 1;
+      position: relative;
+      overflow: hidden;
+      filter: contrast(1.05);
+    }
+    .polaroid .photo::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, transparent 60%, rgba(0, 0, 0, 0.4) 100%);
+    }
+    .polaroid .photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .polaroid .photo .placeholder-text {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255, 255, 255, 0.35);
+      font-family: "Courier New", monospace;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-align: center;
+      padding: 10px;
+    }
+    .polaroid .caption {
+      position: absolute;
+      bottom: 8px;
+      left: 12px;
+      right: 12px;
+      font-family: "Brush Script MT", "Segoe Script", cursive;
+      font-size: 15px;
+      color: #1a2550;
+      text-align: center;
+      line-height: 1.1;
+    }
+    .polaroid .caption.small { font-size: 13px; }
+
+    /* --- Margin note --- */
+    .margin-note {
+      font-family: "Brush Script MT", "Segoe Script", cursive;
+      font-size: 19px;
+      color: #1a2550;
+      line-height: 1.3;
+      padding: 10px 14px;
+      max-width: 240px;
+      transform: rotate(-2deg);
+      position: relative;
+    }
+    .margin-note::before {
+      content: "→";
+      position: absolute;
+      left: -18px;
+      top: 10px;
+      font-size: 22px;
+      color: #1a2550;
+    }
+    .margin-note.red { color: #8a2020; }
+    .margin-note.red::before { color: #8a2020; }
+
+    /* --- Mission patch --- */
+    .patch {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      position: relative;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35), inset 0 -6px 12px rgba(0, 0, 0, 0.3), inset 0 6px 12px rgba(255, 255, 255, 0.2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #ffeecc;
+      font-family: Georgia, serif;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      overflow: hidden;
+      border: 3px solid #d4a840;
+    }
+    .patch.apollo {
+      background: radial-gradient(circle at 30% 30%, #4060a0 0%, #0a1838 70%, #000810 100%);
+    }
+    .patch.artemis {
+      background: radial-gradient(circle at 30% 30%, #8a3030 0%, #2a0a14 70%, #0a0204 100%);
+      border-color: #c0a030;
+    }
+    .patch .patch-title { font-size: 12px; line-height: 1; margin-top: 6px; }
+    .patch .patch-sub { font-size: 9px; opacity: 0.8; margin-top: 3px; letter-spacing: 2px; }
+    .patch .patch-star {
+      font-size: 34px;
+      line-height: 1;
+      color: #ffcc60;
+      filter: drop-shadow(0 0 8px rgba(255, 200, 80, 0.6));
+    }
+
+    /* --- Ticket stub --- */
+    .ticket {
+      background: linear-gradient(90deg, #f5c060 0%, #d4902a 100%);
+      color: #2a1a08;
+      font-family: "Courier New", monospace;
+      padding: 14px 18px;
+      position: relative;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      border-left: 2px dashed #2a1a08;
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .ticket::before,
+    .ticket::after {
+      content: "";
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background: #f0e3c4;
+      border-radius: 50%;
+      left: -7px;
+      box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.4);
+    }
+    .ticket::before { top: -6px; }
+    .ticket::after { bottom: -6px; }
+    .ticket .t-num {
+      font-weight: bold;
+      font-size: 18px;
+      border-right: 1px solid #2a1a08;
+      padding-right: 14px;
+    }
+    .ticket .t-body { flex: 1; line-height: 1.5; }
+    .ticket .t-body strong { display: block; font-size: 13px; }
+
+    /* --- Timeline strip --- */
+    .timeline-strip {
+      background: linear-gradient(180deg, #f5ead0 0%, #ead69e 100%);
+      padding: 18px 22px;
+      border-top: 3px double #1a1208;
+      border-bottom: 3px double #1a1208;
+      font-family: Georgia, serif;
+      color: #1a1208;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+    }
+    .timeline-strip h3 {
+      font-family: Impact, sans-serif;
+      font-size: 22px;
+      margin: 0 0 14px 0;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    .timeline-items {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      position: relative;
+    }
+    .timeline-items::before {
+      content: "";
+      position: absolute;
+      top: 14px;
+      left: 8%;
+      right: 8%;
+      height: 2px;
+      background: repeating-linear-gradient(90deg, #1a1208 0, #1a1208 6px, transparent 6px, transparent 10px);
+    }
+    .timeline-item {
+      text-align: center;
+      position: relative;
+      padding-top: 28px;
+    }
+    .timeline-item::before {
+      content: "";
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 14px;
+      height: 14px;
+      background: #8a2020;
+      border: 2px solid #1a1208;
+      border-radius: 50%;
+      z-index: 1;
+    }
+    .timeline-item .ti-year {
+      font-family: "Courier New", monospace;
+      font-weight: bold;
+      font-size: 13px;
+      letter-spacing: 1px;
+    }
+    .timeline-item .ti-name {
+      font-size: 14px;
+      font-weight: bold;
+      margin: 4px 0 2px 0;
+    }
+    .timeline-item .ti-detail {
+      font-size: 11px;
+      font-style: italic;
+      color: #4a3520;
+      line-height: 1.3;
+    }
+
+    /* --- Scrapbook closing --- */
+    .scrap-closing {
+      margin-top: 50px;
+      padding: 20px;
+      text-align: center;
+      border-top: 3px double #8a6a3a;
+      font-family: "Courier New", monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: #4a3520;
+      text-transform: uppercase;
+    }
+    .scrap-closing .last-line {
+      font-family: "Brush Script MT", cursive;
+      font-size: 22px;
+      color: #1a2550;
+      text-transform: none;
+      letter-spacing: 0;
+      margin-top: 14px;
+      line-height: 1.3;
+    }
+
+    /* --- Scrapbook mobile --- */
+    @media screen and (max-width: 900px) {
+      .scrapbook { padding: 20px 14px 40px 14px; margin: 20px 8px; }
+      .scrap-row.cols-2,
+      .scrap-row.cols-3,
+      .scrap-row.asym,
+      .scrap-row.asym-r { grid-template-columns: 1fr; gap: 22px; }
+      .scrap-section-title { font-size: 22px; letter-spacing: 2px; }
+      .clipping h3 { font-size: 20px; }
+      .clipping h3.mega { font-size: 26px; }
+      .clipping .body-text { column-count: 1; font-size: 12px; }
+      .timeline-items { grid-template-columns: 1fr 1fr; gap: 18px; }
+      .timeline-items::before { display: none; }
+      .tilt-left, .tilt-right, .tilt-slight-l, .tilt-slight-r { transform: rotate(0deg); }
+      .patch { width: 90px; height: 90px; }
+      .margin-note { font-size: 16px; max-width: 100%; transform: rotate(0deg); }
+      .margin-note::before { display: none; }
     }
   </style>
 </head>
 <body>
 
-  <div class="hide-mobile" style="text-align: center; margin: 10px 0 20px 0;">
-    <img src="assets/spaceshow.gif" alt="The 1999 Space Expo" style="max-width: 100%; height: auto; filter: drop-shadow(0px 0px 10px rgba(0,255,255,0.3));">
+  <!-- MASTHEAD -->
+  <div class="masthead">
+    <span>
+      <span class="heart"></span>
+      PRIVATE UPLINK :: HUNTER-CLASS VESSEL "THE LAST DOLLAR"
+    </span>
+    <span class="masthead-right">
+      STARDATE 2387.120 // OUTER RIM // UNREGISTERED
+    </span>
   </div>
 
-  <div class="ticker-box">
+  <!-- BOUNTY BOARD TICKER -->
+  <div class="ticker">
     <div class="ticker-text">
-      MARKETWATCH: HELIUM-3 +4.2% || NEODYMIUM -1.5% || SCRAP METAL +0.8% || <span class="hide-mobile">INCOMING TRANSMISSION: </span>BOUNTY POSTED FOR SECTOR 7... 
+      WANTED: K. VASQUE "HOLLOW-EYE" — <span class="alert">40,000 CR</span> — LIVE ONLY — LAST SEEN SECTOR 7
+      <span class="sep">//</span>
+      WANTED: THE RED WIDOW — <span class="alert">22,500 CR</span> — ANY CONDITION — WARPED FROM LYRA-IV
+      <span class="sep">//</span>
+      WANTED: TWIN BROTHERS KOVACH — <span class="alert">8,000 CR EA</span> — PREFER LIVE — BELIEVED ARMED
+      <span class="sep">//</span>
+      <span class="cyan">INCOMING:</span> MARSHAL ADVISORY — DO NOT PURSUE TARGETS IN NEUTRAL SPACE
+      <span class="sep">//</span>
+      WANTED: "SILENT" COLE TENNYSON — <span class="alert">15,000 CR</span> — DESERTER, ARMED, DANGEROUS
+      <span class="sep">//</span>
     </div>
   </div>
 
-  <div class="dashboard-container">
+  <!-- DASHBOARD -->
+  <div class="dashboard">
 
-    <div class="chrome-panel side-panel">
-      <h3 class="chrome-title">NAV-COM ARRAY <span class="hide-mobile">v2.0</span></h3>
-      <div class="digital-screen">
-        <div style="font-size: 12px; margin-bottom: 5px;" class="hide-mobile">LONG RANGE SCANNER</div>
-        <div class="radar-container">
-          <div class="radar-sweep"></div>
+    <!-- SHIP STATUS -->
+    <section class="panel panel-status">
+      <div class="panel-header">
+        <span>Ship Status</span>
+        <span class="tag">v2.1</span>
+      </div>
+      <div class="panel-body">
+
+        <div class="stat-row">
+          <span class="label">Fuel</span>
+          <span class="value">64%</span>
         </div>
-        <div style="font-size: 10px; text-align: left; margin-top: 10px;">
-          > PING: 402ms<br>
-          <span class="hide-mobile">> TRAJECTORY: LOCKED<br></span>
-          > <span class="led-light"></span> <span class="hide-mobile">WARNING:</span> PROXIMITY
+        <div class="bar"><div class="bar-fill" style="width: 64%;"></div></div>
+
+        <div class="stat-row">
+          <span class="label">Hull</span>
+          <span class="value dim">patched</span>
+        </div>
+        <div class="bar"><div class="bar-fill cool" style="width: 72%;"></div></div>
+
+        <div class="stat-row">
+          <span class="label">Bounty Hold</span>
+          <span class="value alert">EMPTY</span>
+        </div>
+        <div class="bar"><div class="bar-fill warn" style="width: 3%;"></div></div>
+
+        <div class="stat-row">
+          <span class="label">O2 Reserves</span>
+          <span class="value">82%</span>
+        </div>
+        <div class="bar"><div class="bar-fill" style="width: 82%;"></div></div>
+
+        <hr class="divider">
+
+        <p class="subhead">&gt; Armory</p>
+        <div class="stat-row">
+          <span class="label">Mag-Revolver</span>
+          <span class="value">Loaded</span>
+        </div>
+        <div class="chambers">
+          <div class="chamber"></div>
+          <div class="chamber"></div>
+          <div class="chamber spent"></div>
+          <div class="chamber"></div>
+          <div class="chamber"></div>
+          <div class="chamber spent"></div>
+        </div>
+        <div class="stat-row" style="margin-top: 10px;">
+          <span class="label">Chambers Spent</span>
+          <span class="value alert">2 / 6</span>
+        </div>
+
+        <hr class="divider">
+
+        <p class="subhead">&gt; Chassis</p>
+        <div class="stat-row">
+          <span class="label">Atmos Cape</span>
+          <span class="value dim">Deployed</span>
+        </div>
+        <div class="stat-row">
+          <span class="label">Wide-Brim</span>
+          <span class="value dim">Secure</span>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- VIEWPORT — THE HERO -->
+    <section class="panel panel-viewport">
+      <div class="panel-header">
+        <span>Intercepted Transmission</span>
+        <span class="tag">SIGNAL-07 // DECRYPTING</span>
+      </div>
+      <div class="viewport-frame">
+        <div id="star-wars-player"></div>
+        <div class="mobile-fallback">
+          <span class="alert">&gt;&gt; VIEWPORT INSUFFICIENT &lt;&lt;</span>
+          <img src="assets/nostarwars.gif" alt="Signal lost">
+          High-res surveillance requires a CRT.<br>
+          What is this, a PDA?
         </div>
       </div>
-      <div style="display: flex; justify-content: space-between;">
-        <button class="chrome-btn">ENGAGE</button>
-        <button class="chrome-btn">JETT<span class="hide-mobile">ISON</span></button>
+      <div class="signal-status">
+        <span><span class="dot"></span>SIGNAL LOCK</span>
+        <span>BAND: 4.2 kHz</span>
+        <span>DRIFT: +0.018</span>
+      </div>
+    </section>
+
+    <!-- LOCAL SPACE -->
+    <section class="panel panel-local">
+      <div class="panel-header">
+        <span>Local Space</span>
+        <span class="tag">SECTOR 07</span>
+      </div>
+      <div class="panel-body">
+
+        <pre class="sector-map">+-+-+-+-+-+
+| | |<span class="target">x</span>| | |
++-+-+-+-+-+
+| | | | | |
++-+-+-+-+-+
+| |<span class="waypoint">o</span>| |<span class="ship">@</span>| |
++-+-+-+-+-+
+| | | | | |
++-+-+-+-+-+
+| | | |<span class="unknown">?</span>| |
++-+-+-+-+-+</pre>
+
+        <div class="legend">
+          <div class="legend-row"><span class="glyph g-ship">@</span><span>The Last Dollar</span></div>
+          <div class="legend-row"><span class="glyph g-target">x</span><span>Target — Hollow-Eye</span></div>
+          <div class="legend-row"><span class="glyph g-waypoint">o</span><span>Waypoint Alpha</span></div>
+          <div class="legend-row"><span class="glyph">?</span><span>Unidentified</span></div>
+        </div>
+
+        <hr class="divider">
+
+        <p class="subhead">&gt; Scanner</p>
+        <div class="stat-row">
+          <span class="label">Ping</span>
+          <span class="value">402ms</span>
+        </div>
+        <div class="stat-row">
+          <span class="label">Trajectory</span>
+          <span class="value">Locked</span>
+        </div>
+        <div class="stat-row">
+          <span class="label">Proximity</span>
+          <span class="value alert">Warning</span>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- CAPTAIN'S LOG -->
+    <section class="panel panel-log">
+      <div class="panel-header">
+        <span>Captain's Log // Comms &amp; Archives</span>
+        <span class="tag">5 ENTRIES // CHRONOLOGICAL</span>
+      </div>
+      <div class="panel-body">
+
+        <div class="log-entry">
+          <div class="log-header">
+            <span class="log-id">LOG_01</span>
+            <span class="log-date">STARDATE 2387.114</span>
+            <span class="log-class encrypted">[ENCRYPTED]</span>
+          </div>
+          <p class="log-body">
+            Target acquired. Kessel <span class="cyan">"Hollow-Eye"</span> Vasque, last seen exiting the atmosphere of a non-aligned mining colony in Sector 7. Prior: three bank jobs, one dead marshal. Bounty posted at <span class="red">40,000 credits</span>, live only. Mag-revolver is clean. Cape is pressed. Riding out tonight.
+          </p>
+        </div>
+
+        <div class="log-entry">
+          <div class="log-header">
+            <span class="log-id">LOG_02</span>
+            <span class="log-date">STARDATE 2387.116</span>
+            <span class="log-class">[STATISTICS]</span>
+          </div>
+          <p class="log-body">
+            Pulled the odds on the long-range. Quick-draw survival against a fully mechanical right arm: <span class="red">0.003%</span>. The console suggested I reconsider. I turned the console off.
+          </p>
+        </div>
+
+        <div class="log-entry">
+          <div class="log-header">
+            <span class="log-id">LOG_03</span>
+            <span class="log-date">STARDATE 2387.119</span>
+            <span class="log-class secure">[SURVEILLANCE]</span>
+          </div>
+          <p class="log-body">
+            Caught him at a fuel stop on the edge of the Rim. He didn't run. Sat at the bar, ordered two drinks, slid one to the empty stool. I sat down. Turns out Hollow-Eye knew my father. <span class="dim">Turns out my father wasn't the man I was told he was.</span> We talked for three hours. I didn't draw.
+          </p>
+        </div>
+
+        <div class="log-entry">
+          <div class="log-header">
+            <span class="log-id">LOG_04</span>
+            <span class="log-date">STARDATE 2387.120</span>
+            <span class="log-class">[COMMS]</span>
+          </div>
+          <p class="log-body">
+            Called in the bounty as <span class="cyan">"unconfirmed — target deceased prior to contact."</span> Wired the 40k back to the posting party minus fuel costs. The syndicate is not going to like this. <span class="dim">Neither am I, when I sober up.</span>
+          </p>
+        </div>
+
+        <div class="log-entry">
+          <div class="log-header">
+            <span class="log-id">LOG_05</span>
+            <span class="log-date">STARDATE 2387.???</span>
+            <span class="log-class private">[PRIVATE]</span>
+          </div>
+          <p class="log-body">
+            Heading out past the Rim. If anyone's reading this: <span class="red">don't follow</span>. The cape stays. The revolver stays. <span class="dim">The name doesn't.</span> Signing off.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ==========================================================
+       TRANSITION: console → scrapbook
+       ========================================================== -->
+  <div class="transition-block">
+    <div class="rule">═══════════════ ✦ END TRANSMISSION ✦ ═══════════════</div>
+    <div class="label-block">
+      <div>[ <span class="key">PERSONAL EFFECTS</span> :: SCRAPBOOK RECOVERED FROM VESSEL ]</div>
+      <div>[ <span class="key">SUBJECT</span> :: HISTORY OF HUMAN SPACEFLIGHT, EARTH-ORIGIN ]</div>
+      <div>[ <span class="key">CATALOGUED BY</span> :: UNKNOWN &nbsp;//&nbsp; <span class="key">ORIGIN</span> :: 1999 SPACE EXPO ]</div>
+    </div>
+  </div>
+
+  <!-- ==========================================================
+       THE SCRAPBOOK
+       ========================================================== -->
+  <div class="scrapbook">
+
+    <!-- COVER -->
+    <div class="scrap-cover">
+      <img src="assets/spaceshow.gif" alt="The 1999 Space Expo">
+      <div class="property-label">
+        Property of <span class="strike">Ada Vasque</span><span class="sig">— unknown</span>
+      </div>
+      <div class="date-stamp">EST. 1999</div>
+    </div>
+
+    <!-- ============================================
+         SECTION I: THE FIRSTS
+         ============================================ -->
+    <h2 class="scrap-section-title">The Firsts</h2>
+    <p class="scrap-section-sub">1957 – 1965 &nbsp;//&nbsp; The Door Opens</p>
+
+    <!-- Sputnik — big clipping on left, margin note on right -->
+    <div class="scrap-row asym">
+      <div class="clipping tilt-left" style="position: relative;">
+        <div class="tape top-center"></div>
+        <div class="masthead-line">The Evening Standard</div>
+        <div class="dateline">London &nbsp;·&nbsp; Saturday, October 5, 1957 &nbsp;·&nbsp; Price 2d</div>
+        <h3 class="mega">Red Moon Over Earth</h3>
+        <p class="subhead">Soviet satellite circles the globe every 96 minutes — beeps heard on amateur radios worldwide</p>
+        <div class="photo-block">
+          <img src="assets/scrapbook/sputnik.jpg" alt="Sputnik 1 satellite" onerror="this.style.display='none'">
+        </div>
+        <p class="photo-caption">— SPUTNIK 1, seen before launch at Baikonur Cosmodrome</p>
+        <p class="byline">By Reuters Wire &nbsp;·&nbsp; Moscow</p>
+        <div class="body-text">
+          <p>The Soviet Union announced last night that it has successfully placed an artificial satellite in orbit around the Earth. The object, designated SPUTNIK 1, weighs 83.6 kilograms and completes a full revolution of the planet once every 96 minutes at an altitude of approximately 577 miles.</p>
+          <p>The launch took place at 19:28 GMT on October 4th from the Tyuratam range in Kazakhstan atop a modified R-7 ballistic missile. Radio operators across Europe and North America have confirmed hearing the satellite's characteristic 20 MHz pulse as it passes overhead.</p>
+          <p>The device is expected to remain in orbit for approximately three months before atmospheric drag causes its descent. The American response has thus far been limited. The Eisenhower administration declined comment. Senator Lyndon Johnson has requested emergency hearings.</p>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 30px; padding-top: 20px;">
+        <div class="margin-note">
+          "beep … beep … beep." the whole sky was suddenly owned by somebody.
+        </div>
+        <div class="document cream tilt-slight-r" style="font-size: 11px;">
+          <div class="doc-header">
+            <span class="org">ORBITAL DATA</span>
+            <span class="form-no">SPUTNIK-1</span>
+          </div>
+          <div class="field"><span class="f-label">Launched</span><span class="f-value">04 Oct 1957</span></div>
+          <div class="field"><span class="f-label">Mass</span><span class="f-value">83.6 kg</span></div>
+          <div class="field"><span class="f-label">Apogee</span><span class="f-value">939 km</span></div>
+          <div class="field"><span class="f-label">Perigee</span><span class="f-value">215 km</span></div>
+          <div class="field"><span class="f-label">Period</span><span class="f-value">96.2 min</span></div>
+          <div class="field"><span class="f-label">Decayed</span><span class="f-value">04 Jan 1958</span></div>
+        </div>
       </div>
     </div>
 
-    <div class="terminal-window main-feed">
-      <div class="panel-title">[ SEC<span class="hide-mobile">TOR</span> 01 : SURVEILLANCE <span class="hide-mobile">FEED</span> ]</div>
+    <!-- Gagarin polaroid + Tereshkova clipping + Leonov polaroid -->
+    <div class="scrap-row cols-3">
 
-<pre class="hide-mobile">
-<span class="yellow">L[w]/[a]:</span><span class="grey">-xxx:</span> <span class="white">R[s]/[a]:</span><span class="grey">-xxx:</span> <span class="white">C[d]:</span><span class="red">+</span><span class="green">xxxx:</span> <span class="grey">PT-POW:-xxxx: SUM-POW:=xxxx:</span>
-********************************************************************************
-* <span class="grey">Bot Message [                                                            ]</span> *</pre>
-      
-      <div class="video-frame">
-        <div id="star-wars-player" class="hide-mobile" style="width: 100%;"></div>
+      <div class="polaroid tilt-left" style="position: relative;">
+        <div class="tape tl"></div>
+        <div class="photo">
+          <img src="assets/scrapbook/gagarin.jpg" alt="Yuri Gagarin" onerror="this.parentElement.querySelector('.placeholder-text').style.display='flex'">
+          <div class="placeholder-text" style="display: none;">[GAGARIN — VOSTOK 1]</div>
+        </div>
+        <div class="caption">Gagarin — 108 min above the world</div>
+      </div>
 
-        <div class="show-mobile" style="text-align: center; padding: 10px 0;">
-            <p class="red" style="font-weight: bold; font-size: 12px; margin-top: 0;">>> ERROR: VIEWPORT INSUFFICIENT &lt;&lt;</p>
-            <img src="assets/nostarwars.gif" alt="Surveillance Offline" style="width: 100%; max-width: 250px; border: 1px dashed #555; margin: 8px 0;">
-            <p class="yellow" style="font-size: 10px; margin-bottom: 0;">What is this, a PDA? High-res surveillance requires a CRT monitor. Come back when you aren't flying a micro-ship, space cowboy.</p>
+      <div class="clipping tilt-slight-r" style="position: relative;">
+        <div class="tape top-center"></div>
+        <div class="masthead-line">Pravda</div>
+        <div class="dateline">Moscow &nbsp;·&nbsp; 17 June 1963</div>
+        <h3>Чайка: A Woman in Space</h3>
+        <p class="subhead">Valentina Tereshkova completes 48 orbits aboard Vostok 6</p>
+        <div class="body-text single">
+          <p>Junior Lieutenant Valentina Vladimirovna Tereshkova, 26, a textile worker and amateur parachutist from Maslennikovo, has returned to Earth after spending 70 hours and 50 minutes in orbit — longer than every American astronaut combined to date. Her call sign was "Чайка" — Seagull.</p>
+          <p>She landed in Kazakhstan on 19 June, was promptly offered bread and salt by a collective farm, and reportedly refused medical attention in favor of sharing her rations with onlookers.</p>
         </div>
       </div>
 
-<pre style="text-align: center; margin-top: 2px;">
-<span class="hide-mobile">* <span class="white">high E: xl MOLs: </span><span class="red">03</span>                               <span class="cyan">cargo !x! orbit !x!</span>        *
-********************************************************************************</span>
-<span class="red">L: 019<span class="hide-mobile">0:</span></span>  <span class="green"><span class="hide-mobile">L: 0239:</span>  <span class="red">C: 0468:</span>  C: 0513<span class="hide-mobile">:</span></span>  <span class="red"><span class="hide-mobile">R: 0190:</span>  <span class="green">R: 0239:</span>  </span><span class="magenta">B: 0429<span class="hide-mobile">:</span></span>
-<span class="yellow">Ux: >>>><span class="hide-mobile">>>>></span>¦2    V-Cr: >>>><span class="hide-mobile">>>>></span>¦2    <span class="hide-mobile">V-Or: >>>>>>>>¦4    V3: >>>>>>>>¦7</span></span>
-</pre>
-    </div>
-
-    <div class="terminal-window side-panel">
-      <div class="panel-title">[ SEC<span class="hide-mobile">TOR</span> 02 : BIOMETRICS ]</div>
-      <p><span class="cyan">> R<span class="hide-mobile">IGHT_</span>ARM_ACT<span class="hide-mobile">UATORS</span>:</span></p>
-      <div class="progress-bar"><div class="progress-fill" style="width: 100%;"></div></div>
-      <p class="green" style="font-size: 10px; margin-top: -3px;"><span class="hide-mobile">STATUS: </span>QUICK-DRAW CAPABLE.<span class="hide-mobile"> SERVO MOTORS AT PEAK EFFICIENCY.</span></p>
-
-      <p><span class="cyan">> RESP<span class="hide-mobile">IRATORY</span>_VENT<span class="hide-mobile">ILATOR</span>:</span></p>
-      <div class="progress-bar"><div class="progress-fill" style="width: 82%; background-color: #ffff55; box-shadow: 0px 0px 10px #ffff55;"></div></div>
-      <p class="yellow" style="font-size: 10px; margin-top: -3px;"><span class="hide-mobile">STATUS: FLOW STABLE. HIGH-PRESSURE O2 RESERVES AT 82%.</span></p>
-
-      <span class="hide-mobile"><p><span class="cyan">> CHASSIS_INTEGRITY:</span></p></span>
-      <p class="grey" style="font-size: 10px;">>> OUTER SHELL: NOMINAL</p>
-      <span class="hide-mobile"><p class="grey">>> ENVIRONMENTAL RATING: DEEP-SPACE VACUUM</p></span>
-      <p class="grey" style="font-size: 10px;">>> ATMOS<span class="hide-mobile">PHERIC</span> CAPE: DEPLOYED<span class="hide-mobile">, WIDE-BRIM STETSON (SECURE)</span></p>
-    </div>
-
-    <div class="chrome-panel side-panel" style="text-align: left;">
-      <h3 class="chrome-title">ARMORY <span class="hide-mobile">UPLINK</span></h3>
-      <div class="digital-screen" style="height: 100px; overflow-y: auto;">
-        <p class="yellow" style="font-size: 11px;">> PRI<span class="hide-mobile">MARY</span> WEAPON:</p>
-        <p style="font-size: 10px;">Custom<span class="hide-mobile">-Tooled Futuristic</span> Revolver.</p>
-        <p class="cyan" style="font-size: 11px;">> AMMO<span class="hide-mobile"> COUNTER</span>:</p>
-<pre style="color: #ff5555; text-shadow: none; font-size: 10px; text-align: center;">
- ( ) ( )
-( )   ( )
- (X) ( )
-</pre>
-        <span class="hide-mobile"><p class="red">> WARNING: CHAMBER 5 EXPENDED.</p></span>
+      <div class="polaroid tilt-right" style="position: relative;">
+        <div class="tape tr"></div>
+        <div class="photo">
+          <img src="assets/scrapbook/leonov.jpg" alt="Alexei Leonov spacewalk" onerror="this.parentElement.querySelector('.placeholder-text').style.display='flex'">
+          <div class="placeholder-text" style="display: none;">[LEONOV — VOSKHOD 2]</div>
+        </div>
+        <div class="caption small">Leonov, 18 Mar 1965 — 12 min outside the ship. barely got back in.</div>
       </div>
-      <button class="chrome-btn" style="width: 100%;"><span class="hide-mobile">INITIATE </span>RELOAD<span class="hide-mobile"> CYCLE</span></button>
+
     </div>
 
-    <div class="terminal-window side-panel" style="align-items: center;">
-      <div class="panel-title">[ SEC<span class="hide-mobile">TOR</span> 03 : LOCAL SPACE ]</div>
-<pre class="green" style="line-height: 1.1;">
-    +-+-+-+-<span class="hide-mobile">+-+-+</span>
-    | | |<span class="red">x</span>| <span class="hide-mobile">| | |</span>
-    +-+-+-+-<span class="hide-mobile">+-+-+</span>
-    <span class="hide-mobile">| | | | | | |
-    +-+-+-+-+-+-+</span>
-    | |<span class="yellow">o</span>| |<span class="cyan">@</span><span class="hide-mobile">| | |</span>
-    +-+-+-+-<span class="hide-mobile">+-+-+</span>
-    <span class="hide-mobile">| | | | | | |
-    +-+-+-+-+-+-+</span>
-    | | | |<span class="grey">?</span><span class="hide-mobile">| | |</span>
-    +-+-+-+-<span class="hide-mobile">+-+-+</span>
-  
-  <span class="cyan">@</span> = SHIP
-  <span class="hide-mobile"><span class="yellow">o</span> = WAYPOINT ALPHA
-  <span class="red">x</span> = HOSTILE</span>
-</pre>
+    <!-- ============================================
+         SECTION II: ONE GIANT LEAP
+         ============================================ -->
+    <h2 class="scrap-section-title">One Giant Leap</h2>
+    <p class="scrap-section-sub">20 July 1969 &nbsp;//&nbsp; Apollo 11</p>
+
+    <!-- Apollo 11 — massive clipping takes the whole row -->
+    <div class="scrap-row cols-1">
+      <div class="clipping tilt-slight-l" style="position: relative; max-width: 720px; margin: 0 auto;">
+        <div class="tape tl"></div>
+        <div class="tape tr"></div>
+        <div class="masthead-line">The New York Times</div>
+        <div class="dateline">Vol. CXVIII &nbsp;·&nbsp; Monday, July 21, 1969 &nbsp;·&nbsp; Late City Edition &nbsp;·&nbsp; Ten Cents</div>
+        <h3 class="mega">Men Walk on Moon</h3>
+        <p class="subhead">Astronauts Land on Plain; Collect Rocks, Plant Flag</p>
+        <div class="photo-block" style="height: 180px;">
+          <img src="assets/scrapbook/apollo11.jpg" alt="Buzz Aldrin on the moon" onerror="this.style.display='none'">
+        </div>
+        <p class="photo-caption">— BUZZ ALDRIN photographed by NEIL ARMSTRONG, Sea of Tranquility</p>
+        <p class="byline">By JOHN NOBLE WILFORD &nbsp;·&nbsp; Special to The Times &nbsp;·&nbsp; Houston</p>
+        <div class="body-text">
+          <p>Men have landed and walked on the moon. Two Americans, astronauts of Apollo 11, steered their fragile four-legged lunar module safely and smoothly to the historic landing yesterday at 4:17:40 P.M., Eastern daylight time. Neil A. Armstrong, the 38-year-old civilian commander, radioed to earth and the mission control room here: "Houston, Tranquility Base here. The Eagle has landed."</p>
+          <p>The first men to reach the moon — Mr. Armstrong and his co-pilot, Col. Edwin E. Aldrin Jr. of the Air Force — brought their ship to rest on a level, rock-strewn plain near the southwestern shore of the arid Sea of Tranquility. About six and a half hours later, Mr. Armstrong opened the landing craft's hatch, stepped slowly down the ladder and declared as he planted the first human footprint on the lunar crust: "That's one small step for a man, one giant leap for mankind."</p>
+          <p>His first step on the moon came at 10:56:20 P.M. Mr. Aldrin joined him on the moon's surface 19 minutes later. Michael Collins, 38, an Air Force lieutenant colonel, remained in lunar orbit in the command module Columbia, circling 70 miles overhead. The two moon explorers spent 2 hours and 21 minutes outside. They deployed a television camera, collected 47.5 pounds of lunar rock and soil, planted the flag, and spoke briefly with President Nixon.</p>
+          <p>The Eagle lifted off from the moon at 1:54 P.M. today, Eastern daylight time, after 21 hours and 36 minutes on the lunar surface. Splashdown in the Pacific is scheduled for Thursday.</p>
+        </div>
+      </div>
     </div>
 
-    <div class="terminal-window wide-panel">
-      <div class="panel-title">[ SEC<span class="hide-mobile">TOR</span> 04 : COMMS & ARCHIVES ]</div>
-      
-      <p><span class="green">LOG_01 <span class="hide-mobile">[SECURE]</span>:</span> Target acquired. <span class="hide-mobile">Last seen </span>exiting <span class="hide-mobile">the atmosphere of a </span>non-aligned <span class="hide-mobile">mining </span>colony. <span class="hide-mobile">Prepare the m</span>Mag-revolver<span class="hide-mobile">. They won't go quietly</span> hot.</p>
-      <hr style="border: 1px dashed #333; width: 100%;">
-      <p><span class="grey">LOG_02 <span class="hide-mobile">[STATISTICS]</span>:</span> <span class="hide-mobile">Survival probability of a q</span>Quick-draw survival against <span class="hide-mobile">a fully </span>mechanical right arm: <span class="red">0.003%</span>.</p>
+    <!-- Apollo 11 supporting items -->
+    <div class="scrap-row cols-3" style="align-items: center;">
+      <div class="polaroid tilt-left" style="position: relative;">
+        <div class="tape tl"></div>
+        <div class="photo">
+          <img src="assets/scrapbook/earthrise.jpg" alt="Earthrise" onerror="this.parentElement.querySelector('.placeholder-text').style.display='flex'">
+          <div class="placeholder-text" style="display: none;">[EARTHRISE — APOLLO 8, DEC 1968]</div>
+        </div>
+        <div class="caption small">Earthrise, Dec '68. Anders said we came all this way and the thing we discovered was Earth.</div>
+      </div>
+      <div style="display: flex; justify-content: center; align-items: center; min-height: 200px;">
+        <div class="patch apollo tilt-right">
+          <div class="patch-star">★</div>
+          <div class="patch-title">Apollo XI</div>
+          <div class="patch-sub">Eagle · 1969</div>
+        </div>
+      </div>
+      <div class="margin-note red">
+        47.5 lbs of rocks. the whole trip: 8 days, 3 hours, 18 minutes. the flag still stands (probably).
+      </div>
+    </div>
+
+    <!-- ============================================
+         SECTION III: OUT THERE
+         ============================================ -->
+    <h2 class="scrap-section-title">Out There</h2>
+    <p class="scrap-section-sub">The Reaching Years</p>
+
+    <!-- Voyager document + ticket -->
+    <div class="scrap-row asym-r">
+      <div style="display: flex; flex-direction: column; gap: 18px;">
+        <div class="ticket tilt-slight-r">
+          <div class="t-num">#01</div>
+          <div class="t-body">
+            <strong>Voyager Golden Record</strong>
+            115 images · 55 greetings · whale song · Chuck Berry · one kiss
+          </div>
+        </div>
+        <div class="margin-note">
+          still going. carl sagan picked the music. the record will outlast every building i've ever stood in.
+        </div>
+      </div>
+      <div class="document tilt-slight-l" style="position: relative;">
+        <div class="doc-header">
+          <span class="org">NASA // JET PROPULSION LABORATORY</span>
+          <span class="form-no">MISSION BRIEF &nbsp;·&nbsp; JPL-77-VY01</span>
+        </div>
+        <h4>Voyager Program — Interstellar Mandate</h4>
+        <div class="doc-body">
+          <p><strong>OBJECTIVE.</strong> Flyby reconnaissance of the outer planets (Jupiter, Saturn, Uranus, Neptune) with extended mission to the heliopause and interstellar medium.</p>
+          <div class="field"><span class="f-label">Voyager 2 launch</span><span class="f-value">20 Aug 1977 · Titan IIIE</span></div>
+          <div class="field"><span class="f-label">Voyager 1 launch</span><span class="f-value">05 Sep 1977 · Titan IIIE</span></div>
+          <div class="field"><span class="f-label">V1 interstellar</span><span class="f-value">25 Aug 2012</span></div>
+          <div class="field"><span class="f-label">V2 interstellar</span><span class="f-value">05 Nov 2018</span></div>
+          <div class="field"><span class="f-label">Distance (V1, 2026)</span><span class="f-value">~25 billion km · 24h 10m light delay</span></div>
+          <div class="field"><span class="f-label">Power source</span><span class="f-value">3× MHW-RTG, Pu-238</span></div>
+          <div class="field"><span class="f-label">Status</span><span class="f-value">ACTIVE — instruments being shed to conserve power</span></div>
+          <p style="margin-top: 14px;">Each spacecraft carries a 12-inch gold-plated copper phonograph record containing sounds, images, and greetings selected as a representative portrait of Earth, curated by a committee chaired by Carl Sagan.</p>
+        </div>
+        <div class="sig-line">
+          <span>Authorizing: <span class="sig-name">B. Murray</span></span>
+          <span>JPL-DIR · 1977</span>
+        </div>
+        <div class="stamp green br">Active</div>
+      </div>
+    </div>
+
+    <!-- Hubble row -->
+    <div class="scrap-row asym">
+      <div class="clipping tilt-slight-r" style="position: relative;">
+        <div class="tape top-center"></div>
+        <div class="masthead-line">Science Observer</div>
+        <div class="dateline">Pasadena &nbsp;·&nbsp; 15 January 1996</div>
+        <h3>Looking Back in Time</h3>
+        <p class="subhead">The Hubble Deep Field shows us 3,000 galaxies in a patch of sky the size of a grain of sand held at arm's length</p>
+        <div class="photo-block">
+          <img src="assets/scrapbook/hubble-deepfield.jpg" alt="Hubble Deep Field" onerror="this.style.display='none'">
+        </div>
+        <p class="photo-caption">— THE HUBBLE DEEP FIELD, 342 exposures stacked, 10 days of observing</p>
+        <div class="body-text">
+          <p>The Hubble Space Telescope, launched aboard STS-31 on 24 April 1990, was nearly a catastrophe. Its primary mirror, ground to the wrong specification, rendered early images blurry. A 1993 servicing mission installed corrective optics. Since then it has operated as perhaps the most productive scientific instrument in history.</p>
+          <p>Between 18 and 28 December 1995, astronomer Robert Williams pointed the telescope at a dark patch of sky in Ursa Major — a region chosen specifically because it appeared empty. What the instrument returned has redrawn the map of creation.</p>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 20px;">
+        <div class="polaroid tilt-right" style="position: relative;">
+          <div class="tape tr"></div>
+          <div class="photo">
+            <img src="assets/scrapbook/pillars.jpg" alt="Pillars of Creation" onerror="this.parentElement.querySelector('.placeholder-text').style.display='flex'">
+            <div class="placeholder-text" style="display: none;">[PILLARS OF CREATION]</div>
+          </div>
+          <div class="caption small">Pillars of Creation, Eagle Nebula, 1995</div>
+        </div>
+        <div class="margin-note red">
+          3,000 galaxies in a piece of sky smaller than my thumbnail.
+        </div>
+      </div>
+    </div>
+
+    <!-- Mars rover timeline -->
+    <div class="scrap-row cols-1">
+      <div class="timeline-strip tilt-slight-l" style="max-width: 900px; margin: 0 auto; position: relative;">
+        <div class="tape tl"></div>
+        <div class="tape tr"></div>
+        <h3>Four Wheels on Mars</h3>
+        <div class="timeline-items">
+          <div class="timeline-item">
+            <div class="ti-year">1997</div>
+            <div class="ti-name">Sojourner</div>
+            <div class="ti-detail">First rover. 83 days. 100 m traveled. Size of a microwave.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="ti-year">2004–2018</div>
+            <div class="ti-name">Spirit &amp; Opportunity</div>
+            <div class="ti-detail">Designed for 90 days. Opportunity ran 14 years, 45 km. Last words: "my battery is low and it's getting dark."</div>
+          </div>
+          <div class="timeline-item">
+            <div class="ti-year">2012–</div>
+            <div class="ti-name">Curiosity</div>
+            <div class="ti-detail">SUV-sized. Nuclear-powered. Still roaming Gale Crater. Sings itself happy birthday.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="ti-year">2021–</div>
+            <div class="ti-name">Perseverance</div>
+            <div class="ti-detail">Carries Ingenuity helicopter. Caching samples for future return. First powered flight on another world.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================
+         SECTION IV: STILL GOING
+         ============================================ -->
+    <h2 class="scrap-section-title">Still Going</h2>
+    <p class="scrap-section-sub">1998 – present &nbsp;//&nbsp; We Haven't Stopped</p>
+
+    <!-- ISS document + JWST polaroid -->
+    <div class="scrap-row cols-2">
+      <div class="document tilt-slight-l" style="position: relative;">
+        <div class="doc-header">
+          <span class="org">INTERNATIONAL SPACE STATION · PROGRAM OFFICE</span>
+          <span class="form-no">FORM ISS-A-0001</span>
+        </div>
+        <h4>Continuous Human Presence — Certification</h4>
+        <div class="doc-body">
+          <div class="field"><span class="f-label">First module</span><span class="f-value">Zarya · 20 Nov 1998</span></div>
+          <div class="field"><span class="f-label">First crew aboard</span><span class="f-value">Expedition 1 · 02 Nov 2000</span></div>
+          <div class="field"><span class="f-label">Partners</span><span class="f-value">NASA · Roscosmos · ESA · JAXA · CSA</span></div>
+          <div class="field"><span class="f-label">Altitude</span><span class="f-value">~408 km · 90-min orbit · 16 sunrises/day</span></div>
+          <div class="field"><span class="f-label">Mass</span><span class="f-value">~420 tonnes</span></div>
+          <div class="field"><span class="f-label">Crew visitors</span><span class="f-value">270+ individuals · 23 nations</span></div>
+          <div class="field"><span class="f-label">Continuous occupancy</span><span class="f-value">25+ years as of 2026</span></div>
+          <p style="margin-top: 14px;">As of date of issue, humans have been living off-world without interruption longer than the span of most careers. The station is scheduled for deorbit no earlier than 2030.</p>
+        </div>
+        <div class="sig-line">
+          <span>Certified:</span>
+          <span class="sig-name">ISS Program Manager</span>
+        </div>
+        <div class="stamp blue tr">Certified</div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 20px; align-items: center;">
+        <div class="polaroid tilt-right" style="position: relative; max-width: 280px;">
+          <div class="tape tl"></div>
+          <div class="tape tr"></div>
+          <div class="photo">
+            <img src="assets/scrapbook/jwst-carina.jpg" alt="JWST Carina Nebula" onerror="this.parentElement.querySelector('.placeholder-text').style.display='flex'">
+            <div class="placeholder-text" style="display: none;">[JWST — CARINA NEBULA]</div>
+          </div>
+          <div class="caption">JWST's Cosmic Cliffs — 12 July 2022</div>
+        </div>
+        <div class="margin-note">
+          a million miles from Earth, folded up like origami. it unfolded perfectly. 344 single points of failure, zero failed.
+        </div>
+      </div>
+    </div>
+
+    <!-- Artemis II — the newest, not yet fully stuck in -->
+    <div class="scrap-row asym">
+      <div class="clipping tilt-right" style="position: relative;">
+        <div class="tape top-center" style="background: rgba(255, 220, 120, 0.7);"></div>
+        <div class="masthead-line">Houston Chronicle</div>
+        <div class="dateline">Saturday &nbsp;·&nbsp; April 11, 2026 &nbsp;·&nbsp; Final Edition</div>
+        <h3 class="mega">They Came Back</h3>
+        <p class="subhead">Artemis II crew splashes down after 10-day lunar flyby — first humans beyond low Earth orbit in 54 years</p>
+        <div class="photo-block">
+          <img src="assets/scrapbook/artemis2.jpg" alt="Artemis II splashdown" onerror="this.style.display='none'">
+        </div>
+        <p class="photo-caption">— ORION SPACECRAFT "INTEGRITY" during lunar flyby, 6 April 2026</p>
+        <p class="byline">By Staff Reporters &nbsp;·&nbsp; Ellington Airport, Houston</p>
+        <div class="body-text">
+          <p>Four astronauts walked off a recovery flight at Ellington Airport this afternoon, ten days after becoming the first humans to travel beyond low Earth orbit since the crew of Apollo 17 departed the Moon in December 1972.</p>
+          <p>Commander Reid Wiseman, Pilot Victor Glover, Mission Specialist Christina Koch, and CSA astronaut Jeremy Hansen launched aboard the Orion spacecraft — which they had named <em>Integrity</em> — atop a Space Launch System rocket from Kennedy Space Center on 1 April 2026. On 6 April they executed a seven-hour flyby of the Moon's far side, passing within 8,890 km of the lunar surface.</p>
+          <p>Koch is now the woman who has flown furthest from Earth; Glover the first Black astronaut to have left low Earth orbit; Hansen the first non-American to do so. A small plush toy — "Rise," a moon wearing Earth as a baseball cap, inspired by the Apollo 8 Earthrise photograph — accompanied them and returned with the crew.</p>
+          <p>Artemis III, targeted for late 2027, is now expected to perform the first crewed lunar landing in over 55 years.</p>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 22px; padding-top: 30px;">
+        <div style="display: flex; justify-content: center;">
+          <div class="patch artemis tilt-left">
+            <div class="patch-star">☾</div>
+            <div class="patch-title">Artemis II</div>
+            <div class="patch-sub">Integrity · 2026</div>
+          </div>
+        </div>
+        <div class="ticket tilt-slight-r">
+          <div class="t-num">#02</div>
+          <div class="t-body">
+            <strong>Apr 1 – Apr 11, 2026</strong>
+            SLS · Orion · 10 days · 4 souls
+          </div>
+        </div>
+        <div class="margin-note red">
+          54 years since the last one. first woman. first black astronaut. first canadian. they brought back a plushie.
+        </div>
+      </div>
+    </div>
+
+    <!-- CLOSING -->
+    <div class="scrap-closing">
+      Last entry added: April 11, 2026<br>
+      Items: 11 &nbsp;·&nbsp; Pages: unfinished
+      <div class="last-line">
+        — there's always more sky.
+      </div>
     </div>
 
   </div>
 
-  <div style="margin-top: 30px; text-align: center;">
+  <!-- RETURN HOME -->
+  <div class="return-home">
     <a href="index.html">
-      <img src="88x31/anihome112g.gif" alt="Return to Cave" style="image-rendering: pixelated; border: 1px solid #555;">
+      <img src="88x31/anihome112g.gif" alt="Return to Cave">
     </a>
+    <p>&gt; Return to Cave</p>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/asciinema-player@3.7.1/dist/bundle/asciinema-player.min.js"></script>
-  
   <script>
-    // Check if the user's screen is 800px or less
-    const isMobile = window.matchMedia("(max-width: 800px)").matches;
-
-    // Only load the heavy ASCII player if we are NOT on a mobile screen
+    const isMobile = window.matchMedia("(max-width: 900px)").matches;
     if (!isMobile) {
       AsciinemaPlayer.create('assets/starwars.cast', document.getElementById('star-wars-player'), {
         autoplay: true,
         loop: true,
-        cols: 67, 
-        rows: 20, 
-        fit: 'width' 
+        cols: 67,
+        rows: 20,
+        fit: 'width',
+        theme: 'monokai'
       });
     }
   </script>
