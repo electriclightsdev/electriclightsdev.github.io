@@ -30,8 +30,6 @@
 
       --dust:          #8a7050;   /* muted tan for secondary text */
       --dust-faint:    #4a3a2a;
-
-      --scan:          rgba(0, 0, 0, 0.28);
     }
 
     /* =========================================
@@ -46,44 +44,36 @@
         radial-gradient(ellipse at 80% 90%, rgba(68, 153, 170, 0.06) 0%, transparent 50%),
         url('assets/bg/space.jpg');
       background-size: auto, auto, cover;
-      background-position: center;
+      background-position: center top;
       background-attachment: fixed;
       background-blend-mode: normal, normal, multiply;
       color: var(--amber);
       margin: 0;
-      padding: 30px 20px 40px 20px;
+      padding: 0;
       font-family: "Courier New", Courier, monospace;
-      font-size: 14px;
+      font-size: 15px;
       line-height: 1.4;
-      min-height: 100vh;
-      position: relative;
     }
 
-    /* Scanlines — the single texture that ties everything together */
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background: repeating-linear-gradient(
-        to bottom,
-        transparent 0,
-        transparent 2px,
-        var(--scan) 2px,
-        var(--scan) 3px
-      );
-      pointer-events: none;
-      z-index: 9998;
-      mix-blend-mode: multiply;
+    /* Console zone — no background of its own, inherits from body */
+    .console-zone {
+      padding: 30px 20px 40px 20px;
     }
 
-    /* Faint CRT vignette */
-    body::after {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background: radial-gradient(ellipse at center, transparent 50%, rgba(0, 0, 0, 0.55) 100%);
-      pointer-events: none;
-      z-index: 9997;
+    /* Site title — gif sits above everything, full-width, centered */
+    .site-title-bar {
+      background-color: transparent;
+      text-align: center;
+      padding: 18px 20px 14px 20px;
+      border-bottom: 2px solid var(--amber-faint);
+    }
+    .site-title-bar img {
+      max-width: 100%;
+      height: auto;
+      filter: drop-shadow(0 0 12px rgba(255, 170, 51, 0.25));
+      image-rendering: pixelated;
+      display: block;
+      margin: 0 auto;
     }
 
     /* =========================================
@@ -97,7 +87,7 @@
       border-left: 3px solid var(--amber);
       background: var(--bg-panel);
       color: var(--amber);
-      font-size: 13px;
+      font-size: 14px;
       letter-spacing: 2px;
       text-transform: uppercase;
       display: flex;
@@ -122,7 +112,7 @@
     }
     .masthead-right {
       color: var(--dust);
-      font-size: 11px;
+      font-size: 12px;
       letter-spacing: 1px;
       text-shadow: none;
     }
@@ -156,7 +146,7 @@
       display: inline-block;
       padding-left: 100%;
       color: var(--amber);
-      font-size: 12px;
+      font-size: 13px;
       letter-spacing: 1px;
       animation: scroll-ticker 45s linear infinite;
       text-shadow: 0 0 4px var(--amber-glow);
@@ -228,7 +218,7 @@
     .panel-header {
       padding: 8px 14px;
       border-bottom: 1px dashed var(--amber-faint);
-      font-size: 11px;
+      font-size: 12px;
       letter-spacing: 2px;
       color: var(--amber);
       text-transform: uppercase;
@@ -254,7 +244,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 11px;
+      font-size: 12px;
       margin-bottom: 8px;
       letter-spacing: 1px;
     }
@@ -286,7 +276,7 @@
     }
     .subhead {
       color: var(--cyan-dim);
-      font-size: 10px;
+      font-size: 11px;
       letter-spacing: 2px;
       margin: 0 0 8px 0;
       text-transform: uppercase;
@@ -455,7 +445,7 @@
       align-items: baseline;
       flex-wrap: wrap;
       margin-bottom: 10px;
-      font-size: 11px;
+      font-size: 12px;
       letter-spacing: 1.5px;
     }
     .log-id    { color: var(--amber); font-weight: bold; text-shadow: 0 0 4px var(--amber-glow); }
@@ -467,7 +457,7 @@
 
     .log-body {
       color: var(--amber);
-      font-size: 13px;
+      font-size: 14px;
       line-height: 1.6;
       padding-left: 18px;
       border-left: 2px solid var(--amber-faint);
@@ -518,7 +508,8 @@
        MOBILE
        ========================================= */
     @media screen and (max-width: 900px) {
-      body { padding: 12px 8px; font-size: 12px; }
+      .console-zone { padding: 12px 8px; }
+      .site-title-bar { padding: 12px 10px 10px 10px; }
 
       .masthead {
         flex-direction: column;
@@ -657,6 +648,20 @@
       max-width: 100%;
       height: auto;
       filter: sepia(0.3) contrast(1.05);
+    }
+    .scrap-cover-title {
+      font-family: "Brush Script MT", "Segoe Script", cursive;
+      font-size: 52px;
+      color: #2a1a08;
+      line-height: 1.1;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 0 rgba(80, 50, 20, 0.15);
+    }
+    .scrap-cover-rule {
+      font-size: 20px;
+      color: #8a6a3a;
+      margin-bottom: 18px;
+      letter-spacing: 8px;
     }
     .scrap-cover .property-label {
       margin-top: 20px;
@@ -839,7 +844,7 @@
       margin-bottom: 10px;
     }
     .clipping .body-text {
-      font-size: 13px;
+      font-size: 14px;
       line-height: 1.55;
       color: #1a1208;
       column-count: 2;
@@ -938,7 +943,7 @@
       font-weight: bold;
     }
     .document .doc-body {
-      font-size: 12px;
+      font-size: 13px;
       line-height: 1.9;
     }
     .document .doc-body p { margin: 0 0 10px 0; }
@@ -946,7 +951,7 @@
       display: grid;
       grid-template-columns: 140px 1fr;
       gap: 10px;
-      font-size: 11px;
+      font-size: 12px;
       padding: 3px 0;
       border-bottom: 1px dotted rgba(0, 0, 0, 0.2);
     }
@@ -1272,6 +1277,14 @@
 </head>
 <body>
 
+  <!-- SITE TITLE -->
+  <div class="site-title-bar">
+    <img src="assets/spaceshow.gif" alt="The 1999 Space Expo">
+  </div>
+
+  <!-- CONSOLE ZONE: space bg lives here only -->
+  <div class="console-zone">
+
   <!-- MASTHEAD -->
   <div class="masthead">
     <span>
@@ -1503,7 +1516,8 @@
       </div>
     </section>
 
-  </div>
+  </div><!-- /.dashboard -->
+  </div><!-- /.console-zone -->
 
   <!-- ==========================================================
        TRANSITION: console → scrapbook
@@ -1524,7 +1538,8 @@
 
     <!-- COVER -->
     <div class="scrap-cover">
-      <img src="assets/spaceshow.gif" alt="The 1999 Space Expo">
+      <div class="scrap-cover-title">A History of Human Spaceflight</div>
+      <div class="scrap-cover-rule">✦ &nbsp; &nbsp; ✦ &nbsp; &nbsp; ✦</div>
       <div class="property-label">
         Property of <span class="strike">Ada Vasque</span><span class="sig">— unknown</span>
       </div>
