@@ -3,577 +3,1558 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VAPORWAVE AUDIO ARCHIVE // 1999 EXPO</title>
-  
+  <title>AUDIO TERMINAL // NOCTURNE ARCHIVE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Monoton&family=VT323&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
   <style>
-    /* =========================================
-       GLOBAL VAPORWAVE BACKGROUND
-       ========================================= */
-    body {
-      background-color: #0d0016;
-      background-image: linear-gradient(0deg, rgba(255, 0, 255, 0.1) 0%, rgba(0, 255, 255, 0.1) 100%), 
-                        url('assets/bg/streambg.jpg');
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-      color: #ffffff;
+    /* ==========================================================
+       TOKENS
+       ========================================================== */
+    :root {
+      --ink: #0a0420;
+      --ink-2: #130830;
+      --ink-3: #1e0f4a;
+      --violet: #2a0f5c;
+      --magenta: #ff2bd6;
+      --magenta-soft: #ff6fe0;
+      --cyan: #5cf4ff;
+      --cyan-soft: #9df9ff;
+      --peach: #ffb27a;
+      --lime: #b6ff5c;
+      --white: #f7eeff;
+      --mute: #8a7dc2;
+      --grid: rgba(255, 43, 214, 0.18);
+      --scan: rgba(92, 244, 255, 0.04);
+
+      --font-display: 'Monoton', 'Arial Black', sans-serif;
+      --font-pixel: 'VT323', 'Courier New', monospace;
+      --font-mono: 'Space Mono', 'Courier New', monospace;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
       margin: 0;
-      padding: 20px;
-      font-family: 'Verdana', 'Arial', sans-serif;
+      padding: 0;
+      min-height: 100%;
+      background: var(--ink);
+      color: var(--white);
+      font-family: var(--font-mono);
       overflow-x: hidden;
     }
 
-    body::before {
+    /* ==========================================================
+       ATMOSPHERE — sun, horizon grid, scanlines, noise
+       ========================================================== */
+    .atmosphere {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse at 50% 75%, rgba(255, 43, 214, 0.18) 0%, transparent 55%),
+        linear-gradient(180deg, #05021a 0%, #0a0420 40%, #23084a 70%, #410f6b 100%);
+    }
+
+    /* The sun */
+    .sun {
+      position: absolute;
+      left: 50%;
+      bottom: 42%;
+      width: 520px;
+      height: 520px;
+      transform: translateX(-50%);
+      border-radius: 50%;
+      background:
+        linear-gradient(180deg, #ffec6b 0%, #ff9d5c 35%, #ff2bd6 70%, #6b1aa8 100%);
+      filter: blur(0.3px);
+      box-shadow:
+        0 0 120px rgba(255, 43, 214, 0.55),
+        0 0 260px rgba(255, 43, 214, 0.25);
+    }
+    .sun::before {
+      /* horizontal gap bands over the sun */
       content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: repeating-linear-gradient(
+        180deg,
+        transparent 0 22px,
+        rgba(10, 4, 32, 0.95) 22px 30px
+      );
+      mask: linear-gradient(180deg, transparent 35%, black 50%, black 100%);
+      -webkit-mask: linear-gradient(180deg, transparent 35%, black 50%, black 100%);
+    }
+
+    /* Horizon glow line */
+    .horizon {
+      position: absolute;
+      left: 0; right: 0;
+      bottom: 42%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--cyan) 20%, var(--cyan) 80%, transparent);
+      box-shadow: 0 0 12px var(--cyan), 0 0 30px var(--cyan);
+      z-index: 2;
+    }
+
+    /* The infinite grid floor */
+    .grid-floor {
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      width: 220vw;
+      height: 42vh;
+      transform: translateX(-50%) perspective(600px) rotateX(62deg);
+      transform-origin: 50% 0%;
+      background-image:
+        linear-gradient(var(--grid) 2px, transparent 2px),
+        linear-gradient(90deg, var(--grid) 2px, transparent 2px);
+      background-size: 80px 80px;
+      animation: gridScroll 3.5s linear infinite;
+    }
+    @keyframes gridScroll {
+      from { background-position: 0 0, 0 0; }
+      to   { background-position: 0 80px, 0 0; }
+    }
+
+    /* Stars */
+    .stars {
+      position: absolute;
+      inset: 0 0 55% 0;
+      background-image:
+        radial-gradient(1px 1px at 10% 20%, white 50%, transparent 100%),
+        radial-gradient(1px 1px at 25% 35%, white 50%, transparent 100%),
+        radial-gradient(2px 2px at 40% 10%, white 50%, transparent 100%),
+        radial-gradient(1px 1px at 55% 25%, white 50%, transparent 100%),
+        radial-gradient(1px 1px at 70% 5%, white 50%, transparent 100%),
+        radial-gradient(1px 1px at 85% 30%, white 50%, transparent 100%),
+        radial-gradient(2px 2px at 95% 12%, white 50%, transparent 100%),
+        radial-gradient(1px 1px at 15% 45%, white 50%, transparent 100%),
+        radial-gradient(1px 1px at 50% 50%, white 50%, transparent 100%),
+        radial-gradient(1px 1px at 78% 48%, white 50%, transparent 100%);
+      opacity: 0.6;
+      animation: twinkle 4s ease-in-out infinite;
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; }
+      50%      { opacity: 0.8; }
+    }
+
+    /* Global scanlines overlay */
+    .scanlines {
       position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background-image: 
-        repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(0,255,255,0.03) 1px, rgba(0,255,255,0.03) 2px),
-        repeating-linear-gradient(90deg, transparent, transparent 1px, rgba(255,0,255,0.03) 1px, rgba(255,0,255,0.03) 2px);
-      z-index: -1;
+      inset: 0;
       pointer-events: none;
+      z-index: 999;
+      background-image: repeating-linear-gradient(
+        0deg,
+        transparent 0 3px,
+        rgba(0,0,0,0.22) 3px 4px
+      );
+      mix-blend-mode: multiply;
+      opacity: 0.55;
     }
 
-    /* =========================================
-       FLOATING DASHBOARD (TITLE + PLAYER)
-       ========================================= */
-    .floating-dashboard {
+    /* Grain overlay */
+    .grain {
       position: fixed;
-      top: 20px;
-      left: 20px;
-      width: 320px;
-      z-index: 100;
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
+      inset: 0;
+      pointer-events: none;
+      z-index: 998;
+      opacity: 0.08;
+      mix-blend-mode: overlay;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.9'/></svg>");
     }
 
-    .header-container {
-      background: rgba(10, 0, 20, 0.95);
-      padding: 10px 20px;
-      border-left: 4px solid #00ffff;
-      box-shadow: 5px 5px 0px rgba(255, 0, 255, 0.4);
-      box-sizing: border-box;
-      width: 100%;
-      text-align: left;
+    /* ==========================================================
+       PAGE FRAME
+       ========================================================== */
+    .page {
+      position: relative;
+      min-height: 100vh;
+      padding: 40px 60px 200px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 40px;
     }
 
-    h1.vapor-title {
-      font-family: 'Arial Black', Impact, sans-serif;
-      font-size: 16px;
-      text-transform: uppercase;
-      letter-spacing: 3px;
-      color: #fff;
-      text-shadow: 2px 2px 0px #ff00ff, -2px -2px 0px #00ffff;
-      margin: 0 0 5px 0;
-      animation: glitch 3s infinite;
+    /* ==========================================================
+       HEADER — big display title
+       ========================================================== */
+    .masthead {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: end;
+      gap: 30px;
+      padding-bottom: 24px;
+      border-bottom: 1px dashed rgba(255, 43, 214, 0.35);
     }
 
-    h1.vapor-title::after {
-        content: " // ア イ ウ エ オ"; 
-        font-size: 10px;
-        color: #00ffff;
-        font-family: 'Verdana', sans-serif;
-        text-shadow: none;
-    }
-
-    @keyframes glitch {
-      0%, 100% { text-shadow: 1px 1px 0px #ff00ff, -1px -1px 0px #00ffff; }
-      2% { text-shadow: 2px -1px 0px #ff00ff, -2px 1px 0px #00ffff; }
-      4% { text-shadow: -1px 1px 0px #ff00ff, 1px -1px 0px #00ffff; }
-      5% { text-shadow: 1px -1px 0px #ff00ff, -1px 1px 0px #00ffff; }
-    }
-
-    p.subtitle {
-      color: #ff00ff;
-      font-family: "Courier New", Courier, monospace;
-      font-size: 10px;
+    .masthead__title {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: clamp(48px, 9vw, 128px);
+      line-height: 0.85;
+      letter-spacing: 0.01em;
       margin: 0;
+      color: var(--white);
+      text-shadow:
+        3px 3px 0 var(--magenta),
+        -3px -3px 0 var(--cyan),
+        0 0 40px rgba(255, 43, 214, 0.4);
+      animation: glitch 5s steps(1) infinite;
+    }
+    @keyframes glitch {
+      0%, 92%, 100% { text-shadow: 3px 3px 0 var(--magenta), -3px -3px 0 var(--cyan), 0 0 40px rgba(255, 43, 214, 0.4); }
+      93% { text-shadow: -5px 2px 0 var(--magenta), 5px -2px 0 var(--cyan); transform: translate(1px, 0); }
+      94% { text-shadow: 4px -3px 0 var(--magenta), -4px 3px 0 var(--cyan); transform: translate(-1px, 0); }
+      95% { text-shadow: 3px 3px 0 var(--magenta), -3px -3px 0 var(--cyan); transform: translate(0); }
+    }
+
+    .masthead__meta {
+      text-align: right;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.15em;
       text-transform: uppercase;
-      letter-spacing: 2px;
-      text-shadow: 0 0 3px #ff00ff;
+      color: var(--cyan-soft);
+      line-height: 1.6;
+    }
+    .masthead__meta .kv { color: var(--mute); }
+    .masthead__meta .vv { color: var(--cyan); text-shadow: 0 0 6px var(--cyan); }
+    .masthead__meta .live {
+      display: inline-block;
+      padding: 2px 8px;
+      background: var(--magenta);
+      color: var(--ink);
+      font-weight: 700;
+      margin-left: 6px;
+      animation: blink 1.2s steps(2) infinite;
+    }
+    @keyframes blink { 50% { opacity: 0.3; } }
+
+    .masthead__sub {
+      grid-column: 1 / -1;
+      font-family: var(--font-pixel);
+      font-size: 22px;
+      color: var(--magenta-soft);
+      letter-spacing: 0.12em;
+      margin: 0;
+      text-shadow: 0 0 10px rgba(255, 43, 214, 0.6);
     }
 
-    /* =========================================
-       MASTER CONTROLS (THE NEON DECK)
-       ========================================= */
-    .master-controls {
-      background: rgba(20, 5, 30, 0.85);
-      border: 2px solid #ff00ff;
-      border-radius: 8px;
+    /* ==========================================================
+       STAGE — the perspective crate + side dossier
+       ========================================================== */
+    .stage {
+      position: relative;
+      perspective: 1800px;
+      perspective-origin: 50% 30%;
+      min-height: 620px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+      gap: 40px;
+      align-items: center;
+    }
+
+    .crate {
+      position: relative;
       width: 100%;
-      padding: 15px;
-      box-shadow: 0px 0px 25px rgba(255, 0, 255, 0.3), inset 0px 0px 15px rgba(0, 255, 255, 0.1);
-      backdrop-filter: blur(8px);
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-      box-sizing: border-box;
+      max-width: 640px;
+      height: 540px;
+      margin: 0 auto;
+      transform-style: preserve-3d;
     }
 
-    .lcd-screen {
-      background-color: #050010;
-      border: 2px solid #00ffff;
-      box-shadow: inset 0 0 10px rgba(0,255,255,0.4);
-      padding: 10px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      border-radius: 4px;
-    }
-
-    .eq-visualizer { width: 30px; height: 20px; border: 1px solid #ff00ff; image-rendering: pixelated; opacity: 0.8; }
-    .lcd-text-container { flex-grow: 1; overflow: hidden; }
-    
-    .lcd-text {
-      color: #00ffff;
-      font-family: "Courier New", Courier, monospace;
-      font-size: 12px;
-      text-shadow: 0px 0px 6px #00ffff;
-      white-space: nowrap;
-    }
-
-    .hw-buttons { display: flex; justify-content: space-between; gap: 8px; }
-
-    .hw-btn {
-      flex: 1;
-      background: rgba(0, 0, 0, 0.6);
-      border: 1px solid #00ffff;
-      border-radius: 4px;
-      padding: 6px 10px;
-      font-weight: bold;
-      font-size: 12px;
-      color: #00ffff;
-      cursor: pointer;
-      font-family: 'Verdana', sans-serif;
-      box-shadow: 0 0 8px rgba(0, 255, 255, 0.3);
-      transition: all 0.1s ease-in-out;
-    }
-
-    .hw-btn:hover { background: rgba(0, 255, 255, 0.1); box-shadow: 0 0 12px rgba(0, 255, 255, 0.6); }
-    .hw-btn:active { background: #00ffff; color: #000; box-shadow: 0 0 20px #00ffff; transform: translateY(2px); }
-
-    #btn-stop { border-color: #ff00ff; color: #ff00ff; box-shadow: 0 0 8px rgba(255, 0, 255, 0.3); }
-    #btn-stop:hover { background: rgba(255, 0, 255, 0.1); box-shadow: 0 0 12px rgba(255, 0, 255, 0.6); }
-    #btn-stop:active { background: #ff00ff; color: #000; box-shadow: 0 0 20px #ff00ff; }
-
-    /* =========================================
-       CASSETTE STACK SYSTEM
-       ========================================= */
-    .deck-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 50px;
-      /* Shift the tapes to the right to make room for the floating player */
-      margin: 0 auto 40px 360px;
-      max-width: 550px;
+    /* Crate floor shadow */
+    .crate::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: -40px;
+      transform: translateX(-50%);
+      width: 90%;
+      height: 60px;
+      background: radial-gradient(ellipse, rgba(255, 43, 214, 0.35) 0%, transparent 70%);
+      filter: blur(6px);
+      z-index: -1;
     }
 
     .cassette {
-      position: relative;
-      width: 100%;
-      height: 300px; 
-      background: #111;
-      border-radius: 15px;
-      box-shadow: inset 0 0 10px rgba(255,255,255,0.1), 10px 10px 20px rgba(0,0,0,0.8);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 15px;
-      box-sizing: border-box;
-      border: 1px solid #333;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 560px;
+      height: 340px;
+      transform-style: preserve-3d;
+      transition:
+        transform 0.7s cubic-bezier(.2,.8,.2,1),
+        filter 0.7s ease,
+        opacity 0.5s ease;
+      cursor: pointer;
+      will-change: transform;
+      /* Default positioning variables — overridden by JS */
+      --z: 0px;
+      --y: 0px;
+      --rx: 22deg;
+      --ry: 0deg;
+      --dim: 0.5;
+      transform: translate(-50%, -50%) translateY(var(--y)) translateZ(var(--z)) rotateX(var(--rx)) rotateY(var(--ry));
+      filter: brightness(var(--dim));
     }
 
+    .cassette.is-focused {
+      --z: 60px;
+      --y: -30px;
+      --rx: 6deg;
+      --ry: -2deg;
+      --dim: 1;
+      z-index: 100 !important;
+    }
+    .cassette:not(.is-focused):hover {
+      --dim: 0.85;
+    }
+
+    /* Cassette shell */
+    .cassette__shell {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, #1a0a3d 0%, #0a0420 100%);
+      border: 1px solid rgba(255, 43, 214, 0.4);
+      border-radius: 14px;
+      box-shadow:
+        inset 0 2px 0 rgba(255, 255, 255, 0.08),
+        inset 0 -20px 40px rgba(0, 0, 0, 0.6),
+        0 30px 60px rgba(0, 0, 0, 0.6),
+        0 0 40px rgba(255, 43, 214, 0.15);
+      overflow: hidden;
+    }
+
+    /* Frosted color wash — changes per tape */
+    .cassette[data-theme="cyan"] .cassette__shell {
+      border-color: rgba(92, 244, 255, 0.5);
+      box-shadow:
+        inset 0 2px 0 rgba(255, 255, 255, 0.08),
+        inset 0 -20px 40px rgba(0, 0, 0, 0.6),
+        0 30px 60px rgba(0, 0, 0, 0.6),
+        0 0 40px rgba(92, 244, 255, 0.18);
+    }
+    .cassette[data-theme="peach"] .cassette__shell {
+      border-color: rgba(255, 178, 122, 0.55);
+      box-shadow:
+        inset 0 2px 0 rgba(255, 255, 255, 0.08),
+        inset 0 -20px 40px rgba(0, 0, 0, 0.6),
+        0 30px 60px rgba(0, 0, 0, 0.6),
+        0 0 40px rgba(255, 178, 122, 0.22);
+    }
+
+    /* Screws */
     .screw {
       position: absolute;
-      width: 12px; height: 12px;
-      background: radial-gradient(circle, #555 30%, #222 80%);
+      width: 10px; height: 10px;
       border-radius: 50%;
-      box-shadow: inset 1px 1px 2px #000, 1px 1px 1px rgba(255,255,255,0.2);
+      background: radial-gradient(circle at 30% 30%, #888 0%, #333 60%, #111 100%);
+      box-shadow: inset 0 0 2px #000, 0 1px 0 rgba(255,255,255,0.1);
     }
     .screw::after {
       content: "";
       position: absolute;
-      top: 5px; left: 2px;
+      top: 4px; left: 1px;
       width: 8px; height: 2px;
-      background: #111;
-      transform: rotate(45deg);
+      background: #0a0420;
+      transform: rotate(35deg);
     }
-    .top-left { top: 10px; left: 10px; }
-    .top-right { top: 10px; right: 10px; transform: rotate(20deg); }
-    .bottom-left { bottom: 10px; left: 10px; transform: rotate(70deg); }
-    .bottom-right { bottom: 10px; right: 10px; transform: rotate(-10deg); }
+    .screw.tl { top: 14px; left: 14px; }
+    .screw.tr { top: 14px; right: 14px; transform: rotate(20deg); }
+    .screw.bl { bottom: 14px; left: 14px; transform: rotate(-30deg); }
+    .screw.br { bottom: 14px; right: 14px; transform: rotate(12deg); }
 
-    .bridge {
+    /* Album art strip — bleeds behind the window */
+    .cassette__art {
       position: absolute;
-      bottom: -1px;
-      width: 70%;
-      height: 40px;
-      background: #161616;
-      clip-path: polygon(5% 0%, 95% 0%, 100% 100%, 0% 100%);
-      border-top: 1px solid #333;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 40px;
-      box-sizing: border-box;
-    }
-    .bridge-hole {
-      width: 16px; height: 16px;
-      background: #000;
-      border-radius: 50%;
-      box-shadow: inset 0 2px 5px #000;
-    }
-
-    /* Cassette Labels */
-    .label {
-      width: 90%;
-      height: 200px;
-      border-radius: 8px;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      box-shadow: inset 0 0 5px rgba(0,0,0,0.8);
-      padding: 10px;
-      box-sizing: border-box;
+      top: 46px;
+      left: 46px;
+      right: 46px;
+      height: 100px;
+      border-radius: 6px;
       background-size: cover;
       background-position: center;
+      background-color: var(--violet);
+      border: 1px solid rgba(255,255,255,0.1);
+      overflow: hidden;
+    }
+    .cassette__art::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(135deg, rgba(255, 43, 214, 0.35), rgba(92, 244, 255, 0.25)),
+        repeating-linear-gradient(90deg, transparent 0 3px, rgba(0,0,0,0.15) 3px 4px);
+      mix-blend-mode: screen;
+    }
+    .cassette[data-theme="cyan"] .cassette__art {
+      background-image: linear-gradient(135deg, #5cf4ff, #2a0f5c);
+    }
+    .cassette[data-theme="magenta"] .cassette__art {
+      background-image: linear-gradient(135deg, #ff2bd6, #6b1aa8 60%, #23084a);
+    }
+    .cassette[data-theme="peach"] .cassette__art {
+      background-image: linear-gradient(135deg, #ffec6b, #ffb27a 40%, #ff2bd6);
     }
 
-    #tape-1 .label {
-      background-image: url('assets/beetle.jpg');
-      background-blend-mode: overlay;
-      background-color: rgba(0, 255, 255, 0.6);
-      border: 2px solid #00ffff;
+    /* Fake pixel-art silhouette in album art */
+    .cassette__art-icon {
+      position: absolute;
+      bottom: 8px;
+      right: 12px;
+      font-family: var(--font-display);
+      font-size: 36px;
+      color: rgba(255,255,255,0.85);
+      text-shadow: 2px 2px 0 rgba(0,0,0,0.5);
+      letter-spacing: 0.05em;
+      line-height: 1;
     }
 
-    #tape-2 .label {
-      background-image: url('assets/lemons.jpg');
-      background-blend-mode: overlay;
-      background-color: rgba(255, 0, 255, 0.6);
-      border: 2px solid #ff00ff;
-    }
-
-    .tape-title {
-      background: rgba(0,0,0,0.8);
-      padding: 2px 10px;
-      border-radius: 3px;
-      font-family: 'Arial Black', sans-serif;
-      font-size: 14px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      margin-bottom: 10px;
-    }
-    #tape-1 .tape-title { color: #00ffff; box-shadow: 0 0 5px #00ffff; }
-    #tape-2 .tape-title { color: #ff00ff; box-shadow: 0 0 5px #ff00ff; }
-
-    /* The Tape Window & Spools */
-    .window {
-      width: 60%;
-      height: 60px;
-      background: rgba(10, 10, 10, 0.9);
-      border: 2px solid #000;
-      border-radius: 5px;
-      position: relative;
+    /* Tape title plate */
+    .cassette__title {
+      position: absolute;
+      top: 14px;
+      left: 46px;
+      right: 46px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0 15px;
-      box-sizing: border-box;
-      box-shadow: inset 0 5px 10px rgba(0,0,0,0.9);
-      margin-bottom: 10px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--white);
+    }
+    .cassette__title .num {
+      color: var(--magenta);
+      text-shadow: 0 0 6px var(--magenta);
+    }
+    .cassette[data-theme="cyan"] .cassette__title .num { color: var(--cyan); text-shadow: 0 0 6px var(--cyan); }
+    .cassette[data-theme="peach"] .cassette__title .num { color: var(--peach); text-shadow: 0 0 6px var(--peach); }
+
+    /* Window + spools */
+    .cassette__window {
+      position: absolute;
+      top: 156px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 300px;
+      height: 70px;
+      background: linear-gradient(180deg, #000 0%, #0a0420 100%);
+      border: 2px solid #000;
+      border-radius: 4px;
+      box-shadow:
+        inset 0 3px 8px rgba(0,0,0,0.9),
+        inset 0 -1px 0 rgba(255,255,255,0.05);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+    }
+    .cassette__window::before {
+      /* tape ribbon crossing between reels */
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 52px;
+      right: 52px;
+      height: 2px;
+      background: linear-gradient(90deg, rgba(92, 244, 255, 0.6), rgba(255, 43, 214, 0.6));
+      transform: translateY(-50%);
+      opacity: 0.7;
     }
 
-    .tape-roll {
-      width: 50px; height: 50px;
-      background: radial-gradient(circle, #050505 50%, #222 90%);
+    .reel {
+      position: relative;
+      width: 46px; height: 46px;
       border-radius: 50%;
+      background:
+        radial-gradient(circle, #0a0420 20%, #2a0f5c 22%, #2a0f5c 60%, #0a0420 62%);
+      box-shadow: 0 0 4px rgba(255,255,255,0.1), inset 0 0 8px rgba(0,0,0,0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .reel::after {
+      content: "";
+      position: absolute;
+      inset: 6px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at center, transparent 0 8px, #0a0420 8px 9px, transparent 9px 100%),
+        repeating-conic-gradient(from 0deg, transparent 0deg 30deg, rgba(255,255,255,0.12) 30deg 34deg);
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+    .cassette.is-playing .reel::after {
+      animation: reelspin 2.2s linear infinite;
+    }
+    @keyframes reelspin { to { transform: rotate(360deg); } }
+
+    /* Bottom chassis detail */
+    .cassette__chassis {
+      position: absolute;
+      left: 30px;
+      right: 30px;
+      bottom: 20px;
+      height: 70px;
+      background: linear-gradient(180deg, rgba(0,0,0,0.4), rgba(0,0,0,0.7));
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.05);
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 14px;
+      padding: 8px 14px;
+    }
+
+    .cassette__side {
+      font-family: var(--font-display);
+      font-size: 18px;
+      color: var(--magenta);
+      text-shadow: 0 0 8px var(--magenta);
+      letter-spacing: 0.05em;
+    }
+    .cassette[data-theme="cyan"] .cassette__side { color: var(--cyan); text-shadow: 0 0 8px var(--cyan); }
+    .cassette[data-theme="peach"] .cassette__side { color: var(--peach); text-shadow: 0 0 8px var(--peach); }
+
+    .cassette__runtime {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--mute);
+      letter-spacing: 0.08em;
+    }
+    .cassette__runtime span {
+      padding: 2px 4px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 2px;
+    }
+
+    .cassette__dolby {
+      font-family: var(--font-pixel);
+      font-size: 14px;
+      color: var(--cyan);
+      text-shadow: 0 0 4px var(--cyan);
+      letter-spacing: 0.1em;
+    }
+
+    /* ==========================================================
+       DOSSIER — side panel tracklist for focused tape
+       ========================================================== */
+    .dossier {
+      position: relative;
+      align-self: center;
+      background: rgba(5, 2, 26, 0.85);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 43, 214, 0.4);
+      border-radius: 10px;
+      padding: 22px 26px 24px;
+      box-shadow:
+        0 0 0 1px rgba(92, 244, 255, 0.08),
+        0 20px 40px rgba(0, 0, 0, 0.5),
+        0 0 60px rgba(255, 43, 214, 0.12);
+      min-height: 460px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    /* decorative corner ticks */
+    .dossier::before,
+    .dossier::after {
+      content: "";
+      position: absolute;
+      width: 16px; height: 16px;
+      border: 1px solid var(--cyan);
+    }
+    .dossier::before { top: 8px; left: 8px; border-right: none; border-bottom: none; }
+    .dossier::after  { bottom: 8px; right: 8px; border-left: none; border-top: none; }
+
+    .dossier__tag {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.25em;
+      color: var(--mute);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .dossier__tag .dot {
+      display: inline-block;
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--magenta);
+      box-shadow: 0 0 6px var(--magenta);
+      margin-right: 6px;
+      vertical-align: middle;
+      animation: blink 1.2s steps(2) infinite;
+    }
+
+    .dossier__title {
+      font-family: var(--font-display);
+      font-size: 34px;
+      margin: 0 0 4px;
+      color: var(--white);
+      text-shadow: 2px 2px 0 var(--magenta), -2px -2px 0 var(--cyan);
+      letter-spacing: 0.01em;
+      line-height: 1;
+    }
+
+    .dossier__sub {
+      font-family: var(--font-pixel);
+      font-size: 18px;
+      color: var(--cyan-soft);
+      letter-spacing: 0.1em;
+      text-shadow: 0 0 8px rgba(92, 244, 255, 0.5);
+      margin: 0 0 18px;
+    }
+
+    .dossier__meta {
+      display: flex;
+      gap: 16px;
+      padding: 10px 0;
+      margin-bottom: 12px;
+      border-top: 1px dashed rgba(255, 43, 214, 0.25);
+      border-bottom: 1px dashed rgba(255, 43, 214, 0.25);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      color: var(--mute);
+      text-transform: uppercase;
+    }
+    .dossier__meta span strong {
+      display: block;
+      color: var(--cyan);
+      font-weight: 400;
+      margin-top: 2px;
+      text-shadow: 0 0 4px var(--cyan);
+    }
+
+    .dossier__tracks {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      flex: 1;
+      overflow-y: auto;
+    }
+    .dossier__tracks::-webkit-scrollbar { width: 6px; }
+    .dossier__tracks::-webkit-scrollbar-thumb { background: var(--magenta); border-radius: 3px; }
+    .dossier__tracks::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
+
+    .track {
+      display: grid;
+      grid-template-columns: 32px 1fr auto;
+      gap: 14px;
+      align-items: center;
+      padding: 10px 10px;
+      border-bottom: 1px dotted rgba(255,255,255,0.12);
+      cursor: crosshair;
+      transition: background 0.15s, transform 0.15s;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--white);
+    }
+    .track:hover {
+      background: linear-gradient(90deg, rgba(255, 43, 214, 0.18), transparent);
+      transform: translateX(4px);
+    }
+    .track__num {
+      font-family: var(--font-pixel);
+      font-size: 20px;
+      color: var(--magenta);
+      text-shadow: 0 0 6px var(--magenta);
+    }
+    .track__name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .track__len {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--mute);
+      letter-spacing: 0.08em;
+    }
+
+    .track.is-playing {
+      background: linear-gradient(90deg, rgba(182, 255, 92, 0.15), transparent);
+    }
+    .track.is-playing .track__name {
+      color: var(--lime);
+      text-shadow: 0 0 6px var(--lime);
+    }
+    .track.is-playing .track__num::before {
+      content: "▶ ";
+      color: var(--lime);
+    }
+
+    .track--empty {
+      color: var(--mute);
+      font-style: italic;
+      justify-content: center;
+      text-align: center;
+      cursor: default;
+      grid-template-columns: 1fr;
+    }
+    .track--empty:hover { background: none; transform: none; }
+
+    /* Crate navigation */
+    .crate-nav {
+      position: absolute;
+      bottom: -70px;
+      left: 0;
+      right: 0;
       display: flex;
       justify-content: center;
       align-items: center;
-      box-shadow: 0 0 5px #000;
+      gap: 20px;
+      z-index: 20;
     }
-
-    .spool {
-      width: 24px; height: 24px;
+    .crate-nav button {
+      width: 44px; height: 44px;
+      background: transparent;
+      border: 1px solid var(--cyan);
       border-radius: 50%;
-      background: 
-        radial-gradient(circle, #000 30%, transparent 35%),
-        repeating-conic-gradient(from 0deg, #ccc 0deg 30deg, transparent 30deg 60deg);
-      border: 2px solid #aaa;
+      color: var(--cyan);
+      font-family: var(--font-display);
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 0 12px rgba(92, 244, 255, 0.3);
+    }
+    .crate-nav button:hover {
+      background: var(--cyan);
+      color: var(--ink);
+      box-shadow: 0 0 24px var(--cyan);
+    }
+    .crate-nav__dots {
+      display: flex;
+      gap: 8px;
+    }
+    .crate-nav__dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      border: 1px solid var(--magenta);
+      background: transparent;
+      cursor: pointer;
+      padding: 0;
+      transition: all 0.2s;
+    }
+    .crate-nav__dot.is-active {
+      background: var(--magenta);
+      box-shadow: 0 0 10px var(--magenta);
+    }
+    .crate-nav__label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--mute);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+    .crate-nav__label span { color: var(--cyan); }
+
+    /* ==========================================================
+       BOTTOM-DOCKED PLAYER
+       ========================================================== */
+    .player {
+      position: fixed;
+      left: 20px;
+      right: 20px;
+      bottom: 20px;
+      z-index: 100;
+      background: rgba(10, 4, 32, 0.92);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--magenta);
+      border-radius: 10px;
+      padding: 14px 24px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 24px;
+      box-shadow:
+        0 0 0 1px rgba(92, 244, 255, 0.15),
+        0 20px 40px rgba(0, 0, 0, 0.6),
+        0 0 60px rgba(255, 43, 214, 0.25);
     }
 
-    @keyframes spin { 100% { transform: rotate(360deg); } }
-    .cassette.is-playing .spool {
-      animation: spin 3s linear infinite;
-    }
-
-    /* Tracklist */
-    .tracklist-container {
-      width: 100%;
-      background: rgba(0,0,0,0.8);
-      border-radius: 4px;
-      overflow-y: auto;
-      max-height: 80px; 
-      border: 1px solid rgba(255,255,255,0.2);
-    }
-
-    table.tape-tracklist {
-      width: 100%;
-      border-collapse: collapse;
-      font-family: "Courier New", Courier, monospace;
-      font-size: 11px;
-    }
-
-    table.tape-tracklist td {
-      padding: 4px 8px;
-      border-bottom: 1px dotted rgba(255,255,255,0.2);
-      color: #fff;
-    }
-
-    tr.track-row { cursor: crosshair; transition: background-color 0.2s; }
-    tr.track-row:hover td { background-color: rgba(255,255,255,0.2); }
-
-    .status-playing td {
-      color: #00ff00 !important;
-      font-weight: bold;
-      text-shadow: 0 0 5px #00ff00;
-    }
-
-    /* =========================================
-       FOOTER
-       ========================================= */
-    .footer-zone {
-      margin-top: 40px;
-      border-top: 1px dashed rgba(255, 0, 255, 0.4);
-      padding-top: 20px;
+    .player__brand {
       display: flex;
       flex-direction: column;
+      gap: 2px;
+      padding-right: 20px;
+      border-right: 1px solid rgba(255, 43, 214, 0.3);
+    }
+    .player__brand-name {
+      font-family: var(--font-display);
+      font-size: 14px;
+      color: var(--magenta);
+      text-shadow: 1px 1px 0 var(--cyan);
+      letter-spacing: 0.05em;
+    }
+    .player__brand-model {
+      font-family: var(--font-mono);
+      font-size: 8px;
+      color: var(--mute);
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+    }
+
+    .lcd {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 14px;
       align-items: center;
-      gap: 10px;
-      text-align: center;
+      background: #030010;
+      border: 1px solid var(--cyan);
+      border-radius: 4px;
+      padding: 8px 14px;
+      box-shadow:
+        inset 0 0 18px rgba(92, 244, 255, 0.2),
+        inset 0 1px 0 rgba(0,0,0,0.5);
+      overflow: hidden;
+    }
+    .lcd::before {
+      content: "";
+      position: absolute;
+      pointer-events: none;
     }
 
-    .credit-text {
-      color: #ff00ff;
-      font-family: 'Courier New', Courier, monospace;
+    .eq {
+      display: flex;
+      gap: 2px;
+      align-items: end;
+      height: 20px;
+    }
+    .eq span {
+      display: block;
+      width: 3px;
+      background: var(--cyan);
+      box-shadow: 0 0 4px var(--cyan);
+      border-radius: 1px;
+      height: 4px;
+      transition: height 0.08s;
+    }
+
+    .lcd__body {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      min-width: 0;
+    }
+    .lcd__line {
+      font-family: var(--font-pixel);
+      font-size: 16px;
+      color: var(--cyan);
+      text-shadow: 0 0 6px rgba(92, 244, 255, 0.8);
+      white-space: nowrap;
+      overflow: hidden;
+      letter-spacing: 0.05em;
+    }
+    .lcd__scroll {
+      display: inline-block;
+      padding-left: 100%;
+      animation: marq 16s linear infinite;
+    }
+    @keyframes marq {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-100%); }
+    }
+
+    .lcd__progress {
+      position: relative;
+      height: 4px;
+      background: rgba(92, 244, 255, 0.15);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .lcd__progress-fill {
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 0%;
+      background: linear-gradient(90deg, var(--cyan), var(--magenta));
+      box-shadow: 0 0 8px var(--cyan);
+      transition: width 0.2s linear;
+    }
+    .lcd__times {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--mute);
+      letter-spacing: 0.15em;
+    }
+
+    .controls {
+      display: flex;
+      gap: 8px;
+    }
+    .btn {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(0,0,0,0.4));
+      border: 1px solid var(--cyan);
+      border-radius: 6px;
+      color: var(--cyan);
+      font-family: var(--font-display);
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.12s;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.08),
+        0 0 8px rgba(92, 244, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .btn:hover {
+      background: rgba(92, 244, 255, 0.1);
+      box-shadow: 0 0 16px var(--cyan);
+      transform: translateY(-1px);
+    }
+    .btn:active {
+      background: var(--cyan);
+      color: var(--ink);
+      box-shadow: 0 0 24px var(--cyan);
+      transform: translateY(1px);
+    }
+    .btn--stop {
+      border-color: var(--magenta);
+      color: var(--magenta);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 0 8px rgba(255, 43, 214, 0.25);
+    }
+    .btn--stop:hover { background: rgba(255, 43, 214, 0.1); box-shadow: 0 0 16px var(--magenta); }
+    .btn--stop:active { background: var(--magenta); color: var(--ink); box-shadow: 0 0 24px var(--magenta); }
+
+    /* ==========================================================
+       FOOTER
+       ========================================================== */
+    .footer {
+      margin: 80px 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      padding-top: 20px;
+      border-top: 1px dashed rgba(92, 244, 255, 0.25);
+      font-family: var(--font-mono);
       font-size: 10px;
-      letter-spacing: 1px;
+      color: var(--mute);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
     }
-
-    .credit-text a {
-      color: #00ffff;
+    .footer a {
+      color: var(--cyan);
       text-decoration: none;
-      font-weight: bold;
+      border-bottom: 1px dotted var(--cyan);
     }
+    .footer a:hover { color: var(--magenta); border-bottom-color: var(--magenta); }
 
-    .credit-text a:hover {
-      text-shadow: 0 0 5px #00ffff;
+    /* ==========================================================
+       RESPONSIVE
+       ========================================================== */
+    @media (max-width: 1100px) {
+      .stage { grid-template-columns: 1fr; gap: 80px; }
+      .dossier { min-height: auto; }
     }
-
-    /* =========================================
-       RESPONSIVE DESIGN (MOBILE/TABLET)
-       ========================================= */
-    @media screen and (max-width: 950px) {
-      .floating-dashboard {
-        position: relative;
-        top: 0;
-        left: 0;
-        width: 100%;
-        max-width: 550px;
-        margin: 0 auto 30px auto;
-      }
-      
-      .deck-container {
-        margin: 0 auto 40px auto; /* Removes the heavy left margin on smaller screens */
-      }
+    @media (max-width: 900px) {
+      .page { padding: 24px 20px 200px; }
+      .masthead { grid-template-columns: 1fr; }
+      .masthead__meta { text-align: left; }
+      .cassette { width: 90vw; max-width: 500px; height: 300px; }
+      .cassette__window { width: 250px; height: 56px; top: 135px; }
+      .cassette__art { height: 80px; top: 40px; left: 36px; right: 36px; }
+      .cassette__chassis { left: 20px; right: 20px; bottom: 14px; height: 58px; padding: 6px 10px; gap: 10px; }
+      .cassette__title { left: 36px; right: 36px; top: 12px; font-size: 9px; }
+      .cassette__side { font-size: 14px; }
+      .cassette__dolby { font-size: 12px; }
+      .reel { width: 38px; height: 38px; }
+      .cassette__art-icon { font-size: 28px; }
+      .player { flex-direction: column; grid-template-columns: 1fr; padding: 10px 14px; gap: 10px; }
+      .player__brand { display: none; }
+      .btn { width: 44px; height: 44px; font-size: 12px; }
+      .crate { height: 420px; }
+      .crate-nav { bottom: -60px; }
+      .dossier { padding: 20px; }
+      .dossier__title { font-size: 26px; }
     }
   </style>
 </head>
 <body>
 
-  <div class="floating-dashboard">
-    <div class="header-container">
-      <h1 class="vapor-title">AUDIO TERMINAL</h1>
-      <p class="subtitle">STREAMING PROTOCOL: ACTIVE</p>
+  <!-- Atmospheric background layers -->
+  <div class="atmosphere">
+    <div class="stars"></div>
+    <div class="sun"></div>
+    <div class="horizon"></div>
+    <div class="grid-floor"></div>
+  </div>
+  <div class="grain"></div>
+  <div class="scanlines"></div>
+
+  <main class="page">
+
+    <!-- ==== MASTHEAD ==== -->
+    <header class="masthead">
+      <h1 class="masthead__title">NOCTURNE<br>ARCHIVE</h1>
+      <div class="masthead__meta">
+        <div><span class="kv">TRANSMISSION</span> <span class="vv">// 0x4F</span></div>
+        <div><span class="kv">SIGNAL</span> <span class="vv">STABLE</span></div>
+        <div><span class="kv">STATUS</span> <span class="live" id="live-indicator">ON AIR</span></div>
+      </div>
+      <p class="masthead__sub">&gt;&gt; a late-night audio library • streaming protocol active • est. 199X &lt;&lt;</p>
+    </header>
+
+    <!-- ==== STAGE / CRATE + DOSSIER ==== -->
+    <section class="stage">
+      <div class="crate-wrap" style="position: relative;">
+        <div class="crate" id="crate">
+
+          <!-- TAPE 1 -->
+          <article class="cassette" data-tape="1" data-theme="cyan"
+                   data-album="UNTITLED // 01"
+                   data-sub="&gt; placeholder side a"
+                   data-format="TDK SA-90"
+                   data-bias="NORMAL · 120µs"
+                   data-nr="DOLBY NR-B">
+            <div class="cassette__shell">
+              <div class="screw tl"></div><div class="screw tr"></div>
+              <div class="screw bl"></div><div class="screw br"></div>
+              <div class="cassette__title">
+                <span class="num">// A01</span>
+                <span>TDK SA-90 &nbsp;·&nbsp; HIGH POSITION</span>
+              </div>
+              <div class="cassette__art"><div class="cassette__art-icon">◢◤</div></div>
+              <div class="cassette__window"><div class="reel"></div><div class="reel"></div></div>
+              <div class="cassette__chassis">
+                <div class="cassette__side">SIDE A</div>
+                <div class="cassette__runtime"><span>NORMAL</span><span>120µs</span><span>NR-B</span></div>
+                <div class="cassette__dolby">⬜ DOLBY</div>
+              </div>
+            </div>
+            <script type="application/json" class="tape-tracks">
+              [
+                { "name": "[ TRACK 01 ]", "len": "00:00", "src": "assets/audio/music/DAY JOB (FINISHED).wav" },
+                { "name": "[ TRACK 02 ]", "len": "00:00", "src": "assets/audio/music/Empty courage (OFFICIAL EDIT) (14).wav" },
+                { "name": "[ TRACK 03 ]", "len": "00:00", "src": "assets/audio/music/Give It A Shot (FINISHED).wav" },
+                { "name": "[ TRACK 04 ]", "len": "00:00", "src": "assets/audio/music/Radio (FINISHED).wav" }
+              ]
+            </script>
+          </article>
+
+          <!-- TAPE 2 -->
+          <article class="cassette" data-tape="2" data-theme="magenta"
+                   data-album="UNTITLED // 02"
+                   data-sub="&gt; placeholder side a"
+                   data-format="MAXELL XLII"
+                   data-bias="CHROME · 70µs"
+                   data-nr="DOLBY NR-C">
+            <div class="cassette__shell">
+              <div class="screw tl"></div><div class="screw tr"></div>
+              <div class="screw bl"></div><div class="screw br"></div>
+              <div class="cassette__title">
+                <span class="num">// A02</span>
+                <span>MAXELL XLII &nbsp;·&nbsp; CHROME BIAS</span>
+              </div>
+              <div class="cassette__art"><div class="cassette__art-icon">▞▚</div></div>
+              <div class="cassette__window"><div class="reel"></div><div class="reel"></div></div>
+              <div class="cassette__chassis">
+                <div class="cassette__side">SIDE A</div>
+                <div class="cassette__runtime"><span>CHROME</span><span>70µs</span><span>NR-C</span></div>
+                <div class="cassette__dolby">⬜ DOLBY</div>
+              </div>
+            </div>
+            <script type="application/json" class="tape-tracks">[]</script>
+          </article>
+
+          <!-- TAPE 3 -->
+          <article class="cassette" data-tape="3" data-theme="peach"
+                   data-album="UNTITLED // 03"
+                   data-sub="&gt; placeholder side a"
+                   data-format="BASF CR-E I"
+                   data-bias="FERRIC · 120µs"
+                   data-nr="DOLBY NR-B">
+            <div class="cassette__shell">
+              <div class="screw tl"></div><div class="screw tr"></div>
+              <div class="screw bl"></div><div class="screw br"></div>
+              <div class="cassette__title">
+                <span class="num">// A03</span>
+                <span>BASF CR-E I &nbsp;·&nbsp; FERRIC</span>
+              </div>
+              <div class="cassette__art"><div class="cassette__art-icon">☀</div></div>
+              <div class="cassette__window"><div class="reel"></div><div class="reel"></div></div>
+              <div class="cassette__chassis">
+                <div class="cassette__side">SIDE A</div>
+                <div class="cassette__runtime"><span>FERRIC</span><span>120µs</span><span>NR-B</span></div>
+                <div class="cassette__dolby">⬜ DOLBY</div>
+              </div>
+            </div>
+            <script type="application/json" class="tape-tracks">[]</script>
+          </article>
+
+          <!-- TAPE 4 -->
+          <article class="cassette" data-tape="4" data-theme="cyan"
+                   data-album="UNTITLED // 04"
+                   data-sub="&gt; placeholder side a"
+                   data-format="SONY UX-PRO"
+                   data-bias="METAL · 70µs"
+                   data-nr="DOLBY NR-C">
+            <div class="cassette__shell">
+              <div class="screw tl"></div><div class="screw tr"></div>
+              <div class="screw bl"></div><div class="screw br"></div>
+              <div class="cassette__title">
+                <span class="num">// A04</span>
+                <span>SONY UX-PRO &nbsp;·&nbsp; METAL BIAS</span>
+              </div>
+              <div class="cassette__art"><div class="cassette__art-icon">▰▱</div></div>
+              <div class="cassette__window"><div class="reel"></div><div class="reel"></div></div>
+              <div class="cassette__chassis">
+                <div class="cassette__side">SIDE A</div>
+                <div class="cassette__runtime"><span>METAL</span><span>70µs</span><span>NR-C</span></div>
+                <div class="cassette__dolby">⬜ DOLBY</div>
+              </div>
+            </div>
+            <script type="application/json" class="tape-tracks">[]</script>
+          </article>
+
+          <!-- TAPE 5 -->
+          <article class="cassette" data-tape="5" data-theme="magenta"
+                   data-album="UNTITLED // 05"
+                   data-sub="&gt; placeholder side a"
+                   data-format="TDK D-90"
+                   data-bias="NORMAL · 120µs"
+                   data-nr="DOLBY NR-B">
+            <div class="cassette__shell">
+              <div class="screw tl"></div><div class="screw tr"></div>
+              <div class="screw bl"></div><div class="screw br"></div>
+              <div class="cassette__title">
+                <span class="num">// A05</span>
+                <span>TDK D-90 &nbsp;·&nbsp; STANDARD</span>
+              </div>
+              <div class="cassette__art"><div class="cassette__art-icon">◈</div></div>
+              <div class="cassette__window"><div class="reel"></div><div class="reel"></div></div>
+              <div class="cassette__chassis">
+                <div class="cassette__side">SIDE A</div>
+                <div class="cassette__runtime"><span>NORMAL</span><span>120µs</span><span>NR-B</span></div>
+                <div class="cassette__dolby">⬜ DOLBY</div>
+              </div>
+            </div>
+            <script type="application/json" class="tape-tracks">[]</script>
+          </article>
+
+          <!-- TAPE 6 -->
+          <article class="cassette" data-tape="6" data-theme="peach"
+                   data-album="UNTITLED // 06"
+                   data-sub="&gt; placeholder side a"
+                   data-format="MAXELL UR-60"
+                   data-bias="NORMAL · 120µs"
+                   data-nr="DOLBY NR-B">
+            <div class="cassette__shell">
+              <div class="screw tl"></div><div class="screw tr"></div>
+              <div class="screw bl"></div><div class="screw br"></div>
+              <div class="cassette__title">
+                <span class="num">// A06</span>
+                <span>MAXELL UR-60 &nbsp;·&nbsp; FERRIC</span>
+              </div>
+              <div class="cassette__art"><div class="cassette__art-icon">✦</div></div>
+              <div class="cassette__window"><div class="reel"></div><div class="reel"></div></div>
+              <div class="cassette__chassis">
+                <div class="cassette__side">SIDE A</div>
+                <div class="cassette__runtime"><span>NORMAL</span><span>120µs</span><span>NR-B</span></div>
+                <div class="cassette__dolby">⬜ DOLBY</div>
+              </div>
+            </div>
+            <script type="application/json" class="tape-tracks">[]</script>
+          </article>
+
+        </div>
+
+        <!-- Crate navigation -->
+        <nav class="crate-nav">
+          <button id="nav-prev" aria-label="Previous tape">◀</button>
+          <div class="crate-nav__dots" id="crate-dots"></div>
+          <button id="nav-next" aria-label="Next tape">▶</button>
+          <div class="crate-nav__label">TAPE <span id="nav-idx">01</span>/06</div>
+        </nav>
+      </div>
+
+      <!-- Side dossier -->
+      <aside class="dossier" id="dossier">
+        <div class="dossier__tag"><span class="dot"></span>NOW VIEWING</div>
+        <h2 class="dossier__title" id="dossier-title">UNTITLED // 01</h2>
+        <p class="dossier__sub" id="dossier-sub">&gt; placeholder side a</p>
+        <div class="dossier__meta">
+          <span>FORMAT<strong id="dossier-format">—</strong></span>
+          <span>BIAS<strong id="dossier-bias">—</strong></span>
+          <span>NR<strong id="dossier-nr">—</strong></span>
+        </div>
+        <ul class="dossier__tracks" id="dossier-tracks"></ul>
+      </aside>
+    </section>
+
+    <!-- ==== FOOTER ==== -->
+    <footer class="footer">
+      <div>© NOCTURNE ARCHIVE · EST. 199X</div>
+      <div>
+        <a href="index.html">← RETURN TO CAVE</a>
+      </div>
+    </footer>
+
+  </main>
+
+  <!-- ==== FIXED PLAYER DOCK ==== -->
+  <div class="player">
+    <div class="player__brand">
+      <div class="player__brand-name">N//A</div>
+      <div class="player__brand-model">deck mk-II · 1999</div>
     </div>
 
-    <div class="master-controls">
-      <div class="lcd-screen">
-        <img src="assets/eq.gif" alt="EQ" class="eq-visualizer">
-        <div class="lcd-text-container">
-          <div class="lcd-text">
-            <marquee id="now-playing-marquee" scrollamount="4">*** SYSTEM READY *** SELECT A TAPE TRACK ***</marquee>
-          </div>
+    <div class="lcd">
+      <div class="eq" id="eq">
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span>
+      </div>
+      <div class="lcd__body">
+        <div class="lcd__line">
+          <span class="lcd__scroll" id="lcd-scroll">*** SYSTEM READY *** SELECT A TAPE TRACK *** NOCTURNE ARCHIVE 1999 ***</span>
+        </div>
+        <div class="lcd__progress">
+          <div class="lcd__progress-fill" id="progress-fill"></div>
+        </div>
+        <div class="lcd__times">
+          <span id="time-cur">00:00</span>
+          <span id="time-dur">--:--</span>
         </div>
       </div>
+    </div>
 
-      <audio id="main-audio-player" style="display: none;"></audio>
-
-      <div class="hw-buttons">
-        <button class="hw-btn" id="btn-play" title="Play">▶ PLAY</button>
-        <button class="hw-btn" id="btn-pause" title="Pause">|| PAUSE</button>
-        <button class="hw-btn" id="btn-stop" title="Stop">■ STOP</button>
-      </div>
+    <div class="controls">
+      <button class="btn" id="btn-play" title="Play">▶</button>
+      <button class="btn" id="btn-pause" title="Pause">||</button>
+      <button class="btn btn--stop" id="btn-stop" title="Stop">■</button>
     </div>
   </div>
 
-  <div class="deck-container">
-
-    <div class="cassette" id="tape-1">
-      <div class="screw top-left"></div>
-      <div class="screw top-right"></div>
-      <div class="screw bottom-left"></div>
-      <div class="screw bottom-right"></div>
-      
-      <div class="label">
-        <div class="tape-title">[ ALBUM TITLE 01 ]</div>
-        
-        <div class="window">
-          <div class="tape-roll"><div class="spool"></div></div>
-          <div class="tape-roll"><div class="spool"></div></div>
-        </div>
-
-        <div class="tracklist-container">
-          <table class="tape-tracklist">
-            <tbody>
-              <tr class="track-row" data-src="assets/audio/music/DAY JOB (FINISHED).wav">
-                <td style="width: 15%;">01</td>
-                <td>DAY JOB (FINISHED).wav</td>
-              </tr>
-              <tr class="track-row" data-src="assets/audio/music/Empty courage (OFFICIAL EDIT) (14).wav">
-                <td>02</td>
-                <td>Empty courage (OFFICIAL EDIT) (14).wav</td>
-              </tr>
-              <tr class="track-row" data-src="assets/audio/music/Give It A Shot (FINISHED).wav">
-                <td>03</td>
-                <td>Give It A Shot (FINISHED).wav</td>
-              </tr>
-              <tr class="track-row" data-src="assets/audio/music/Radio (FINISHED).wav">
-                <td>04</td>
-                <td>Radio (FINISHED).wav</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="bridge">
-        <div class="bridge-hole"></div>
-        <div class="bridge-hole"></div>
-      </div>
-    </div>
-
-    <div class="cassette" id="tape-2">
-      <div class="screw top-left"></div>
-      <div class="screw top-right"></div>
-      <div class="screw bottom-left"></div>
-      <div class="screw bottom-right"></div>
-      
-      <div class="label">
-        <div class="tape-title">[ ALBUM TITLE 02 ]</div>
-        
-        <div class="window">
-          <div class="tape-roll"><div class="spool"></div></div>
-          <div class="tape-roll"><div class="spool"></div></div>
-        </div>
-
-        <div class="tracklist-container">
-          <table class="tape-tracklist">
-            <tbody>
-              </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="bridge">
-        <div class="bridge-hole"></div>
-        <div class="bridge-hole"></div>
-      </div>
-    </div>
-
-  </div>
-
-  <div class="footer-zone">
-    <p class="credit-text">
-      CASSETTE CSS ARCHITECTURE BY <a href="https://mrtoxas.github.io/cassette-tape-css/" target="_blank">MRTOXAS</a>
-    </p>
-    <a href="index.html">
-      <img src="88x31/anihome112g.gif" alt="Return to Cave" style="image-rendering: pixelated; border: 1px solid #ff00ff; box-shadow: 0 0 5px #ff00ff;">
-    </a>
-  </div>
+  <audio id="audio" style="display:none;"></audio>
 
   <script>
-    const audioPlayer = document.getElementById('main-audio-player');
-    const marquee = document.getElementById('now-playing-marquee');
-    const playBtn = document.getElementById('btn-play');
-    const pauseBtn = document.getElementById('btn-pause');
-    const stopBtn = document.getElementById('btn-stop');
-    const trackRows = document.querySelectorAll('.track-row');
-    const allCassettes = document.querySelectorAll('.cassette');
+    // ==========================================================
+    // ELEMENTS
+    // ==========================================================
+    const crate       = document.getElementById('crate');
+    const cassettes   = Array.from(crate.querySelectorAll('.cassette'));
+    const dotsEl      = document.getElementById('crate-dots');
+    const navIdx      = document.getElementById('nav-idx');
+    const navPrev     = document.getElementById('nav-prev');
+    const navNext     = document.getElementById('nav-next');
+    const audio       = document.getElementById('audio');
+    const lcdScroll   = document.getElementById('lcd-scroll');
+    const progressEl  = document.getElementById('progress-fill');
+    const timeCurEl   = document.getElementById('time-cur');
+    const timeDurEl   = document.getElementById('time-dur');
+    const playBtn     = document.getElementById('btn-play');
+    const pauseBtn    = document.getElementById('btn-pause');
+    const stopBtn     = document.getElementById('btn-stop');
+    const eq          = document.getElementById('eq');
+    const eqBars      = Array.from(eq.querySelectorAll('span'));
 
-    function loadAndPlayTrack(rowElement) {
-      trackRows.forEach(r => r.classList.remove('status-playing'));
-      allCassettes.forEach(c => c.classList.remove('is-playing'));
+    const dossierTitle  = document.getElementById('dossier-title');
+    const dossierSub    = document.getElementById('dossier-sub');
+    const dossierFormat = document.getElementById('dossier-format');
+    const dossierBias   = document.getElementById('dossier-bias');
+    const dossierNr     = document.getElementById('dossier-nr');
+    const dossierTracks = document.getElementById('dossier-tracks');
 
-      rowElement.classList.add('status-playing');
-      const activeTape = rowElement.closest('.cassette');
-      activeTape.classList.add('is-playing'); 
-      
-      const trackSrc = rowElement.getAttribute('data-src');
-      audioPlayer.src = trackSrc;
-      audioPlayer.play();
+    let focusedIdx = 0;
+    let currentTrackEl = null; // the <li> element currently playing
 
-      const trackTitle = rowElement.querySelector('td:nth-child(2)').textContent;
-      const tapeTitle = activeTape.querySelector('.tape-title').textContent;
-      marquee.textContent = `▶ NOW PLAYING: ${tapeTitle} > ${trackTitle} -- ENJOY THE AUDIO ARCHIVE --`;
+    // Build dots
+    cassettes.forEach((_, i) => {
+      const dot = document.createElement('button');
+      dot.className = 'crate-nav__dot';
+      dot.setAttribute('aria-label', `Go to tape ${i + 1}`);
+      dot.addEventListener('click', () => focusTape(i));
+      dotsEl.appendChild(dot);
+    });
+
+    // ==========================================================
+    // CRATE FAN POSITIONING — supports any N cassettes
+    // ==========================================================
+    function layoutCrate() {
+      const n = cassettes.length;
+      cassettes.forEach((c, i) => {
+        // Signed offset from focused, in range [-floor(n/2) .. ceil(n/2)-1]
+        let rel = (i - focusedIdx + n) % n;
+        // Map rel so tapes fan out behind the focused one
+        // rel === 0 is focused; 1,2,3... go progressively further back
+        const depth  = rel;                        // 0 = front
+        const z      = -depth * 70;                // push back
+        const y      = depth * 40;                 // drop down
+        const rx     = 22;                         // base tilt
+        const ry     = (depth % 2 === 0 ? -1 : 1) * Math.min(depth * 1.5, 6); // gentle alternating yaw
+        const dim    = Math.max(0.28, 1 - depth * 0.16);
+        const zIndex = 100 - depth;
+
+        c.style.setProperty('--z',   z + 'px');
+        c.style.setProperty('--y',   y + 'px');
+        c.style.setProperty('--rx',  rx + 'deg');
+        c.style.setProperty('--ry',  ry + 'deg');
+        c.style.setProperty('--dim', dim);
+        c.style.zIndex = zIndex;
+
+        c.classList.toggle('is-focused', depth === 0);
+      });
+
+      // Dots
+      dotsEl.querySelectorAll('.crate-nav__dot').forEach((d, i) => {
+        d.classList.toggle('is-active', i === focusedIdx);
+      });
+      navIdx.textContent = String(focusedIdx + 1).padStart(2, '0');
+
+      // Populate dossier from focused tape
+      renderDossier(cassettes[focusedIdx]);
     }
 
-    trackRows.forEach(row => {
-      row.addEventListener('click', function() {
-        loadAndPlayTrack(this);
+    function focusTape(idx) {
+      focusedIdx = (idx + cassettes.length) % cassettes.length;
+      layoutCrate();
+    }
+
+    navPrev.addEventListener('click', () => focusTape(focusedIdx - 1));
+    navNext.addEventListener('click', () => focusTape(focusedIdx + 1));
+
+    // Click any non-focused cassette to bring it forward
+    cassettes.forEach((c, i) => {
+      c.addEventListener('click', (e) => {
+        if (!c.classList.contains('is-focused')) {
+          e.stopPropagation();
+          focusTape(i);
+        }
       });
     });
 
-    playBtn.addEventListener('click', () => {
-      if(audioPlayer.src) {
-        audioPlayer.play();
-        const activeRow = document.querySelector('.status-playing');
-        if(activeRow) {
-            activeRow.closest('.cassette').classList.add('is-playing');
-        }
-      } else if (trackRows.length > 0) {
-        loadAndPlayTrack(trackRows[0]);
-      }
+    // Keyboard nav
+    document.addEventListener('keydown', (e) => {
+      if (['INPUT','TEXTAREA'].includes(e.target.tagName)) return;
+      if (e.key === 'ArrowLeft')  { e.preventDefault(); focusTape(focusedIdx - 1); }
+      if (e.key === 'ArrowRight') { e.preventDefault(); focusTape(focusedIdx + 1); }
+      if (e.key === ' ')          { e.preventDefault(); audio.paused ? playCurrentOrFirst() : audio.pause(); }
     });
 
+    // ==========================================================
+    // DOSSIER RENDERING
+    // ==========================================================
+    function renderDossier(cassette) {
+      dossierTitle.textContent  = cassette.dataset.album  || 'UNTITLED';
+      dossierSub.textContent    = cassette.dataset.sub    || '';
+      dossierFormat.textContent = cassette.dataset.format || '—';
+      dossierBias.textContent   = cassette.dataset.bias   || '—';
+      dossierNr.textContent     = cassette.dataset.nr     || '—';
+
+      const data = JSON.parse(cassette.querySelector('.tape-tracks').textContent || '[]');
+      dossierTracks.innerHTML = '';
+
+      if (!data.length) {
+        const li = document.createElement('li');
+        li.className = 'track track--empty';
+        li.innerHTML = '<span>&gt; empty reel // awaiting upload</span>';
+        dossierTracks.appendChild(li);
+        return;
+      }
+
+      data.forEach((t, i) => {
+        const li = document.createElement('li');
+        li.className = 'track';
+        li.dataset.src   = t.src || '';
+        li.dataset.tape  = cassette.dataset.tape;
+        li.dataset.index = i;
+        li.innerHTML = `
+          <span class="track__num">${String(i + 1).padStart(2, '0')}</span>
+          <span class="track__name">${escapeHtml(t.name || `[ TRACK ${String(i + 1).padStart(2,'0')} ]`)}</span>
+          <span class="track__len">${escapeHtml(t.len || '--:--')}</span>
+        `;
+        if (t.src) {
+          li.addEventListener('click', () => loadAndPlay(li));
+        } else {
+          li.style.cursor = 'default';
+          li.style.opacity = '0.5';
+        }
+        // Re-mark currently playing track if it matches
+        if (currentTrackEl
+            && currentTrackEl.dataset.tape  === li.dataset.tape
+            && currentTrackEl.dataset.index === li.dataset.index) {
+          li.classList.add('is-playing');
+          currentTrackEl = li; // update reference since DOM rebuilds
+        }
+        dossierTracks.appendChild(li);
+      });
+    }
+
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, c => (
+        {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]
+      ));
+    }
+
+    // Initialize
+    layoutCrate();
+
+    // ==========================================================
+    // PLAYBACK
+    // ==========================================================
+    function loadAndPlay(trackEl) {
+      // Clear prior playing state (in dossier AND on cassettes)
+      dossierTracks.querySelectorAll('.track').forEach(t => t.classList.remove('is-playing'));
+      cassettes.forEach(c => c.classList.remove('is-playing'));
+
+      trackEl.classList.add('is-playing');
+      currentTrackEl = trackEl;
+
+      // Find associated cassette by data-tape
+      const tape = cassettes.find(c => c.dataset.tape === trackEl.dataset.tape);
+      if (tape) tape.classList.add('is-playing');
+
+      const src = trackEl.dataset.src;
+      if (!src) return;
+      audio.src = src;
+      audio.play().catch(() => {});
+
+      const trackName = trackEl.querySelector('.track__name').textContent;
+      const tapeName  = tape ? tape.dataset.album : 'UNTITLED';
+      lcdScroll.textContent = `▶ NOW PLAYING · ${tapeName} / ${trackName} · NOCTURNE ARCHIVE 1999 · `;
+    }
+
+    function playCurrentOrFirst() {
+      if (audio.src) {
+        audio.play().catch(() => {});
+        if (currentTrackEl) {
+          const tape = cassettes.find(c => c.dataset.tape === currentTrackEl.dataset.tape);
+          if (tape) tape.classList.add('is-playing');
+        }
+      } else {
+        // Play first playable track in focused tape, or first playable anywhere
+        let firstPlayable = dossierTracks.querySelector('.track[data-src]:not([data-src=""])');
+        if (!firstPlayable) {
+          // Fall back: search all tapes
+          for (const c of cassettes) {
+            const data = JSON.parse(c.querySelector('.tape-tracks').textContent || '[]');
+            const idx = data.findIndex(t => t.src);
+            if (idx >= 0) {
+              focusTape(cassettes.indexOf(c));
+              firstPlayable = dossierTracks.children[idx];
+              break;
+            }
+          }
+        }
+        if (firstPlayable) loadAndPlay(firstPlayable);
+      }
+    }
+
+    playBtn.addEventListener('click', playCurrentOrFirst);
+
     pauseBtn.addEventListener('click', () => {
-      audioPlayer.pause();
-      allCassettes.forEach(c => c.classList.remove('is-playing'));
+      audio.pause();
+      cassettes.forEach(c => c.classList.remove('is-playing'));
     });
 
     stopBtn.addEventListener('click', () => {
-      audioPlayer.pause();
-      audioPlayer.currentTime = 0;
-      allCassettes.forEach(c => c.classList.remove('is-playing'));
-      marquee.textContent = `*** PLAYBACK STOPPED *** SELECT A TAPE ***`;
+      audio.pause();
+      audio.currentTime = 0;
+      cassettes.forEach(c => c.classList.remove('is-playing'));
+      dossierTracks.querySelectorAll('.track').forEach(t => t.classList.remove('is-playing'));
+      currentTrackEl = null;
+      lcdScroll.textContent = `*** PLAYBACK HALTED *** SELECT A TAPE ***`;
+      progressEl.style.width = '0%';
+      timeCurEl.textContent = '00:00';
     });
 
-    audioPlayer.addEventListener('ended', () => {
-        let nextRow = null;
-        for(let i = 0; i < trackRows.length; i++) {
-            if(trackRows[i].classList.contains('status-playing')) {
-                nextRow = trackRows[i + 1] || trackRows[0];
-                break;
-            }
+    audio.addEventListener('ended', () => {
+      if (!currentTrackEl) return;
+      const tapeId = currentTrackEl.dataset.tape;
+      const tape   = cassettes.find(c => c.dataset.tape === tapeId);
+      const data   = JSON.parse(tape.querySelector('.tape-tracks').textContent || '[]');
+      const idx    = parseInt(currentTrackEl.dataset.index, 10);
+      // Next track in same tape (if any has a src), else first playable of same tape
+      for (let i = idx + 1; i < data.length; i++) {
+        if (data[i].src) {
+          // Ensure dossier showing this tape
+          if (cassettes[focusedIdx] !== tape) focusTape(cassettes.indexOf(tape));
+          loadAndPlay(dossierTracks.children[i]);
+          return;
         }
-        if(nextRow) {
-            loadAndPlayTrack(nextRow);
+      }
+      // Wrap around
+      for (let i = 0; i < data.length; i++) {
+        if (data[i].src) {
+          if (cassettes[focusedIdx] !== tape) focusTape(cassettes.indexOf(tape));
+          loadAndPlay(dossierTracks.children[i]);
+          return;
         }
+      }
     });
+
+    // ==========================================================
+    // LCD DISPLAY — progress + time
+    // ==========================================================
+    function fmt(s) {
+      if (!isFinite(s)) return '--:--';
+      const m = Math.floor(s / 60), ss = Math.floor(s % 60);
+      return `${String(m).padStart(2,'0')}:${String(ss).padStart(2,'0')}`;
+    }
+    audio.addEventListener('timeupdate', () => {
+      if (audio.duration) {
+        progressEl.style.width = (audio.currentTime / audio.duration * 100) + '%';
+      }
+      timeCurEl.textContent = fmt(audio.currentTime);
+    });
+    audio.addEventListener('loadedmetadata', () => {
+      timeDurEl.textContent = fmt(audio.duration);
+    });
+
+    // ==========================================================
+    // EQ VISUALIZER — real when Web Audio permits, fake otherwise
+    // ==========================================================
+    let audioCtx, analyser, dataArr, srcNode;
+    function initAnalyser() {
+      if (audioCtx) return;
+      try {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        srcNode  = audioCtx.createMediaElementSource(audio);
+        analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 64;
+        srcNode.connect(analyser);
+        analyser.connect(audioCtx.destination);
+        dataArr = new Uint8Array(analyser.frequencyBinCount);
+      } catch (e) { /* cross-origin fallback */ }
+    }
+    audio.addEventListener('play', () => { if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume(); initAnalyser(); });
+
+    function tickEq() {
+      if (analyser && !audio.paused) {
+        analyser.getByteFrequencyData(dataArr);
+        const step = Math.floor(dataArr.length / eqBars.length);
+        eqBars.forEach((bar, i) => {
+          const v = dataArr[i * step] || 0;
+          bar.style.height = (4 + (v / 255) * 16) + 'px';
+        });
+      } else {
+        const alive = !audio.paused;
+        eqBars.forEach((bar, i) => {
+          const base = alive ? 4 + Math.random() * 16 : 4 + Math.sin(Date.now()/400 + i) * 2 + 2;
+          bar.style.height = base + 'px';
+        });
+      }
+      requestAnimationFrame(tickEq);
+    }
+    tickEq();
+
   </script>
-
 </body>
 </html>
