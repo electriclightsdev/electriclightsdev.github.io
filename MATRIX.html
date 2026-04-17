@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrix Sentinel Simulation - Fluid Interaction</title>
+    <style>
+        body { 
+            margin: 0; 
+            background: #000; 
+            overflow: hidden; 
+            cursor: none; 
+        }
+        
+        canvas { 
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: block; 
+        }
+        #matrix { z-index: 1; }
+        #tentacles-canvas { z-index: 2; pointer-events: none; }
+
+        /* --- Movie-Accurate Sentinel Body --- */
+        #sentinel {
+            position: fixed;
+            width: 70px;
+            height: 55px;
+            pointer-events: none;
+            z-index: 9999;
+            background: radial-gradient(ellipse at 50% 20%, #4a4a4a 0%, #1a1a1a 50%, #050505 100%);
+            border-radius: 45% 45% 50% 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 
+                inset 0 4px 10px rgba(255,255,255,0.3),
+                inset 0 -5px 15px rgba(0,0,0,0.9),
+                0 15px 25px rgba(0,0,0,0.8);
+        }
+
+        #sentinel::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: 15px;
+            width: 40px;
+            height: 20px;
+            background: #111;
+            border-radius: 50% 50% 20% 20%;
+            box-shadow: inset 0 2px 4px rgba(255,255,255,0.2), 0 2px 5px rgba(0,0,0,0.8);
+        }
+
+        /* --- Multi-Eye Cluster --- */
+        .eye {
+            position: absolute;
+            background: #ff0000;
+            border-radius: 50%;
+        }
+
+        .eye-main {
+            top: 22px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 14px;
+            height: 14px;
+            box-shadow: 
+                0 0 15px 4px rgba(255, 0, 0, 0.9), 
+                inset 0 0 5px rgba(255, 255, 255, 0.8);
+            background: radial-gradient(circle, #fff 10%, #ff0000 60%);
+        }
+
+        .eye-sub {
+            width: 7px;
+            height: 7px;
+            box-shadow: 0 0 8px 2px rgba(255, 0, 0, 0.7);
+        }
+        
+        .e1 { top: 18px; left: 16px; }
+        .e2 { top: 18px; right: 16px; }
+        .e3 { top: 32px; left: 20px; }
+        .e4 { top: 32px; right: 20px; }
+        
+        .eye-tiny {
+            width: 4px;
+            height: 4px;
+            box-shadow: 0 0 5px 1px rgba(255, 0, 0, 0.6);
+        }
+        .e5 { top: 14px; left: 28px; }
+        .e6 { top: 14px; right: 28px; }
+        .e7 { top: 28px; left: 10px; }
+        .e8 { top: 28px; right: 10px; }
+
+    </style>
+</head>
+<body>
+    <div id="sentinel">
+        <div class="eye eye-main"></div>
+        <div class="eye eye-sub e1"></div>
+        <div class="eye eye-sub e2"></div>
+        <div class="eye eye-sub e3"></div>
+        <div class="eye eye-sub e4"></div>
+        <div class="eye eye-tiny e5"></div>
+        <div class="eye eye-tiny e6"></div>
+        <div class="eye eye-tiny e7"></div>
+        <div class="eye eye-tiny e8"></div>
+    </div>
+    
+    <canvas id="matrix"></canvas>
+    <canvas id="tentacles-canvas"></canvas>
+
+    <script>
+        // --- 1. System Setup ---
+        const mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+        const sentinel = document.getElementById('sentinel');
+        
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.x;
+            mouse.y = e.y;
+            sentinel.style.left = e.x + 'px';
+            sentinel.style.top = e.y + 'px';
+        });
+
+        // Global array to store collision points for the fluid dynamics
+        window.repulsors = [];
+
+        // --- 2. Sentinel Tentacles (IK) ---
+        const tCanvas = document.getElementById('tentacles-canvas');
+        const tCtx = tCanvas.getContext('2d');
+        
+        class Tentacle {
+            constructor(offsetX, offsetY, numSegments) {
+                this.offsetX = offsetX;
+                this.offsetY = offsetY;
+                this.segmentLength = 10;
+                this.segments = Array(Math.floor(numSegments)).fill().map(() => ({x: mouse.x, y: mouse.y}));
+                this.swayOffset = Math.random() * 100;
+                this.swaySpeed = 0.05 + Math.random() * 0.05;
+            }
+
+            update(headX, headY, time) {
+                this.segments[0].x = headX + this.offsetX;
+                this.segments[0].y = headY + this.offsetY;
+
+                for(let i = 1; i < this.segments.length; i++) {
+                    let dx = this.segments[i-1].x - this.segments[i].x;
+                    let dy = this.segments[i-1].y - this.segments[i].y;
+                    let dist = Math.sqrt(dx * dx + dy * dy);
+                    
+                    let sway = Math.sin(time * this.swaySpeed + this.swayOffset + i * 0.2) * 1.5;
+                    this.segments[i].x += sway;
+                    this.segments[i].y += 1.5; 
+
+                    if (dist > this.segmentLength) {
+                        this.segments[i].x = this.segments[i-1].x - (dx / dist) * this.segmentLength;
+                        this.segments[i].y = this.segments[i-1].y - (dy / dist) * this.segmentLength;
+                    }
+                }
+            }
+
+            draw(ctx) {
+                if (this.segments.length === 0) return;
+
+                ctx.beginPath();
+                ctx.moveTo(this.segments[0].x, this.segments[0].y);
+                for(let i = 1; i < this.segments.length; i++) {
+                    ctx.lineTo(this.segments[i].x, this.segments[i].y);
+                }
+                ctx.strokeStyle = '#0a0a0a';
+                ctx.lineWidth = 6;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(this.segments[0].x, this.segments[0].y);
+                for(let i = 1; i < this.segments.length; i++) {
+                    ctx.lineTo(this.segments[i].x, this.segments[i].y);
+                }
+                ctx.strokeStyle = '#ff0000';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([4, 6]); 
+                ctx.stroke();
+                ctx.setLineDash([]); 
+
+                let last = this.segments[this.segments.length - 1];
+                let prev = this.segments[this.segments.length - 2];
+                let angle = Math.atan2(last.y - prev.y, last.x - prev.x);
+                
+                ctx.save();
+                ctx.translate(last.x, last.y);
+                ctx.rotate(angle);
+                ctx.fillStyle = '#222';
+                ctx.beginPath();
+                ctx.moveTo(0, -4);
+                ctx.lineTo(12, -10); 
+                ctx.lineTo(6, 0);
+                ctx.lineTo(12, 10);  
+                ctx.lineTo(0, 4);
+                ctx.fill();
+                
+                ctx.strokeStyle = '#555';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+                ctx.restore();
+            }
+        }
+
+        let tentacles = [];
+        function initTentacles() {
+            tentacles = [];
+            for(let i = 0; i < 12; i++) {
+                let angle = (i / 12) * Math.PI * 2;
+                let radius = 20;
+                let offsetX = Math.cos(angle) * radius;
+                let offsetY = Math.abs(Math.sin(angle)) * 15 + 10; 
+                let length = 20 + Math.random() * 15; 
+                tentacles.push(new Tentacle(offsetX, offsetY, length));
+            }
+        }
+
+        // --- 3. High-Density Fluid Matrix Rain System ---
+        const mCanvas = document.getElementById('matrix');
+        const mCtx = mCanvas.getContext('2d');
+        const chars = 'ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+
+        // Extreme density for a solid wall of code
+        const layers = [
+            { size: 10, speedMult: 0.4, alphaMult: 0.3, density: 4.0, bloom: false }, 
+            { size: 16, speedMult: 0.7, alphaMult: 0.6, density: 2.5, bloom: false }, 
+            { size: 24, speedMult: 1.0, alphaMult: 0.9, density: 1.5, bloom: true },  
+            { size: 40, speedMult: 1.5, alphaMult: 1.0, density: 0.5, bloom: true }   
+        ];
+
+        class MatrixStream {
+            constructor(x, layer) {
+                this.x = x;
+                this.layer = layer;
+                this.reset();
+                this.y = Math.random() * -mCanvas.height * 2; 
+            }
+
+            reset() {
+                this.y = -this.layer.size * 20; 
+                this.speed = (Math.random() * 0.4 + 0.1) * this.layer.speedMult; 
+                this.length = Math.floor(Math.random() * 60 + 30); 
+                this.chars = [];
+                for(let i=0; i < this.length; i++) {
+                    this.chars.push(chars[Math.floor(Math.random() * chars.length)]);
+                }
+            }
+
+            draw() {
+                // Aggressively flicker characters
+                for (let i = 0; i < this.length; i++) {
+                    if (Math.random() < 0.05) { 
+                        this.chars[i] = chars[Math.floor(Math.random() * chars.length)];
+                    }
+                }
+
+                mCtx.font = `${this.layer.size}px monospace`;
+                mCtx.textAlign = 'center';
+
+                let headRow = Math.floor(this.y / this.layer.size);
+
+                for(let i = 0; i < this.length; i++) {
+                    let charY = (headRow - i) * this.layer.size;
+                    if(charY < 0 || charY > mCanvas.height + this.layer.size) continue;
+
+                    let charX = this.x;
+                    let displacement = 0;
+
+                    // --- FLUID DYNAMICS CALCULATION ---
+                    for(let r of window.repulsors) {
+                        let dx = charX - r.x;
+                        let dy = charY - r.y;
+                        
+                        // Fast bounding box check to save CPU
+                        if (Math.abs(dx) < r.radius && Math.abs(dy) < r.radius) {
+                            let dist = Math.sqrt(dx*dx + dy*dy);
+                            if (dist < r.radius) {
+                                // Smooth, exponential push outwards
+                                let force = Math.pow((r.radius - dist) / r.radius, 1.5);
+                                if (dx === 0) dx = 0.1; // Prevent NaN
+                                
+                                // Push characters horizontally
+                                displacement += (dx / Math.abs(dx)) * force * (r.radius * 0.85);
+                            }
+                        }
+                    }
+                    
+                    // Apply the flowing displacement to the individual character
+                    charX += displacement;
+
+                    if(i === 0) {
+                        mCtx.fillStyle = `rgba(255, 255, 255, ${this.layer.alphaMult})`;
+                        if (this.layer.bloom) {
+                            mCtx.shadowColor = '#00FF41';
+                            mCtx.shadowBlur = 8;
+                        } else {
+                            mCtx.shadowBlur = 0;
+                        }
+                    } else {
+                        let tailFade = 1 - (i / this.length);
+                        let finalAlpha = tailFade * this.layer.alphaMult;
+                        mCtx.fillStyle = `rgba(0, 143, 17, ${finalAlpha})`;
+                        mCtx.shadowBlur = 0;
+                    }
+                    mCtx.fillText(this.chars[i], charX, charY);
+                }
+
+                this.y += this.speed * this.layer.size;
+
+                if((headRow - this.length) * this.layer.size > mCanvas.height) {
+                    this.reset();
+                }
+            }
+        }
+
+        let streams = [];
+        function initMatrix() {
+            streams = [];
+            layers.forEach(layer => {
+                let columns = Math.floor(mCanvas.width / layer.size);
+                let targetStreams = Math.floor(columns * layer.density); 
+                
+                for (let i = 0; i < targetStreams; i++) {
+                    let col = Math.floor(Math.random() * columns);
+                    let xPos = col * layer.size + (layer.size / 2);
+                    streams.push(new MatrixStream(xPos, layer));
+                }
+            });
+        }
+
+        // --- 4. Main Render Loop ---
+        function resize() {
+            mCanvas.width = tCanvas.width = window.innerWidth;
+            mCanvas.height = tCanvas.height = window.innerHeight;
+            initMatrix();
+        }
+
+        let time = 0;
+        function animate() {
+            // Build the repulsor array every frame (Body + Tentacle nodes)
+            window.repulsors = [
+                {x: mouse.x, y: mouse.y, radius: 100} // Large force for the main body
+            ];
+            
+            tentacles.forEach(t => {
+                // Add a repulsion point every 4th segment of every tentacle to create a continuous boundary
+                for(let i = 0; i < t.segments.length; i += 4) {
+                    window.repulsors.push({
+                        x: t.segments[i].x, 
+                        y: t.segments[i].y, 
+                        radius: 35 // Smaller force for the arms
+                    });
+                }
+            });
+
+            mCtx.clearRect(0, 0, mCanvas.width, mCanvas.height);
+            streams.sort((a, b) => a.layer.size - b.layer.size).forEach(s => s.draw());
+
+            tCtx.clearRect(0, 0, tCanvas.width, tCanvas.height);
+            tentacles.forEach(t => {
+                t.update(mouse.x, mouse.y, time);
+                t.draw(tCtx);
+            });
+
+            time++;
+            requestAnimationFrame(animate);
+        }
+
+        resize();
+        initTentacles();
+        window.addEventListener('resize', resize);
+        animate();
+    </script>
+</body>
+</html>
