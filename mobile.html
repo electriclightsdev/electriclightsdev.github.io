@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>OFFICIAL_LINKS.EXE // THE CAVE</title>
+  <link rel="icon" type="image/png" href="assets/icon2.gif">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold:     #ffaa00;
+      --coral:    #ff4466;
+      --white:    #ffffff;
+      --dark:     rgba(4, 0, 14, 0.90);
+      --bg:       #04000e;
+      --border:   rgba(255, 68,  102, 0.35); /* Coral border for socials */
+      --glow-r:   rgba(255, 68,  102, 0.20);
+    }
+
+    html, body { 
+      width: 100%; 
+      min-height: 100vh; 
+      background-color: var(--bg);
+      color: var(--gold);
+      font-family: "Courier New", Courier, monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      /* Background fallback without the fixed image to save mobile bandwidth */
+      background-image: radial-gradient(circle at center, #130830 0%, var(--bg) 100%);
+    }
+
+    a { text-decoration: none; -webkit-tap-highlight-color: transparent; }
+
+    /* ── SCANLINES ── */
+    #scanlines {
+      position: fixed; inset: 0; z-index: 9990; pointer-events: none;
+      background: repeating-linear-gradient(
+        to bottom, transparent 0, transparent 2px,
+        rgba(0,0,0,0.20) 2px, rgba(0,0,0,0.20) 4px
+      );
+    }
+
+    /* ── CONTAINER ── */
+    .mobile-container {
+      width: 100%;
+      max-width: 450px;
+      padding: 30px 20px;
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    /* ── HEADER ── */
+    .site-header {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .site-header h1 {
+      font-size: 1.8rem; 
+      color: var(--white);
+      text-shadow: 3px 3px var(--coral), 0 0 28px var(--gold);
+      letter-spacing: 4px; 
+      text-transform: uppercase;
+      animation: title-glitch 9s infinite;
+    }
+    .site-header .sub {
+      display: inline-block;
+      font-size: 10px;
+      color: var(--coral);
+      letter-spacing: 3px;
+      margin-top: 10px;
+      padding: 6px 14px;
+      background: rgba(255, 68, 102, 0.1);
+      border: 1px solid var(--border);
+      text-shadow: 0 0 10px var(--coral);
+    }
+
+    @keyframes title-glitch {
+      0%,90%,100% { transform:translate(0); filter:none; }
+      91%  { transform:translate(-2px,1px);  filter:hue-rotate(30deg); }
+      92%  { transform:translate(2px,-1px);  filter:hue-rotate(-30deg) brightness(1.6); }
+      93%  { transform:translate(0);         filter:none; }
+      97%  { transform:translate(1px,1px);   filter:hue-rotate(20deg); }
+      98%  { transform:translate(0);         filter:none; }
+    }
+
+    /* ── LINKS PANEL ── */
+    .links-panel {
+      background: var(--dark);
+      border: 1px solid var(--border);
+      box-shadow: 0 0 16px var(--glow-r), 0 0 45px rgba(0,0,0,0.7), inset 0 0 22px rgba(255,68,102,0.03);
+      padding: 20px;
+      position: relative;
+    }
+
+    /* Corner brackets */
+    .links-panel .c { position: absolute; width: 10px; height: 10px; z-index: 2; }
+    .links-panel .c.tl { top:-1px; left:-1px;  border-top:2px solid var(--coral); border-left:2px solid var(--coral); }
+    .links-panel .c.tr { top:-1px; right:-1px; border-top:2px solid var(--coral); border-right:2px solid var(--coral); }
+    .links-panel .c.bl { bottom:-1px; left:-1px;  border-bottom:2px solid var(--coral); border-left:2px solid var(--coral); }
+    .links-panel .c.br { bottom:-1px; right:-1px; border-bottom:2px solid var(--coral); border-right:2px solid var(--coral); }
+
+    .panel-bar {
+      display: flex; justify-content: center; align-items: center; gap: 8px;
+      padding-bottom: 15px;
+      margin-bottom: 20px;
+      border-bottom: 1px dashed rgba(255,68,102,0.3);
+    }
+    .bar-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--coral); box-shadow: 0 0 7px var(--coral);
+      animation: dot-pulse 2.2s ease-in-out infinite;
+    }
+    .bar-label {
+      font-size: 12px; font-weight: bold; letter-spacing: 2px; 
+      color: var(--coral); text-shadow: 0 0 10px var(--coral);
+    }
+
+    @keyframes dot-pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.3;transform:scale(0.7)} }
+
+    /* ── LINK BUTTONS ── */
+    .link-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .link-item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 68, 102, 0.05);
+      border: 1px solid rgba(255, 68, 102, 0.2);
+      padding: 12px;
+      min-height: 60px; /* Touch-friendly height */
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .link-item:active {
+      background: rgba(255, 68, 102, 0.2);
+      transform: scale(0.98);
+    }
+
+    .link-item img {
+      max-height: 35px;
+      width: auto;
+      image-rendering: pixelated;
+      filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.2));
+    }
+
+    /* Individual Image Tweaks for Visual Balance */
+    .link-item img.sz-apple   { max-height: 30px; }
+    .link-item img.sz-youtube { max-height: 24px; }
+    .link-item img.sz-insta   { max-height: 26px; }
+    .link-item img.sz-spotify { max-height: 40px; }
+    .link-item img.sz-tiktok  { max-height: 32px; }
+
+    /* ── FOOTER ── */
+    .footer {
+      text-align: center;
+      font-size: 10px;
+      color: rgba(255, 170, 0, 0.5);
+      letter-spacing: 2px;
+      margin-top: auto;
+      padding-bottom: 20px;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div id="scanlines"></div>
+
+  <div class="mobile-container">
+    
+    <div class="site-header">
+      <h1>>>> THE CAVE <<<</h1>
+      <div class="sub">MOBILE_UPLINK_ESTABLISHED</div>
+    </div>
+
+    <div class="links-panel">
+      <span class="c tl"></span><span class="c tr"></span>
+      <span class="c bl"></span><span class="c br"></span>
+
+      <div class="panel-bar">
+        <div class="bar-dot"></div>
+        <span class="bar-label">OFFICIAL_LINKS.EXE</span>
+      </div>
+
+      <div class="link-list">
+        <a href="https://music.apple.com/us/artist/electric-light-beetles/1887309635" class="link-item">
+          <img src="assets/officialstreamlinks/giphy.gif" class="sz-apple" alt="Apple Music">
+        </a>
+        
+        <a href="https://open.spotify.com/album/11ZxpOdLY2mwuj3JGEyVlR" class="link-item">
+          <img src="assets/officialstreamlinks/source.gif" class="sz-spotify" alt="Spotify">
+        </a>
+
+        <a href="https://www.youtube.com/@beetlesinelectriclight" class="link-item">
+          <img src="assets/officialstreamlinks/play-youtube.gif" class="sz-youtube" alt="YouTube">
+        </a>
+
+        <a href="https://www.instagram.com/beetlesinelectriclight" class="link-item">
+          <img src="assets/officialstreamlinks/source_1.gif" class="sz-insta" alt="Instagram">
+        </a>
+
+        <a href="https://www.tiktok.com/@beetlesinelectriclight" class="link-item">
+          <img src="assets/officialstreamlinks/giphy_1.gif" class="sz-tiktok" alt="TikTok">
+        </a>
+
+        <a href="404.html" class="link-item">
+          <img src="assets/officialstreamlinks/d9ad13_80198a2a59b746928c805a9b796f3eadmv2.gif" class="sz-twitter" alt="Twitter">
+        </a>
+
+        <a href="404.html" class="link-item">
+          <img src="assets/officialstreamlinks/twitter-png.gif" class="sz-fb" alt="Facebook">
+        </a>
+      </div>
+    </div>
+
+    <div class="footer">
+      NOCTURNE ARCHIVE // 2026
+    </div>
+
+  </div>
+
+</body>
+</html>
