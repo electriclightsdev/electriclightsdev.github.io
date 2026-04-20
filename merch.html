@@ -1,0 +1,2231 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dream Dispensary // Vapor Vending Parlor</title>
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&family=Bungee&family=DotGothic16&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream:       #F5EAD4;
+    --cream-l:     #FAF3E3;
+    --peach:       #F5C9A8;
+    --peach-d:     #E8A97F;
+    --butter:      #F7E6A6;
+    --sky:         #A9D7F8;
+    --sky-d:       #7FBBDD;
+    --aqua:        #9EE7E1;
+    --lilac:       #D6C4F4;
+    --lavender:    #C8B5DB;
+    --lavender-d:  #A895BF;
+    --lavender-dd: #7D6B96;
+    --mint:        #B8D8C4;
+    --mint-d:      #8FB8A0;
+    --rose:        #E8A8BD;
+    --rose-d:      #C87E9A;
+    --plum:        #4A3B5C;
+    --plum-d:      #2E2440;
+    --plum-dd:     #1C1530;
+    --coil:        #8F82A3;
+    --lcd:         #8FB8A0;
+    --slot-width:  248px;
+    --machine-scale: 1;
+  }
+
+  html, body {
+    height: 100vh;
+    overflow: hidden;
+    font-family: 'Share Tech Mono', monospace;
+    color: var(--plum-d);
+  }
+
+  body {
+    background:
+      radial-gradient(circle at 15% 18%, rgba(169,215,248,0.42), transparent 22%),
+      radial-gradient(circle at 84% 20%, rgba(158,231,225,0.28), transparent 22%),
+      radial-gradient(circle at 52% 72%, rgba(247,230,166,0.18), transparent 20%),
+      linear-gradient(180deg,
+        #9F95D0 0%,
+        #B9B8F3 16%,
+        #D6C4F4 34%,
+        #E8A8BD 56%,
+        #F5C9A8 78%,
+        #F7E6A6 100%);
+    background-attachment: fixed;
+    position: relative;
+    isolation: isolate;
+  }
+  body::before,
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+  body::before {
+    background:
+      radial-gradient(circle at 22% 26%, rgba(255,255,255,0.22), transparent 18%),
+      radial-gradient(circle at 72% 14%, rgba(169,215,248,0.24), transparent 20%),
+      radial-gradient(circle at 76% 68%, rgba(158,231,225,0.18), transparent 24%);
+    filter: blur(22px);
+  }
+  body::after {
+    background:
+      linear-gradient(90deg, transparent 0%, rgba(250,243,227,0.03) 50%, transparent 100%),
+      repeating-linear-gradient(90deg, transparent 0 110px, rgba(250,243,227,0.03) 110px 111px);
+    opacity: 0.7;
+  }
+
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+     SCENE
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+  .stars {
+    position: fixed; inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 12% 8%,  #FAF3E3, transparent),
+      radial-gradient(1px 1px at 28% 18%, #FAF3E3, transparent),
+      radial-gradient(2px 2px at 52% 6%,  #FAF3E3, transparent),
+      radial-gradient(1px 1px at 68% 14%, #FAF3E3, transparent),
+      radial-gradient(1px 1px at 82% 9%,  #FAF3E3, transparent),
+      radial-gradient(1px 1px at 92% 22%, #FAF3E3, transparent);
+    opacity: 0.7; pointer-events: none; z-index: 0;
+  }
+  .sun {
+    position: fixed; top: 6%; left: 50%;
+    transform: translateX(-50%);
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 45%,
+      #FAF3E3 0%, #F7E6A6 30%, #F5C9A8 58%, #E8A8BD 76%, #A9D7F8 100%);
+    z-index: 0;
+    box-shadow: 0 0 80px rgba(247,230,166,0.26);
+  }
+  .sun::after {
+    content: ''; position: absolute;
+    left: 0; right: 0; bottom: 0; height: 55%;
+    background: repeating-linear-gradient(to bottom,
+      transparent 0 12px, rgba(74,59,92,0.28) 12px 19px);
+    border-radius: 0 0 50% 50% / 0 0 100% 100%;
+  }
+  .grid-floor {
+    position: fixed; left: 0; right: 0; bottom: 0;
+    height: 38vh;
+    background:
+      linear-gradient(180deg, transparent 0%, rgba(74,59,92,0.15) 100%),
+      linear-gradient(rgba(74,59,92,0.55) 1.5px, transparent 1.5px),
+      linear-gradient(90deg, rgba(74,59,92,0.55) 1.5px, transparent 1.5px);
+    background-size: 100% 100%, 100px 100px, 100px 100px;
+    transform: perspective(500px) rotateX(62deg);
+    transform-origin: bottom;
+    z-index: 0; pointer-events: none;
+  }
+
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+     EXIT
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+  .exit-btn {
+    position: fixed;
+    bottom: 14px; left: 50%;
+    transform: translateX(-50%);
+    color: var(--cream); text-decoration: none;
+    font-family: 'VT323', monospace;
+    font-size: 18px; letter-spacing: 5px;
+    border: 2px solid rgba(250,243,227,0.85);
+    border-radius: 999px;
+    padding: 7px 18px 6px;
+    background:
+      linear-gradient(180deg, rgba(250,243,227,0.18), rgba(250,243,227,0.04)),
+      rgba(46,36,64,0.76);
+    box-shadow: 0 10px 24px rgba(28,21,48,0.28);
+    z-index: 100;
+    transition: all 0.2s;
+  }
+  .exit-btn:hover {
+    background: var(--cream);
+    color: var(--plum-d);
+  }
+
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+     MACHINE WRAPPER
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+  .machine-wrap {
+    position: fixed;
+    inset: 84px 24px 84px;
+    z-index: 5;
+    overflow: hidden;
+  }
+
+  .vaporwave-scene {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+    overflow: hidden;
+  }
+  .scene-glow-ring {
+    position: absolute;
+    top: 15vh;
+    left: 50%;
+    width: 760px;
+    height: 760px;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    border: 2px solid rgba(250,243,227,0.18);
+    box-shadow:
+      0 0 0 18px rgba(169,215,248,0.06),
+      0 0 0 42px rgba(232,168,189,0.05);
+    opacity: 0.65;
+  }
+  .scene-column,
+  .scene-bust {
+    position: absolute;
+    filter: drop-shadow(0 18px 30px rgba(46,36,64,0.16));
+  }
+  .scene-column img,
+  .scene-bust img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .scene-column.left {
+    left: max(8px, 1.2vw);
+    bottom: 6.5vh;
+    width: 190px;
+    opacity: 0.74;
+    transform: rotate(-2deg);
+  }
+  .scene-column.right {
+    right: max(4px, 1vw);
+    bottom: 8vh;
+    width: 220px;
+    opacity: 0.7;
+    transform: scaleX(-1) rotate(-1.5deg);
+  }
+  .scene-bust.left {
+    left: 6vw;
+    bottom: 18vh;
+    width: 240px;
+    aspect-ratio: 1;
+    padding: 14px;
+    border-radius: 36% 36% 26% 26% / 28% 28% 22% 22%;
+    background:
+      linear-gradient(180deg, rgba(169,215,248,0.16), rgba(232,168,189,0.14)),
+      rgba(250,243,227,0.08);
+    box-shadow:
+      0 28px 44px rgba(28,21,48,0.22),
+      inset 0 0 0 1px rgba(250,243,227,0.1);
+    overflow: hidden;
+    isolation: isolate;
+    transform: rotate(-6deg);
+  }
+  .scene-bust.right {
+    right: 8.5vw;
+    bottom: 22vh;
+    width: 168px;
+    aspect-ratio: 1;
+    padding: 10px;
+    border-radius: 50%;
+    background:
+      linear-gradient(180deg, rgba(169,215,248,0.12), rgba(158,231,225,0.06)),
+      rgba(250,243,227,0.04);
+    box-shadow:
+      0 20px 36px rgba(28,21,48,0.18),
+      inset 0 0 0 1px rgba(250,243,227,0.08);
+    overflow: hidden;
+    isolation: isolate;
+    opacity: 0.52;
+    transform: rotate(8deg);
+  }
+  .scene-column img {
+    mix-blend-mode: screen;
+    opacity: 0.94;
+    mask-image: linear-gradient(to top, transparent 0%, #000 12%, #000 88%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to top, transparent 0%, #000 12%, #000 88%, transparent 100%);
+  }
+  .scene-bust img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 30%;
+    border-radius: inherit;
+    box-shadow: none;
+  }
+  .scene-bust::before,
+  .scene-bust::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .scene-bust::before {
+    inset: -16%;
+    background: radial-gradient(circle at 50% 42%, rgba(169,215,248,0.34), transparent 54%);
+    opacity: 0.8;
+    z-index: 0;
+  }
+  .scene-bust::after {
+    border: 1px solid rgba(250,243,227,0.18);
+    border-radius: inherit;
+    z-index: 2;
+  }
+  .scene-spark {
+    position: absolute;
+    border-radius: 999px;
+    opacity: 0.9;
+    filter: blur(0.2px);
+  }
+  .scene-spark.one {
+    top: 18vh;
+    left: 11vw;
+    width: 90px;
+    height: 20px;
+    background: linear-gradient(90deg, transparent, rgba(169,215,248,0.75), transparent);
+  }
+  .scene-spark.two {
+    top: 26vh;
+    right: 14vw;
+    width: 110px;
+    height: 16px;
+    background: linear-gradient(90deg, transparent, rgba(247,230,166,0.72), transparent);
+  }
+  .scene-spark.three {
+    bottom: 19vh;
+    left: 26vw;
+    width: 130px;
+    height: 18px;
+    background: linear-gradient(90deg, transparent, rgba(158,231,225,0.68), transparent);
+  }
+
+  /* Fixed design canvas — machine always renders at 1380x760 internally,
+     then the whole thing is uniformly scaled by JS to fit the viewport.
+     This keeps the internal layout perfectly proportioned at any size. */
+  .machine-stage {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 1380px;
+    height: 760px;
+    margin: -380px 0 0 -690px;
+    transform: scale(var(--machine-scale, 1));
+    transform-origin: center center;
+  }
+
+  .machine {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, var(--lavender) 0%, var(--lavender-d) 100%);
+    border: 5px solid var(--plum-d);
+    border-radius: 14px;
+    box-shadow:
+      0 0 0 2px var(--plum),
+      0 25px 60px rgba(46,36,64,0.5),
+      0 0 100px rgba(232,168,189,0.35),
+      inset 0 2px 0 rgba(255,255,255,0.5),
+      inset 0 -4px 0 rgba(46,36,64,0.15);
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+  }
+
+  .rivet {
+    position: absolute; width: 7px; height: 7px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #D8CBE8, var(--lavender-dd));
+    box-shadow: inset 0 -1px 0 rgba(0,0,0,0.3), 0 1px 0 rgba(255,255,255,0.3);
+    z-index: 3;
+  }
+  .rivet.tl { top: 10px; left: 10px; }
+  .rivet.tr { top: 10px; right: 10px; }
+  .rivet.bl { bottom: 10px; left: 10px; }
+  .rivet.br { bottom: 10px; right: 10px; }
+
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+     CROWN (full width, top)
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+  .crown {
+    background:
+      linear-gradient(90deg, rgba(169,215,248,0.12), transparent 22%, transparent 78%, rgba(158,231,225,0.14)),
+      linear-gradient(180deg, var(--plum) 0%, var(--plum-d) 100%);
+    padding: 14px 28px 12px;
+    position: relative;
+    border-bottom: 5px solid var(--plum-dd);
+    text-align: center;
+    flex-shrink: 0;
+  }
+  .crown::before {
+    content: ''; position: absolute;
+    top: 5px; left: 16px; right: 16px; height: 5px;
+    background-image: radial-gradient(circle, var(--peach) 1.8px, transparent 2.3px);
+    background-size: 14px 5px; background-repeat: repeat-x;
+    animation: bulbShimmer 2s infinite;
+  }
+  @keyframes bulbShimmer { 0%,100% { opacity: 0.9; } 50% { opacity: 0.55; } }
+
+  .crown-brand {
+    font-family: 'Bungee', sans-serif;
+    font-size: clamp(24px, 4vw, 38px);
+    letter-spacing: 8px;
+    color: var(--cream-l);
+    text-shadow:
+      0 0 8px rgba(169,215,248,0.5),
+      0 0 18px rgba(245,201,168,0.45),
+      2px 2px 0 var(--rose-d);
+    line-height: 1;
+    margin: 4px 0 4px;
+  }
+  .crown-sub {
+    font-family: 'DotGothic16', monospace;
+    font-size: 12px; letter-spacing: 5px;
+    color: var(--butter);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+  }
+  .crown-sub::before, .crown-sub::after {
+    content: ''; width: 34px; height: 1px;
+    background: var(--aqua); opacity: 0.65;
+  }
+
+  /* Top-corner label */
+  .crown-corner {
+    position: absolute;
+    top: 6px;
+    font-family: 'DotGothic16', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--mint);
+    opacity: 0.7;
+  }
+  .crown-corner.left { left: 20px; }
+  .crown-corner.right { right: 20px; }
+
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+     BODY: two-column split
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+  .machine-body {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 320px minmax(0, 1fr);
+  }
+
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+     LEFT: CONTROL PANEL
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+  .left-panel {
+    background: linear-gradient(180deg, var(--lavender) 0%, var(--lavender-d) 100%);
+    padding: 14px 12px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-right: 5px solid var(--plum-dd);
+    overflow: hidden;
+    position: relative;
+  }
+  .left-panel::after {
+    content: '';
+    position: absolute;
+    inset: 12px 10px auto;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(250,243,227,0.6), transparent);
+    pointer-events: none;
+  }
+
+  /* Display bar */
+  .display-bar {
+    background: var(--plum-dd);
+    padding: 8px 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 2px solid var(--plum-dd);
+    border-radius: 4px;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .display-bar::after {
+    content: ''; position: absolute; inset: 0;
+    background: repeating-linear-gradient(0deg,
+      transparent 0 2px, rgba(0,0,0,0.15) 2px 3px);
+    pointer-events: none;
+    border-radius: 2px;
+  }
+  .display-lcd {
+    flex: 1;
+    background: #0E1A12;
+    color: var(--lcd);
+    font-family: 'VT323', monospace;
+    font-size: 16px; letter-spacing: 2px;
+    padding: 5px 10px;
+    border: 1px solid var(--lavender-dd);
+    text-align: left;
+    box-shadow: inset 0 0 8px rgba(143,184,160,0.3);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    min-height: 24px;
+  }
+  .display-status {
+    font-family: 'VT323', monospace;
+    font-size: 12px; color: var(--peach);
+    letter-spacing: 2px; white-space: nowrap;
+  }
+  .display-dot {
+    display: inline-block; width: 6px; height: 6px;
+    background: var(--mint); border-radius: 50%; margin-right: 4px;
+    box-shadow: 0 0 6px var(--mint);
+    animation: pulse 1.6s infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  /* Panel section base */
+  .panel-section {
+    background: var(--plum-d);
+    border: 2px solid var(--plum-dd);
+    border-radius: 6px;
+    padding: 10px;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.4);
+  }
+  .panel-label {
+    font-family: 'DotGothic16', monospace;
+    font-size: 10px; letter-spacing: 4px;
+    color: var(--peach);
+    text-align: center;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    opacity: 0.85;
+  }
+  .selection-card {
+    border: 1px solid rgba(245,234,212,0.15);
+    border-radius: 10px;
+    padding: 12px;
+    background:
+      linear-gradient(180deg, rgba(250,243,227,0.08), rgba(250,243,227,0.01)),
+      rgba(14,8,24,0.55);
+    box-shadow: inset 0 0 0 1px rgba(143,184,160,0.08);
+  }
+  .selection-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .selection-code {
+    font-family: 'VT323', monospace;
+    font-size: 28px;
+    line-height: 1;
+    letter-spacing: 2px;
+    color: var(--peach);
+  }
+  .selection-price {
+    font-family: 'VT323', monospace;
+    font-size: 24px;
+    line-height: 1;
+    color: var(--mint);
+    text-shadow: 0 0 10px rgba(143,184,160,0.35);
+  }
+  .selection-name {
+    font-family: 'Bungee', sans-serif;
+    font-size: 18px;
+    line-height: 1.2;
+    color: var(--cream-l);
+    margin-bottom: 10px;
+  }
+  .selection-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  .selection-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 24px;
+    padding: 4px 9px;
+    border-radius: 999px;
+    border: 1px solid rgba(245,201,168,0.32);
+    background: rgba(245,201,168,0.12);
+    color: var(--peach);
+    font-family: 'DotGothic16', monospace;
+    font-size: 9px;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+  }
+  .selection-pill.status {
+    border-color: rgba(184,216,196,0.38);
+    background: rgba(184,216,196,0.12);
+    color: var(--mint);
+  }
+  .selection-pill.status.sold {
+    border-color: rgba(232,168,189,0.45);
+    background: rgba(232,168,189,0.12);
+    color: var(--rose);
+  }
+  .selection-copy {
+    color: rgba(245,234,212,0.82);
+    font-size: 11px;
+    line-height: 1.55;
+    min-height: 52px;
+  }
+  .browse-meter {
+    display: grid;
+    gap: 8px;
+  }
+  .browse-meter-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-family: 'DotGothic16', monospace;
+    font-size: 9px;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    color: var(--peach);
+  }
+  .browse-bar {
+    height: 10px;
+    border-radius: 999px;
+    background: rgba(14,8,24,0.6);
+    border: 1px solid rgba(245,234,212,0.08);
+    overflow: hidden;
+  }
+  .browse-progress {
+    width: 0;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--rose) 0%, var(--peach) 55%, var(--mint) 100%);
+    box-shadow: 0 0 12px rgba(245,201,168,0.45);
+  }
+  .browse-hint {
+    color: rgba(245,234,212,0.72);
+    font-size: 10px;
+    line-height: 1.5;
+  }
+
+  /* Keypad */
+  .keypad {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+  }
+  .key {
+    aspect-ratio: 1;
+    background: radial-gradient(circle at 35% 30%,
+      var(--cream-l) 0%, var(--peach) 45%, var(--peach-d) 100%);
+    border: 2px solid var(--plum-d);
+    color: var(--plum-d);
+    font-family: 'DotGothic16', monospace;
+    font-size: 14px; font-weight: bold;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: all 0.1s;
+    box-shadow:
+      inset 0 -2px 0 rgba(74,59,92,0.3),
+      inset 0 1px 0 rgba(255,255,255,0.6),
+      0 2px 0 var(--plum-dd);
+    user-select: none;
+  }
+  .key:hover {
+    background: radial-gradient(circle at 35% 30%,
+      var(--cream-l) 0%, var(--rose) 45%, var(--rose-d) 100%);
+  }
+  .key.pressed {
+    transform: translateY(2px);
+    box-shadow: inset 0 -1px 0 rgba(74,59,92,0.3),
+                inset 0 1px 0 rgba(255,255,255,0.3),
+                0 0 0 var(--plum-dd);
+  }
+  .key.util {
+    background: radial-gradient(circle at 35% 30%,
+      var(--cream-l) 0%, var(--mint) 45%, var(--mint-d) 100%);
+    font-size: 16px;
+  }
+
+  /* Coin section */
+  .coin-section { flex-shrink: 0; }
+  .coin-row {
+    display: flex; gap: 6px; align-items: stretch;
+    margin-bottom: 6px;
+  }
+  .coin-slot {
+    flex: 1;
+    background: #0E0818;
+    border: 2px solid var(--plum-dd);
+    border-radius: 3px;
+    height: 30px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'VT323', monospace;
+    font-size: 11px; color: var(--peach); letter-spacing: 3px;
+    position: relative; overflow: hidden;
+  }
+  .coin-slot::before {
+    content: ''; position: absolute;
+    left: 50%; top: 50%; transform: translate(-50%, -50%);
+    width: 38px; height: 4px;
+    background: #000;
+    border-top: 1px solid #1C1530;
+    border-bottom: 1px solid rgba(200,181,219,0.3);
+    border-radius: 2px;
+  }
+  .return-btn {
+    width: 30px; height: 30px;
+    background: radial-gradient(circle at 35% 30%, var(--mint) 0%, var(--mint-d) 100%);
+    border: 2px solid var(--plum-d);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: inset 0 -2px 0 rgba(74,59,92,0.3),
+                inset 0 1px 0 rgba(255,255,255,0.5),
+                0 2px 0 var(--plum-dd);
+    transition: transform 0.1s;
+  }
+  .return-btn:active { transform: translateY(2px); }
+  .balance-display {
+    background: #0E1A12;
+    color: var(--lcd);
+    font-family: 'VT323', monospace;
+    font-size: 13px; padding: 4px 10px;
+    border: 1px solid var(--lavender-dd);
+    text-align: right; letter-spacing: 2px;
+    box-shadow: inset 0 0 6px rgba(143,184,160,0.2);
+  }
+
+  /* Dispenser at the bottom of left panel */
+  .dispenser {
+    margin-top: auto;
+    flex-shrink: 0;
+  }
+  .hatch {
+    background: linear-gradient(180deg, var(--plum-d) 0%, var(--plum-dd) 100%);
+    border: 3px solid var(--plum-dd);
+    border-top: 4px solid var(--plum-dd);
+    border-radius: 4px;
+    height: 78px;
+    padding: 10px;
+    position: relative;
+    box-shadow:
+      inset 0 5px 12px rgba(0,0,0,0.5),
+      inset 0 -2px 0 rgba(200,181,219,0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    overflow: hidden;
+  }
+  .hatch-flap {
+    width: 80%; height: 3px;
+    background: linear-gradient(180deg, var(--lavender-dd), var(--plum));
+    border-radius: 1px; opacity: 0.6;
+  }
+  .hatch-label {
+    font-family: 'DotGothic16', monospace;
+    font-size: 10px; letter-spacing: 3px;
+    color: var(--lavender); opacity: 0.55;
+    text-align: center;
+  }
+  .hatch.dispensing .hatch-label {
+    color: var(--peach); opacity: 1;
+    animation: flash 0.4s infinite alternate;
+  }
+  @keyframes flash { to { opacity: 0.5; } }
+
+  /* Dispensed item lands inside the hatch */
+  .dispensed-item {
+    position: absolute;
+    width: 48px; height: 48px;
+    pointer-events: none;
+    z-index: 3;
+    opacity: 0;
+  }
+
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+     RIGHT: GLASS CASE + HORIZONTAL SCROLL
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+  .right-panel {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    background:
+      linear-gradient(180deg,
+        rgba(255,255,255,0.05) 0%,
+        rgba(255,255,255,0.02) 50%,
+        rgba(0,0,0,0.12) 100%),
+      var(--plum);
+    position: relative;
+  }
+  .right-panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 20% 0%, rgba(245,201,168,0.18), transparent 32%),
+      radial-gradient(circle at 90% 18%, rgba(184,216,196,0.12), transparent 26%),
+      radial-gradient(circle at 52% 85%, rgba(169,215,248,0.12), transparent 34%);
+    pointer-events: none;
+  }
+  .rail-topper {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 22px 14px;
+    border-bottom: 1px solid rgba(200,181,219,0.16);
+    background:
+      linear-gradient(90deg, rgba(169,215,248,0.08), transparent 28%, transparent 72%, rgba(247,230,166,0.06)),
+      linear-gradient(180deg, rgba(250,243,227,0.06), rgba(250,243,227,0));
+    position: relative;
+    z-index: 2;
+  }
+  .rail-copy {
+    min-width: 0;
+  }
+  .rail-eyebrow {
+    font-family: 'DotGothic16', monospace;
+    font-size: 10px;
+    letter-spacing: 2.4px;
+    color: var(--aqua);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    opacity: 0.9;
+  }
+  .rail-title {
+    font-family: 'Bungee', sans-serif;
+    font-size: clamp(24px, 2vw, 32px);
+    line-height: 1;
+    color: var(--cream-l);
+    text-shadow:
+      2px 2px 0 rgba(46,36,64,0.5),
+      0 0 18px rgba(169,215,248,0.2);
+    margin-bottom: 8px;
+  }
+  .rail-subtitle {
+    font-size: 11px;
+    line-height: 1.6;
+    color: rgba(245,234,212,0.8);
+    max-width: 560px;
+  }
+  .rail-status {
+    flex-shrink: 0;
+    min-width: 110px;
+    padding: 10px 12px 8px;
+    border-radius: 14px;
+    border: 1px solid rgba(245,201,168,0.3);
+    background:
+      linear-gradient(180deg, rgba(169,215,248,0.08), rgba(14,8,24,0.28)),
+      rgba(14,8,24,0.45);
+    box-shadow: inset 0 0 0 1px rgba(250,243,227,0.05);
+    text-align: center;
+  }
+  .rail-status-label {
+    font-family: 'DotGothic16', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--sky);
+    margin-bottom: 6px;
+  }
+  .rail-status-value {
+    font-family: 'VT323', monospace;
+    font-size: 26px;
+    line-height: 1;
+    letter-spacing: 2px;
+    color: var(--butter);
+  }
+  .rail-stage {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    align-items: stretch;
+    gap: 12px;
+    padding: 14px 16px 16px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Nav buttons flanking the glass */
+  .nav-btn {
+    flex-shrink: 0;
+    width: 58px;
+    border-radius: 18px;
+    background:
+      linear-gradient(180deg, rgba(250,243,227,0.14), rgba(250,243,227,0.02)),
+      linear-gradient(180deg, var(--plum) 0%, var(--plum-d) 100%);
+    border: 2px solid rgba(200,181,219,0.24);
+    color: var(--cream-l);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 14px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    z-index: 5;
+    transition: all 0.15s;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.08),
+      0 10px 24px rgba(0,0,0,0.28);
+  }
+  .nav-btn:hover {
+    background:
+      linear-gradient(180deg, rgba(245,201,168,0.26), rgba(245,201,168,0.06)),
+      linear-gradient(180deg, var(--rose-d) 0%, var(--plum) 100%);
+    color: var(--cream-l);
+    transform: translateY(-2px);
+  }
+  .nav-btn:active { transform: scale(0.96); }
+  .nav-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    transform: none;
+  }
+  .nav-btn .nav-jp {
+    position: absolute;
+    bottom: 8px;
+    font-family: 'DotGothic16', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--sky);
+    opacity: 0.6;
+  }
+
+  /* The glass case itself */
+  .glass-case {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    background:
+      linear-gradient(180deg, rgba(250,243,227,0.08), rgba(28,21,48,0.22)),
+      radial-gradient(circle at 18% 10%, rgba(169,215,248,0.08), transparent 22%),
+      radial-gradient(circle at 82% 14%, rgba(247,230,166,0.07), transparent 20%),
+      linear-gradient(180deg, rgba(14,8,24,0.52), rgba(14,8,24,0.82));
+    border: 2px solid rgba(200,181,219,0.18);
+    border-radius: 28px;
+    box-shadow:
+      inset 0 0 0 1px rgba(250,243,227,0.04),
+      inset 0 -24px 40px rgba(14,8,24,0.38),
+      0 18px 36px rgba(0,0,0,0.22);
+  }
+  .glass-case::before {
+    content: ''; position: absolute;
+    top: 0; left: 0; width: 60%; height: 100%;
+    background: linear-gradient(120deg,
+      rgba(250,243,227,0.10) 0%,
+      rgba(250,243,227,0.03) 28%,
+      transparent 55%);
+    pointer-events: none;
+    z-index: 3;
+  }
+  .glass-case::after {
+    content: ''; position: absolute; inset: 9px;
+    border: 1px solid rgba(200,181,219,0.2);
+    pointer-events: none;
+    z-index: 3;
+    border-radius: 22px;
+  }
+  .scroll-hint {
+    position: absolute;
+    top: 16px;
+    right: 18px;
+    z-index: 4;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(14,8,24,0.55);
+    border: 1px solid rgba(184,216,196,0.18);
+    color: var(--sky);
+    font-family: 'DotGothic16', monospace;
+    font-size: 9px;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+  }
+  .slots-viewport {
+    height: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    cursor: grab;
+    scroll-snap-type: x mandatory;
+    position: relative;
+    z-index: 1;
+  }
+  .slots-viewport::-webkit-scrollbar { display: none; }
+  .slots-viewport.dragging {
+    cursor: grabbing;
+    user-select: none;
+  }
+
+  .slots-track {
+    display: flex;
+    height: 100%;
+    width: max-content;
+    gap: 18px;
+    padding: 26px 30px 76px;
+    position: relative;
+    will-change: scroll-position;
+  }
+  .slot-page {
+    flex: 0 0 var(--page-width, 780px);
+    width: var(--page-width, 780px);
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+    scroll-snap-align: start;
+  }
+
+  .slot {
+    position: relative;
+    min-width: 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 14px 14px 18px;
+    text-decoration: none;
+    color: inherit;
+    border: 1px solid rgba(200,181,219,0.18);
+    border-radius: 22px;
+    background:
+      linear-gradient(180deg, rgba(250,243,227,0.07), rgba(250,243,227,0.01)),
+      linear-gradient(180deg, rgba(74,59,92,0.42), rgba(28,21,48,0.55));
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.05),
+      0 14px 26px rgba(0,0,0,0.18);
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    scroll-snap-align: center;
+  }
+  .slot::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(250,243,227,0.08), transparent 26%, transparent 72%, rgba(250,243,227,0.04));
+    border-radius: inherit;
+    pointer-events: none;
+  }
+  /* Shelf rail running along the bottom of every slot */
+  .slot::after {
+    content: '';
+    position: absolute;
+    bottom: 16px; left: 14px; right: 14px;
+    height: 5px;
+    background: linear-gradient(90deg,
+      var(--lavender-dd) 0%,
+      var(--lavender) 50%,
+      var(--lavender-dd) 100%);
+    box-shadow: 0 -1px 0 rgba(0,0,0,0.2);
+    border-radius: 999px;
+  }
+  .slot:hover {
+    background: radial-gradient(ellipse at center,
+      rgba(245,201,168,0.13) 0%, transparent 70%),
+      linear-gradient(180deg, rgba(250,243,227,0.1), rgba(250,243,227,0.02)),
+      linear-gradient(180deg, rgba(74,59,92,0.42), rgba(28,21,48,0.55));
+    transform: translateY(-6px);
+    border-color: rgba(245,201,168,0.35);
+  }
+  .slot:hover .price-tag {
+    background: var(--peach); color: var(--plum-d);
+    box-shadow: 0 0 12px rgba(245,201,168,0.8),
+                inset 0 1px 0 rgba(255,255,255,0.5);
+  }
+  .slot:hover .product-visual { transform: translateY(-3px) scale(1.03); }
+
+  .slot.active {
+    background: radial-gradient(ellipse at center,
+      rgba(232,168,189,0.18) 0%, transparent 70%);
+  }
+  .slot.is-current {
+    transform: translateY(-8px);
+    border-color: rgba(245,201,168,0.52);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.06),
+      0 22px 36px rgba(0,0,0,0.24),
+      0 0 0 1px rgba(245,201,168,0.16);
+  }
+  .slot-topline {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    position: relative;
+    z-index: 1;
+  }
+  .slot-code {
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    line-height: 1;
+    letter-spacing: 1.5px;
+    color: var(--mint);
+  }
+  .slot-category {
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: rgba(250,243,227,0.08);
+    border: 1px solid rgba(200,181,219,0.18);
+    color: var(--peach);
+    font-family: 'DotGothic16', monospace;
+    font-size: 8px;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+  }
+
+  /* Coil at top of slot */
+  .coil {
+    width: 65%; height: 10px;
+    margin-top: 0;
+    opacity: 0.55;
+  }
+
+  .product-visual {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 8px 0;
+    transition: transform 0.25s;
+  }
+  .product-visual svg {
+    width: clamp(50px, 6vw, 76px);
+    height: clamp(50px, 6vw, 76px);
+    filter:
+      drop-shadow(1px 1px 0 rgba(232,168,189,0.6))
+      drop-shadow(-1px -1px 0 rgba(184,216,196,0.5));
+  }
+  .product-name {
+    font-family: 'DotGothic16', monospace;
+    font-size: 11px; letter-spacing: 2px;
+    color: var(--cream-l);
+    text-transform: uppercase;
+    text-align: center;
+    line-height: 1.2;
+    opacity: 0.9;
+    margin-bottom: 8px;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .product-note {
+    min-height: 30px;
+    color: rgba(245,234,212,0.72);
+    font-size: 9px;
+    line-height: 1.4;
+    text-align: center;
+    max-width: 180px;
+    overflow: hidden;
+  }
+  .price-tag {
+    background: var(--mint);
+    color: var(--plum-d);
+    font-family: 'VT323', monospace;
+    font-size: 14px; letter-spacing: 1.5px;
+    padding: 3px 10px;
+    border: 1px solid var(--plum-d);
+    box-shadow: 0 0 6px rgba(184,216,196,0.4),
+                inset 0 1px 0 rgba(255,255,255,0.4);
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .stock-pill {
+    padding: 5px 10px 4px;
+    border-radius: 999px;
+    background: rgba(184,216,196,0.12);
+    border: 1px solid rgba(184,216,196,0.18);
+    color: var(--mint);
+    font-family: 'DotGothic16', monospace;
+    font-size: 8px;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+  }
+  .stock-pill.sold {
+    background: rgba(232,168,189,0.12);
+    border-color: rgba(232,168,189,0.24);
+    color: var(--rose);
+  }
+
+  /* Bilingual sold-out stamp */
+  .sold-stamp {
+    position: absolute;
+    top: 44%; left: 50%;
+    transform: translate(-50%, -50%) rotate(-8deg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    min-width: 144px;
+    padding: 8px 14px 9px;
+    background: rgba(28,21,48,0.78);
+    border: 3px solid var(--rose);
+    z-index: 5;
+    font-family: 'DotGothic16', sans-serif;
+    color: var(--rose);
+    letter-spacing: 3px;
+    box-shadow: 0 0 20px rgba(232,168,189,0.22);
+  }
+  .sold-stamp .en {
+    font-size: 14px;
+    line-height: 1;
+    font-family: 'Bungee', sans-serif;
+    letter-spacing: 1.5px;
+  }
+  .sold-stamp .jp {
+    font-size: 13px;
+    letter-spacing: 2.5px;
+    margin-top: 2px;
+    border-top: 1px solid var(--rose);
+    padding-top: 3px;
+    width: 100%;
+    text-align: center;
+  }
+  .slot.sold .product-visual { opacity: 0.35; }
+  .slot.sold .price-tag { background: var(--lavender-dd); color: var(--cream); }
+
+  /* Scroll position dots overlay */
+  .scroll-dots {
+    position: absolute;
+    bottom: 16px; left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 6px;
+    z-index: 4;
+    background: rgba(28,21,48,0.55);
+    padding: 5px 10px;
+    border-radius: 12px;
+    border: 1px solid rgba(200,181,219,0.25);
+  }
+  .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--lavender-dd);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .dot.active {
+    background: var(--peach);
+    box-shadow: 0 0 6px var(--peach);
+    transform: scale(1.3);
+  }
+  .dot.sold {
+    background: var(--rose-d);
+    opacity: 0.6;
+  }
+
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+     TICKER (bottom strip outside machine)
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+  .ticker {
+    position: fixed;
+    left: 0; right: 0; top: 0;
+    z-index: 10;
+    background:
+      linear-gradient(90deg, rgba(169,215,248,0.18), rgba(232,168,189,0.12), rgba(247,230,166,0.18)),
+      var(--plum-d);
+    border-bottom: 2px solid var(--rose);
+    padding: 8px 0 7px;
+    overflow: hidden;
+    font-family: 'VT323', monospace;
+    font-size: 16px; letter-spacing: 4px;
+    color: var(--cream-l); white-space: nowrap;
+    box-shadow: 0 8px 24px rgba(28,21,48,0.14);
+  }
+  .ticker-track {
+    display: inline-block;
+    animation: scroll 32s linear infinite;
+    padding-left: 100%;
+  }
+  .ticker-track span { margin: 0 30px; color: var(--mint); }
+  @keyframes scroll {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-100%); }
+  }
+
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+     MOBILE â€” stack vertically
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+  @media (max-width: 860px) {
+    html, body { overflow-y: auto; height: auto; min-height: 100vh; }
+    .machine-wrap {
+      position: relative;
+      inset: auto;
+      width: 100%;
+      height: auto;
+      overflow: visible;
+      padding: 78px 14px 82px;
+    }
+    .machine-stage {
+      position: relative;
+      top: auto; left: auto;
+      width: 100%;
+      height: auto;
+      margin: 0;
+      transform: none;
+    }
+    .machine { max-height: none; height: auto; }
+    .machine-body { display: flex; flex-direction: column; }
+    .left-panel {
+      width: 100%;
+      border-right: none;
+      border-top: 4px solid var(--plum-dd);
+      order: 1;
+      overflow: visible;
+    }
+    .right-panel { order: 2; min-height: 400px; }
+    .rail-topper {
+      flex-direction: column;
+      align-items: stretch;
+      padding: 16px;
+    }
+    .rail-status { width: 100%; }
+    .rail-stage { padding: 12px; gap: 10px; }
+    .nav-btn { width: 44px; font-size: 12px; }
+    .slots-track { padding: 18px 18px 70px; gap: 12px; }
+    .slot-page {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .slot { padding: 12px 10px 16px; }
+    .crown-brand { letter-spacing: 6px; }
+    .crown-corner { display: none; }
+    .keypad { grid-template-columns: repeat(6, 1fr); }
+    .dispenser .hatch { height: 64px; }
+    .selection-name { font-size: 16px; }
+    .product-note { max-width: none; min-height: 44px; }
+    .scroll-hint { top: 12px; right: 12px; }
+    .vaporwave-scene { opacity: 0.48; }
+    .scene-column.right,
+    .scene-bust.right,
+    .scene-spark.three { display: none; }
+    .scene-column.left {
+      left: -18px;
+      bottom: 10vh;
+      width: 110px;
+    }
+    .scene-bust.left {
+      left: 2vw;
+      bottom: 16vh;
+      width: 152px;
+      padding: 10px;
+    }
+    .scene-glow-ring {
+      width: 480px;
+      height: 480px;
+      top: 19vh;
+    }
+  }
+  @media (max-width: 1180px) and (min-width: 861px), (max-height: 840px) and (min-width: 861px) {
+    .machine-wrap {
+      inset: 76px 18px 78px;
+    }
+    .rail-topper {
+      padding: 14px 18px 12px;
+    }
+    .rail-title {
+      font-size: clamp(20px, 1.8vw, 28px);
+    }
+    .rail-subtitle {
+      max-width: 500px;
+      font-size: 10px;
+    }
+    .rail-stage {
+      padding: 12px;
+      gap: 10px;
+    }
+    .nav-btn {
+      width: 50px;
+      font-size: 12px;
+    }
+    .scroll-hint {
+      top: 12px;
+      right: 12px;
+      font-size: 8px;
+    }
+    .slots-track {
+      padding: 20px 22px 66px;
+      gap: 14px;
+    }
+    .slot-page {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .slot {
+      padding: 12px 12px 16px;
+      gap: 6px;
+    }
+    .product-visual svg {
+      width: clamp(46px, 5vw, 64px);
+      height: clamp(46px, 5vw, 64px);
+    }
+    .product-name {
+      font-size: 10px;
+      letter-spacing: 1.6px;
+      margin-bottom: 4px;
+    }
+    .product-note {
+      min-height: 24px;
+      font-size: 8px;
+      line-height: 1.3;
+      max-width: 150px;
+    }
+    .price-tag {
+      font-size: 12px;
+      padding: 3px 8px;
+    }
+    .stock-pill {
+      font-size: 7px;
+      padding: 4px 8px 3px;
+    }
+    .selection-copy {
+      min-height: 42px;
+      font-size: 10px;
+    }
+    .scene-bust.right {
+      display: none;
+    }
+    .scene-column.left {
+      width: 150px;
+    }
+    .scene-column.right {
+      width: 172px;
+    }
+    .scene-bust.left {
+      width: 188px;
+      bottom: 16vh;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="ticker">
+  <div class="ticker-track">
+    *** DREAM DISPENSARY *** BROWSE THE VENDING RAIL SIDEWAYS <span>&#9670;</span> PASTEL GOODS IN EVERY SLOT <span>&#9670;</span> DRAG THE SHELF OR TAP THE ARROWS <span>&#9670;</span> SOLD OUT STAMPS READ IN ENGLISH TOO <span>&#9670;</span> PICK A CODE AND DISPENSE THE DROP *** DREAM DISPENSARY ***
+  </div>
+</div>
+
+<a href="index.html" class="exit-btn">EXIT</a>
+
+<div class="stars"></div>
+<div class="sun"></div>
+<div class="grid-floor"></div>
+<div class="vaporwave-scene" aria-hidden="true">
+  <div class="scene-glow-ring"></div>
+  <div class="scene-column left"><img src="file:///C:/Users/Library%20Patron/Documents/GitHub/electriclightsdev.github.io/assets/column.webp" alt=""></div>
+  <div class="scene-column right"><img src="file:///C:/Users/Library%20Patron/Documents/GitHub/electriclightsdev.github.io/assets/column.webp" alt=""></div>
+  <div class="scene-bust left"><img src="file:///C:/Users/Library%20Patron/Documents/GitHub/electriclightsdev.github.io/assets/bust.png" alt=""></div>
+  <div class="scene-bust right"><img src="file:///C:/Users/Library%20Patron/Documents/GitHub/electriclightsdev.github.io/assets/bust.png" alt=""></div>
+  <div class="scene-spark one"></div>
+  <div class="scene-spark two"></div>
+  <div class="scene-spark three"></div>
+</div>
+
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+     SVG ICON LIBRARY
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-tee" viewBox="0 0 64 64">
+      <path d="M18 14 L26 10 Q32 16 38 10 L46 14 L54 22 L48 28 L44 24 L44 54 L20 54 L20 24 L16 28 L10 22 Z"
+            fill="#E8A8BD" stroke="#4A3B5C" stroke-width="2" stroke-linejoin="round"/>
+      <circle cx="32" cy="36" r="6" fill="#F5EAD4" opacity="0.5"/>
+    </symbol>
+    <symbol id="i-vinyl" viewBox="0 0 64 64">
+      <circle cx="32" cy="32" r="26" fill="#2E2440" stroke="#4A3B5C" stroke-width="2"/>
+      <circle cx="32" cy="32" r="22" fill="none" stroke="#7D6B96" stroke-width="0.5"/>
+      <circle cx="32" cy="32" r="18" fill="none" stroke="#7D6B96" stroke-width="0.5"/>
+      <circle cx="32" cy="32" r="14" fill="none" stroke="#7D6B96" stroke-width="0.5"/>
+      <circle cx="32" cy="32" r="9" fill="#F5C9A8" stroke="#4A3B5C" stroke-width="1"/>
+      <circle cx="32" cy="32" r="2" fill="#2E2440"/>
+    </symbol>
+    <symbol id="i-tape" viewBox="0 0 64 64">
+      <rect x="6" y="14" width="52" height="36" rx="2" fill="#B8D8C4" stroke="#4A3B5C" stroke-width="2"/>
+      <rect x="10" y="18" width="44" height="16" rx="1" fill="#F5EAD4"/>
+      <rect x="12" y="22" width="40" height="2" fill="#4A3B5C" opacity="0.4"/>
+      <rect x="12" y="26" width="28" height="2" fill="#4A3B5C" opacity="0.4"/>
+      <circle cx="20" cy="42" r="5" fill="#F5EAD4" stroke="#4A3B5C" stroke-width="1.5"/>
+      <circle cx="44" cy="42" r="5" fill="#F5EAD4" stroke="#4A3B5C" stroke-width="1.5"/>
+      <circle cx="20" cy="42" r="1.5" fill="#4A3B5C"/>
+      <circle cx="44" cy="42" r="1.5" fill="#4A3B5C"/>
+    </symbol>
+    <symbol id="i-sticker" viewBox="0 0 64 64">
+      <rect x="12" y="18" width="36" height="36" rx="3"
+            fill="#C8B5DB" stroke="#4A3B5C" stroke-width="2" transform="rotate(-6 30 36)"/>
+      <rect x="18" y="14" width="36" height="36" rx="3"
+            fill="#F5C9A8" stroke="#4A3B5C" stroke-width="2" transform="rotate(4 36 32)"/>
+      <circle cx="36" cy="32" r="8" fill="#E8A8BD"/>
+      <path d="M 30 32 L 34 36 L 42 28" stroke="#4A3B5C" stroke-width="2" fill="none" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-poster" viewBox="0 0 64 64">
+      <rect x="12" y="8" width="40" height="48" rx="1" fill="#F5EAD4" stroke="#4A3B5C" stroke-width="2"/>
+      <rect x="16" y="12" width="32" height="20" fill="#E8A8BD"/>
+      <circle cx="24" cy="20" r="4" fill="#F5C9A8"/>
+      <path d="M 16 32 L 28 24 L 40 30 L 48 22 L 48 32 Z" fill="#C8B5DB"/>
+      <rect x="18" y="38" width="28" height="2" fill="#4A3B5C" opacity="0.5"/>
+      <rect x="18" y="44" width="20" height="2" fill="#4A3B5C" opacity="0.5"/>
+      <rect x="18" y="50" width="24" height="2" fill="#4A3B5C" opacity="0.5"/>
+    </symbol>
+    <symbol id="i-pin" viewBox="0 0 64 64">
+      <circle cx="32" cy="30" r="18" fill="#E8A8BD" stroke="#4A3B5C" stroke-width="2"/>
+      <circle cx="32" cy="30" r="12" fill="#F5C9A8"/>
+      <path d="M 26 24 L 32 32 L 38 22 M 26 36 L 38 36" stroke="#4A3B5C" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <line x1="32" y1="48" x2="32" y2="58" stroke="#4A3B5C" stroke-width="2"/>
+      <circle cx="32" cy="58" r="2" fill="#4A3B5C"/>
+    </symbol>
+    <symbol id="i-hoodie" viewBox="0 0 64 64">
+      <path d="M 18 18 Q 24 8 32 8 Q 40 8 46 18 L 54 24 L 48 32 L 44 28 L 44 56 L 20 56 L 20 28 L 16 32 L 10 24 Z"
+            fill="#B8D8C4" stroke="#4A3B5C" stroke-width="2" stroke-linejoin="round"/>
+      <path d="M 24 10 Q 32 14 40 10 L 40 20 Q 32 24 24 20 Z" fill="#8FB8A0" stroke="#4A3B5C" stroke-width="1.5"/>
+      <line x1="32" y1="24" x2="32" y2="44" stroke="#4A3B5C" stroke-width="1.5"/>
+      <circle cx="30" cy="30" r="1" fill="#4A3B5C"/>
+      <circle cx="34" cy="30" r="1" fill="#4A3B5C"/>
+    </symbol>
+    <symbol id="i-mystery" viewBox="0 0 64 64">
+      <path d="M 10 22 L 32 14 L 54 22 L 32 30 Z" fill="#F5C9A8" stroke="#4A3B5C" stroke-width="2" stroke-linejoin="round"/>
+      <path d="M 10 22 L 10 48 L 32 56 L 32 30 Z" fill="#E8A97F" stroke="#4A3B5C" stroke-width="2" stroke-linejoin="round"/>
+      <path d="M 54 22 L 54 48 L 32 56 L 32 30 Z" fill="#C8B5DB" stroke="#4A3B5C" stroke-width="2" stroke-linejoin="round"/>
+      <text x="40" y="46" font-family="Bungee, sans-serif" font-size="16" fill="#4A3B5C">?</text>
+    </symbol>
+    <symbol id="i-vhs" viewBox="0 0 64 64">
+      <rect x="6" y="16" width="52" height="32" rx="2" fill="#2E2440" stroke="#4A3B5C" stroke-width="2"/>
+      <rect x="10" y="20" width="44" height="16" rx="1" fill="#F5EAD4"/>
+      <rect x="12" y="22" width="20" height="2" fill="#E8A8BD"/>
+      <rect x="12" y="26" width="36" height="1.5" fill="#4A3B5C" opacity="0.4"/>
+      <rect x="12" y="29" width="28" height="1.5" fill="#4A3B5C" opacity="0.4"/>
+      <rect x="12" y="32" width="32" height="1.5" fill="#4A3B5C" opacity="0.4"/>
+      <circle cx="20" cy="42" r="3" fill="#C8B5DB" stroke="#4A3B5C" stroke-width="1"/>
+      <circle cx="44" cy="42" r="3" fill="#C8B5DB" stroke="#4A3B5C" stroke-width="1"/>
+    </symbol>
+    <symbol id="i-lighter" viewBox="0 0 64 64">
+      <rect x="20" y="20" width="24" height="34" rx="2" fill="#E8A8BD" stroke="#4A3B5C" stroke-width="2"/>
+      <rect x="22" y="16" width="20" height="6" fill="#4A3B5C"/>
+      <path d="M 32 4 Q 28 10 32 14 Q 36 10 32 4" fill="#F5C9A8" stroke="#4A3B5C" stroke-width="1.5"/>
+      <rect x="24" y="32" width="16" height="1" fill="#4A3B5C" opacity="0.4"/>
+      <rect x="24" y="36" width="16" height="1" fill="#4A3B5C" opacity="0.4"/>
+    </symbol>
+    <symbol id="i-key" viewBox="0 0 64 64">
+      <circle cx="20" cy="32" r="10" fill="none" stroke="#4A3B5C" stroke-width="3"/>
+      <rect x="28" y="28" width="30" height="8" fill="#F5C9A8" stroke="#4A3B5C" stroke-width="2"/>
+      <rect x="48" y="36" width="3" height="6" fill="#4A3B5C"/>
+      <rect x="54" y="36" width="3" height="4" fill="#4A3B5C"/>
+    </symbol>
+    <symbol id="i-floppy" viewBox="0 0 64 64">
+      <rect x="10" y="10" width="44" height="44" rx="2" fill="#C8B5DB" stroke="#4A3B5C" stroke-width="2"/>
+      <rect x="16" y="10" width="32" height="18" fill="#F5EAD4" stroke="#4A3B5C" stroke-width="1.5"/>
+      <rect x="22" y="14" width="20" height="8" fill="#4A3B5C"/>
+      <rect x="18" y="34" width="28" height="18" fill="#FAF3E3" stroke="#4A3B5C" stroke-width="1.5"/>
+      <rect x="22" y="38" width="20" height="1.5" fill="#4A3B5C" opacity="0.4"/>
+      <rect x="22" y="42" width="20" height="1.5" fill="#4A3B5C" opacity="0.4"/>
+    </symbol>
+    <symbol id="coil-pattern" viewBox="0 0 80 10" preserveAspectRatio="none">
+      <path d="M 0,5 Q 5,-1 10,5 T 20,5 T 30,5 T 40,5 T 50,5 T 60,5 T 70,5 T 80,5"
+            stroke="#8F82A3" stroke-width="1.5" fill="none"/>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+     THE MACHINE
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<div class="machine-wrap">
+  <div class="machine-stage">
+  <div class="machine" id="machine">
+
+    <span class="rivet tl"></span>
+    <span class="rivet tr"></span>
+    <span class="rivet bl"></span>
+    <span class="rivet br"></span>
+
+    <!-- Crown -->
+    <div class="crown">
+      <div class="crown-corner left">AUTOMATIC GOODS</div>
+      <div class="crown-corner right">ROW 08</div>
+      <div class="crown-brand">DREAM DISPENSARY</div>
+      <div class="crown-sub">VAPOR VENDING PARLOR</div>
+    </div>
+
+    <!-- Body -->
+    <div class="machine-body">
+
+      <!-- LEFT: control panel -->
+      <div class="left-panel">
+
+        <div class="display-bar">
+          <div class="display-lcd" id="display">&gt; SELECT ITEM _</div>
+          <div class="display-status"><span class="display-dot"></span>ONLINE</div>
+        </div>
+
+        <div class="panel-section">
+          <div class="panel-label">CURRENT PICK</div>
+          <div class="selection-card">
+            <div class="selection-row">
+              <div class="selection-code" id="selectionCode">A1</div>
+              <div class="selection-price" id="selectionPrice">$30</div>
+            </div>
+            <div class="selection-name" id="selectionName">Beetles Tee</div>
+            <div class="selection-meta">
+              <div class="selection-pill" id="selectionCategory">APPAREL</div>
+              <div class="selection-pill status" id="selectionStatus">READY TO SHIP</div>
+            </div>
+            <div class="selection-copy" id="selectionCopy">Browse sideways with arrows, wheel, or drag the shelf.</div>
+          </div>
+        </div>
+
+        <div class="panel-section">
+          <div class="panel-label">SELECT PAD</div>
+          <div class="keypad" id="keypad">
+            <div class="key" data-key="A">A</div>
+            <div class="key" data-key="B">B</div>
+            <div class="key" data-key="C">C</div>
+            <div class="key" data-key="D">D</div>
+            <div class="key" data-key="1">1</div>
+            <div class="key" data-key="2">2</div>
+            <div class="key" data-key="3">3</div>
+            <div class="key" data-key="4">4</div>
+            <div class="key" data-key="5">5</div>
+            <div class="key" data-key="6">6</div>
+            <div class="key util" data-key="CLR">CLR</div>
+            <div class="key util" data-key="ENT">GO</div>
+          </div>
+        </div>
+
+        <div class="panel-section coin-section">
+          <div class="panel-label">COIN SLOT</div>
+          <div class="coin-row">
+            <div class="coin-slot">COIN</div>
+            <div class="return-btn" title="Coin return"></div>
+          </div>
+          <div class="balance-display" id="balance">$ 0.00</div>
+        </div>
+
+        <div class="panel-section">
+          <div class="panel-label">BROWSE RAIL</div>
+          <div class="browse-meter">
+            <div class="browse-meter-row">
+              <span id="browsePosition">01 / 12</span>
+              <span id="browseLabel">SIDEWAYS ONLY</span>
+            </div>
+            <div class="browse-bar">
+              <div class="browse-progress" id="browseProgress"></div>
+            </div>
+            <div class="browse-hint">Two rows stay visible at once, and the side buttons jump between full merch pages.</div>
+          </div>
+        </div>
+
+        <div class="dispenser">
+          <div class="hatch" id="hatch">
+            <div class="hatch-flap"></div>
+            <div class="hatch-label">PICKUP BAY / PUSH</div>
+            <div class="hatch-flap"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: glass case + horizontal scroll -->
+      <div class="right-panel">
+        <div class="rail-topper">
+          <div class="rail-copy">
+            <div class="rail-eyebrow">HORIZONTAL RAIL ACTIVE</div>
+            <div class="rail-title">Choose A Dream Slot</div>
+            <div class="rail-subtitle">The control panel stays planted while two stacked rows of merch page sideways through a little marble-and-neon fantasy.</div>
+          </div>
+          <div class="rail-status">
+            <div class="rail-status-label">PAGE</div>
+            <div class="rail-status-value" id="railStatus">01 / 02</div>
+          </div>
+        </div>
+
+        <div class="rail-stage">
+          <button class="nav-btn nav-left" id="navLeft" aria-label="Scroll left">
+            BACK<span class="nav-jp">PAGE</span>
+          </button>
+
+        <div class="glass-case">
+          <div class="scroll-hint">2 ROWS / PAGE BUTTONS / DRAG</div>
+          <div class="slots-viewport" id="slotsViewport">
+            <div class="slots-track" id="slots"></div>
+          </div>
+          <div class="scroll-dots" id="dots"></div>
+        </div>
+
+          <button class="nav-btn nav-right" id="navRight" aria-label="Scroll right">
+            NEXT<span class="nav-jp">PAGE</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  </div>
+</div>
+
+<script>
+  const SOLD_OUT_TEXT = 'SOLD OUT / \u58f2\u5207';
+  const products = [
+    { code: 'A1', name: 'Beetles Tee',    price: '$30', icon: 'i-tee',     url: '#', category: 'Apparel', stock: 'Ready To Ship',   blurb: 'Boxy washed cotton with a soft cracked print that feels pulled from a late-night flyer wall.' },
+    { code: 'A2', name: 'Radio Vinyl',    price: '$28', icon: 'i-vinyl',   url: '#', category: 'Audio',    stock: 'Fresh Pressing',  blurb: 'A moody wax pressing for the shelf, the stereo, and anyone who misses record-store neon.' },
+    { code: 'A3', name: 'Day Job Tape',   price: '$12', icon: 'i-tape',    url: '#', category: 'Audio',    stock: 'Low Stock',       blurb: 'A quick-hit cassette run with demo grit, handwritten energy, and a bedroom-studio kind of glow.' },
+    { code: 'B1', name: 'Sticker Pack',   price: '$8',  icon: 'i-sticker', url: '#', category: 'Extras',   stock: 'Pocket Friendly', blurb: 'Glossy slap pack for laptops, tour cases, water bottles, and generally making things look claimed.' },
+    { code: 'B2', name: 'Gallery Poster', price: '$20', icon: 'i-poster',  url: '#', category: 'Print',    stock: 'Ships Rolled',    blurb: 'Big-format wall art with soft sunset color and enough contrast to read from across the room.' },
+    { code: 'B3', name: 'Enamel Pin',     price: '$10', icon: 'i-pin',     url: '#', category: 'Extras',   stock: 'Collector Drop',  blurb: 'A small shiny accent for jackets and bags, built like a souvenir from the good version of the future.' },
+    { code: 'C1', name: 'Hoodie',         price: '$55', icon: 'i-hoodie',  url: '#', category: 'Apparel',  stock: 'Heavyweight',     blurb: 'Soft fleece, roomy fit, and an easy front graphic that feels lived in from the first wear.' },
+    { code: 'C2', name: 'Mystery Box',    price: '$25', icon: 'i-mystery', url: '#', category: 'Bundle',   stock: 'Lucky Pull',      blurb: 'A sealed grab bag of oddities, archive pieces, and a couple of surprises you cannot pre-game.' },
+    { code: 'C3', name: 'Live VHS',       price: '$15', icon: 'i-vhs',     url: '#', category: 'Archive',  stock: 'Cult Favorite',   blurb: 'Lo-fi live footage with tape wobble, blown-out lights, and the exact kind of artifact you keep.' },
+    { code: 'D1', name: 'Lighter',        price: '$6',  icon: 'i-lighter', url: '#', category: 'Extras',   stock: 'Counter Ready',   blurb: 'Cheap in the best way: simple, useful, and branded enough to disappear into another pocket.' },
+    { code: 'D2', name: 'Keychain',       price: '$8',  icon: 'i-key',     url: '#', category: 'Extras',   stock: 'Giftable',        blurb: 'A quick little daily-carry piece for keys, zippers, or bags that need one more thing hanging off them.' },
+    { code: 'D3', name: 'Floppy Demo',    price: '$18', icon: 'i-floppy',  url: '#', category: 'Archive',  stock: 'Archived Drop',   blurb: 'Retro software-era packaging for the deep-cut crowd. This one is gone, but it still deserves the spotlight.', sold: true }
+  ];
+
+  let currentIndex = 0;
+  let isAnimating = false;
+  let typewriteTimer;
+  let scrollFrame;
+  let buffer = '';
+  let bufferTimer;
+  let isDragging = false;
+  let dragStartX = 0;
+  let dragStartScrollLeft = 0;
+  let renderedPageSize = 6;
+
+  function clamp(value, min, max) {
+    return Math.min(max, Math.max(min, value));
+  }
+
+  function getViewport() {
+    return document.getElementById('slotsViewport');
+  }
+
+  function getSlots() {
+    return Array.from(document.querySelectorAll('.slot'));
+  }
+
+  function getPages() {
+    return Array.from(document.querySelectorAll('.slot-page'));
+  }
+
+  function isCompactDesktop() {
+    return window.innerWidth > 860 && (window.innerWidth <= 1180 || window.innerHeight <= 840);
+  }
+
+  function getPageSize() {
+    if (window.innerWidth <= 860) return 4;
+    return isCompactDesktop() ? 4 : 6;
+  }
+
+  function getPageCount() {
+    return Math.ceil(products.length / getPageSize());
+  }
+
+  function getCurrentPage() {
+    return Math.floor(currentIndex / getPageSize());
+  }
+
+  function formatPosition(index) {
+    return String(index + 1).padStart(2, '0') + ' / ' + String(products.length).padStart(2, '0');
+  }
+
+  function formatPagePosition(index) {
+    return String(index + 1).padStart(2, '0') + ' / ' + String(getPageCount()).padStart(2, '0');
+  }
+
+  function typewrite(text) {
+    clearInterval(typewriteTimer);
+    const el = document.getElementById('display');
+    let i = 0;
+    el.textContent = '';
+    typewriteTimer = setInterval(() => {
+      i += 1;
+      el.textContent = text.slice(0, i);
+      if (i >= text.length) clearInterval(typewriteTimer);
+    }, 22);
+  }
+
+  function setDisplay(text) {
+    clearInterval(typewriteTimer);
+    document.getElementById('display').textContent = text;
+  }
+
+  function updateSelectionPanel(index) {
+    const product = products[index];
+    if (!product) return;
+
+    const statusEl = document.getElementById('selectionStatus');
+    const currentPage = getCurrentPage();
+    document.getElementById('selectionCode').textContent = product.code;
+    document.getElementById('selectionPrice').textContent = product.price;
+    document.getElementById('selectionName').textContent = product.name;
+    document.getElementById('selectionCategory').textContent = product.category;
+    statusEl.textContent = product.sold ? SOLD_OUT_TEXT : product.stock;
+    statusEl.classList.toggle('sold', Boolean(product.sold));
+    document.getElementById('selectionCopy').textContent = product.blurb;
+    document.getElementById('railStatus').textContent = formatPagePosition(currentPage);
+    document.getElementById('browsePosition').textContent = formatPosition(index);
+    document.getElementById('browseLabel').textContent = 'PAGE ' + String(currentPage + 1).padStart(2, '0');
+    document.getElementById('browseProgress').style.width = (((index + 1) / products.length) * 100).toFixed(2) + '%';
+  }
+
+  function updateDots() {
+    const currentPage = getCurrentPage();
+    document.querySelectorAll('.dot').forEach((dot, index) => {
+      dot.classList.toggle('active', index === currentPage);
+    });
+
+    getSlots().forEach((slot, index) => {
+      slot.classList.toggle('is-current', index === currentIndex);
+    });
+  }
+
+  function updateNavButtons() {
+    const currentPage = getCurrentPage();
+    document.getElementById('navLeft').disabled = currentPage <= 0;
+    document.getElementById('navRight').disabled = currentPage >= getPageCount() - 1;
+  }
+
+  function updatePageWidth() {
+    const viewport = getViewport();
+    const track = document.getElementById('slots');
+    if (!viewport || !track) return;
+
+    const padding = window.innerWidth <= 860 ? 36 : (isCompactDesktop() ? 44 : 60);
+    const pageWidth = Math.max(280, viewport.clientWidth - padding);
+    track.style.setProperty('--page-width', pageWidth + 'px');
+  }
+
+  function getScrollTargetForPage(pageIndex) {
+    const viewport = getViewport();
+    const track = document.getElementById('slots');
+    const page = getPages()[pageIndex];
+    if (!viewport || !track || !page) return 0;
+
+    const paddingLeft = parseFloat(window.getComputedStyle(track).paddingLeft) || 0;
+    const maxScroll = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
+    return clamp(page.offsetLeft - paddingLeft, 0, maxScroll);
+  }
+
+  function syncIndexFromViewport() {
+    const viewport = getViewport();
+    const pages = getPages();
+    const pageSize = getPageSize();
+    if (!viewport || !pages.length) return;
+
+    const centerLine = viewport.scrollLeft + (viewport.clientWidth / 2);
+    let closestPage = 0;
+    let closestDistance = Number.POSITIVE_INFINITY;
+
+    pages.forEach((page, index) => {
+      const pageCenter = page.offsetLeft + (page.offsetWidth / 2);
+      const distance = Math.abs(pageCenter - centerLine);
+      if (distance < closestDistance) {
+        closestDistance = distance;
+        closestPage = index;
+      }
+    });
+
+    const pageStart = closestPage * pageSize;
+    const pageEnd = Math.min(pageStart + pageSize - 1, products.length - 1);
+    if (currentIndex < pageStart || currentIndex > pageEnd) {
+      currentIndex = pageStart;
+    }
+
+    updateDots();
+    updateNavButtons();
+    updateSelectionPanel(currentIndex);
+  }
+
+  function scrollToIndex(index, immediate = false) {
+    const viewport = getViewport();
+    if (!viewport) return;
+
+    currentIndex = clamp(index, 0, products.length - 1);
+    updateDots();
+    updateNavButtons();
+    updateSelectionPanel(currentIndex);
+
+    const target = getScrollTargetForPage(getCurrentPage());
+    anime.remove(viewport);
+
+    if (immediate) {
+      viewport.scrollLeft = target;
+      syncIndexFromViewport();
+      return;
+    }
+
+    anime({
+      targets: viewport,
+      scrollLeft: target,
+      duration: 650,
+      easing: 'easeInOutQuart',
+      complete: syncIndexFromViewport
+    });
+  }
+
+  function scrollToPage(pageIndex, immediate = false) {
+    const pageSize = getPageSize();
+    const clampedPage = clamp(pageIndex, 0, getPageCount() - 1);
+    const nextIndex = clamp(clampedPage * pageSize, 0, products.length - 1);
+    scrollToIndex(nextIndex, immediate);
+  }
+
+  function renderMachine() {
+    const track = document.getElementById('slots');
+    const dotsContainer = document.getElementById('dots');
+    const pageSize = getPageSize();
+    renderedPageSize = pageSize;
+    track.innerHTML = '';
+    dotsContainer.innerHTML = '';
+
+    for (let pageIndex = 0; pageIndex < getPageCount(); pageIndex += 1) {
+      const page = document.createElement('div');
+      page.className = 'slot-page';
+      page.setAttribute('data-page', pageIndex);
+
+      const pageProducts = products.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize);
+      pageProducts.forEach((product, pageOffset) => {
+        const index = (pageIndex * pageSize) + pageOffset;
+        const slot = document.createElement('a');
+        slot.className = 'slot' + (product.sold ? ' sold' : '');
+        slot.href = product.url;
+        slot.setAttribute('data-code', product.code);
+        slot.setAttribute('data-index', index);
+        slot.setAttribute('aria-label', product.code + ' ' + product.name);
+
+        let html =
+          '<div class="slot-topline"><span class="slot-code">' + product.code + '</span><span class="slot-category">' + product.category + '</span></div>' +
+          '<svg class="coil"><use href="#coil-pattern"/></svg>' +
+          '<div class="product-visual"><svg><use href="#' + product.icon + '"/></svg></div>' +
+          '<div class="product-name">' + product.name + '</div>' +
+          '<div class="product-note">' + product.blurb + '</div>' +
+          '<div class="price-tag">' + product.code + ' / ' + product.price + '</div>' +
+          '<div class="stock-pill' + (product.sold ? ' sold' : '') + '">' + (product.sold ? 'SOLD OUT / &#22770;&#20999;' : product.stock) + '</div>';
+
+        if (product.sold) {
+          html += '<div class="sold-stamp"><span class="en">SOLD OUT</span><span class="jp">&#22770;&#20999;</span></div>';
+        }
+
+        slot.innerHTML = html;
+
+        slot.addEventListener('mouseenter', () => {
+          updateSelectionPanel(index);
+          if (product.sold) typewrite('> ' + product.code + ' / ' + SOLD_OUT_TEXT);
+          else typewrite('> ' + product.code + ' / ' + product.name.toUpperCase());
+        });
+
+        slot.addEventListener('mouseleave', () => {
+          updateSelectionPanel(currentIndex);
+          if (!isAnimating) typewrite('> SELECT ITEM _');
+        });
+
+        slot.addEventListener('focus', () => {
+          updateSelectionPanel(index);
+        });
+
+        slot.addEventListener('click', (event) => {
+          event.preventDefault();
+          selectProduct(index);
+        });
+
+        page.appendChild(slot);
+      });
+
+      track.appendChild(page);
+
+      const pageHasSold = pageProducts.some((product) => product.sold);
+      const dot = document.createElement('div');
+      dot.className = 'dot' + (pageHasSold ? ' sold' : '');
+      dot.setAttribute('data-page', pageIndex);
+      dot.title = 'Page ' + String(pageIndex + 1);
+      dot.addEventListener('click', () => scrollToPage(pageIndex));
+      dotsContainer.appendChild(dot);
+    }
+
+    updatePageWidth();
+    updateSelectionPanel(currentIndex);
+    updateDots();
+    updateNavButtons();
+    requestAnimationFrame(() => scrollToIndex(currentIndex, true));
+  }
+
+  function selectProduct(index) {
+    if (isAnimating) return;
+    const product = products[index];
+    if (!product) return;
+
+    scrollToIndex(index);
+
+    if (product.sold) {
+      setTimeout(() => typewrite('> ' + product.code + ' / ' + SOLD_OUT_TEXT), 280);
+      return;
+    }
+
+    setTimeout(() => dispense(product), 700);
+  }
+
+  function dispense(product) {
+    if (isAnimating) return;
+    isAnimating = true;
+
+    const slot = document.querySelector('[data-code="' + product.code + '"]');
+    if (!slot) {
+      isAnimating = false;
+      return;
+    }
+
+    const slotIcon = slot.querySelector('.product-visual svg');
+    const coil = slot.querySelector('.coil');
+    const hatch = document.getElementById('hatch');
+
+    slot.classList.add('active');
+    typewrite('> DISPENSING ' + product.code + '...');
+
+    anime({
+      targets: coil,
+      rotate: '0.75turn',
+      duration: 900,
+      easing: 'easeInOutQuad'
+    });
+
+    anime({
+      targets: slotIcon,
+      translateY: [0, 45],
+      opacity: [1, 0],
+      scale: [1, 0.7],
+      duration: 700,
+      delay: 400,
+      easing: 'easeInQuad',
+      complete: () => {
+        hatch.classList.add('dispensing');
+        const clone = document.createElement('div');
+        clone.className = 'dispensed-item';
+        clone.innerHTML = '<svg viewBox="0 0 64 64" width="48" height="48"><use href="#' + product.icon + '"/></svg>';
+        hatch.appendChild(clone);
+
+        anime({
+          targets: clone,
+          translateY: [-40, 0],
+          scale: [0.4, 1],
+          opacity: [0, 1],
+          rotate: [-15, 0],
+          duration: 500,
+          easing: 'easeOutBack'
+        });
+
+        setTimeout(() => {
+          anime({
+            targets: clone,
+            translateY: [0, -6, 0],
+            duration: 350,
+            easing: 'easeOutQuad'
+          });
+        }, 500);
+
+        typewrite('> THANK YOU / SEE YOU NEXT DROP');
+
+        setTimeout(() => {
+          anime({
+            targets: clone,
+            opacity: 0,
+            scale: 0.8,
+            duration: 500,
+            easing: 'easeInQuad',
+            complete: () => clone.remove()
+          });
+          hatch.classList.remove('dispensing');
+
+          anime({
+            targets: slotIcon,
+            translateY: 0,
+            opacity: 1,
+            scale: 1,
+            duration: 400,
+            easing: 'easeOutQuad'
+          });
+
+          anime.set(coil, { rotate: 0 });
+          slot.classList.remove('active');
+          isAnimating = false;
+
+          setTimeout(() => typewrite('> SELECT ITEM _'), 220);
+        }, 1800);
+      }
+    });
+  }
+
+  function pressKey(key) {
+    clearTimeout(bufferTimer);
+
+    if (key === 'CLR') {
+      buffer = '';
+      typewrite('> SELECT ITEM _');
+      return;
+    }
+
+    if (key === 'ENT') {
+      if (!buffer.length) {
+        selectProduct(currentIndex);
+        return;
+      }
+
+      const match = products.find((product) => product.code === buffer);
+      if (match) {
+        buffer = '';
+        selectProduct(products.indexOf(match));
+      } else {
+        typewrite('> INVALID CODE: ' + buffer);
+        buffer = '';
+        setTimeout(() => typewrite('> SELECT ITEM _'), 1500);
+      }
+      return;
+    }
+
+    buffer += key;
+    typewrite('> ENTERED: ' + buffer + '_');
+
+    if (buffer.length >= 2) {
+      const match = products.find((product) => product.code === buffer);
+      if (match) {
+        buffer = '';
+        selectProduct(products.indexOf(match));
+      } else {
+        typewrite('> INVALID CODE: ' + buffer);
+        buffer = '';
+        setTimeout(() => typewrite('> SELECT ITEM _'), 1500);
+      }
+    } else {
+      bufferTimer = setTimeout(() => {
+        buffer = '';
+        typewrite('> SELECT ITEM _');
+      }, 3000);
+    }
+  }
+
+  function attachViewportControls() {
+    const viewport = getViewport();
+    if (!viewport) return;
+
+    viewport.addEventListener('wheel', (event) => {
+      if (Math.abs(event.deltaY) > Math.abs(event.deltaX)) {
+        event.preventDefault();
+        viewport.scrollLeft += event.deltaY;
+      }
+    }, { passive: false });
+
+    viewport.addEventListener('scroll', () => {
+      if (scrollFrame) cancelAnimationFrame(scrollFrame);
+      scrollFrame = requestAnimationFrame(syncIndexFromViewport);
+    }, { passive: true });
+
+    viewport.addEventListener('pointerdown', (event) => {
+      isDragging = true;
+      dragStartX = event.clientX;
+      dragStartScrollLeft = viewport.scrollLeft;
+      viewport.classList.add('dragging');
+      if (viewport.setPointerCapture) viewport.setPointerCapture(event.pointerId);
+    });
+
+    viewport.addEventListener('pointermove', (event) => {
+      if (!isDragging) return;
+      viewport.scrollLeft = dragStartScrollLeft - (event.clientX - dragStartX);
+    });
+
+    const stopDragging = (event) => {
+      if (!isDragging) return;
+      isDragging = false;
+      viewport.classList.remove('dragging');
+      if (event && viewport.releasePointerCapture && viewport.hasPointerCapture && viewport.hasPointerCapture(event.pointerId)) {
+        viewport.releasePointerCapture(event.pointerId);
+      }
+      syncIndexFromViewport();
+      scrollToPage(getCurrentPage());
+    };
+
+    viewport.addEventListener('pointerup', stopDragging);
+    viewport.addEventListener('pointercancel', stopDragging);
+  }
+
+  document.getElementById('navLeft').addEventListener('click', () => {
+    const currentPage = getCurrentPage();
+    if (currentPage > 0) scrollToPage(currentPage - 1);
+  });
+
+  document.getElementById('navRight').addEventListener('click', () => {
+    const currentPage = getCurrentPage();
+    if (currentPage < getPageCount() - 1) scrollToPage(currentPage + 1);
+  });
+
+  document.addEventListener('keydown', (event) => {
+    const currentPage = getCurrentPage();
+    if (event.key === 'ArrowLeft' && currentPage > 0) {
+      event.preventDefault();
+      scrollToPage(currentPage - 1);
+    }
+    if (event.key === 'ArrowRight' && currentPage < getPageCount() - 1) {
+      event.preventDefault();
+      scrollToPage(currentPage + 1);
+    }
+    if (event.key === 'Enter') {
+      selectProduct(currentIndex);
+    }
+  });
+
+  document.querySelectorAll('.key').forEach((key) => {
+    key.addEventListener('click', () => {
+      key.classList.add('pressed');
+      setTimeout(() => key.classList.remove('pressed'), 120);
+      pressKey(key.dataset.key);
+    });
+  });
+
+  renderMachine();
+  attachViewportControls();
+
+  /* Scale the whole machine to fit the viewport. The machine is designed
+     at a fixed 1380x760 canvas — this function just picks the biggest
+     scale factor that fits, never exceeding 1.0. Below 860px width we
+     disable the transform and let the mobile stacking take over. */
+  function fitMachine() {
+    if (window.innerWidth <= 860) {
+      document.documentElement.style.setProperty('--machine-scale', 1);
+      return;
+    }
+    const wrap = document.querySelector('.machine-wrap');
+    const designW = 1380, designH = 760;
+    const availableW = Math.max(0, wrap ? wrap.clientWidth : (window.innerWidth - 48));
+    const availableH = Math.max(0, wrap ? wrap.clientHeight : (window.innerHeight - 168));
+    const scale = Math.min((availableW - 6) / designW, (availableH - 6) / designH, 1);
+    document.documentElement.style.setProperty('--machine-scale', scale);
+  }
+  fitMachine();
+
+  anime({
+    targets: '#machine',
+    opacity: [0, 1],
+    translateY: [30, 0],
+    duration: 900,
+    easing: 'easeOutQuart'
+  });
+
+  window.addEventListener('resize', () => {
+    fitMachine();
+    const nextPageSize = getPageSize();
+    if (renderedPageSize !== nextPageSize) {
+      renderMachine();
+      return;
+    }
+    updatePageWidth();
+    scrollToIndex(currentIndex, true);
+  });
+</script>
+
+</body>
+</html>
