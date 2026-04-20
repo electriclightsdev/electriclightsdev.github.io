@@ -5,6 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>· · · ● · · ● · · · · · · · · ●  · · · · · · · · ●</title>
   <link rel="icon" type="image/png" href="assets/icon2.gif">
+  
+  <script>
+    // Check if the user specifically requested the desktop version
+    const urlParams = new URLSearchParams(window.location.search);
+    const forceDesktop = urlParams.has('desktop');
+
+    if (!forceDesktop) {
+      // Detect mobile devices based on User-Agent OR very small screen widths
+      const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      const isSmallScreen = window.innerWidth <= 768;
+
+      if (isMobileDevice || isSmallScreen) {
+        // Redirect them to the new mobile page
+        window.location.replace("mobile.html");
+      }
+    }
+  </script>
+
   <style>
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -512,15 +530,12 @@
   <div id="tooltip"></div>
 
   <div id="site-title">
-    <h1>&gt;&gt;&gt; The Cave &lt;&lt;&lt;</h1>
-    <div class="sub"><h3>a clusterfuck of refined tastes &amp; raw pixels</h3></div>
+    <h1>>>> The Cave <<<</h1>
+    <div class="sub"><h3>a clusterfuck of refined tastes & raw pixels</h3></div>
   </div>
 
   <img src="88x31/bestvieweddesktop.gif" alt="Best Viewed on Desktop" id="best-viewed">
 
-  <!-- ================================================================
-       SOCIALS PANEL
-       ================================================================ -->
   <div class="panel" id="panel-socials" data-init-center="true">
     <span class="c tl"></span><span class="c tr"></span>
     <span class="c bl"></span><span class="c br"></span>
@@ -561,9 +576,6 @@
     </div>
   </div>
 
-  <!-- ================================================================
-       PORTALS PANEL
-       ================================================================ -->
   <div class="panel" id="panel-portals" style="bottom:48px;left:18px;width:490px;">
     <span class="c tl"></span><span class="c tr"></span>
     <span class="c bl"></span><span class="c br"></span>
@@ -589,9 +601,6 @@
     </div>
   </div>
 
-  <!-- ================================================================
-       MEME VIEWER
-       ================================================================ -->
   <div class="panel" id="panel-meme" style="top:82px;right:18px;width:265px;">
     <span class="c tl"></span><span class="c tr"></span>
     <span class="c bl"></span><span class="c br"></span>
@@ -617,9 +626,6 @@
     </div>
   </div>
 
-  <!-- ================================================================
-       AUDIO PLAYER
-       ================================================================ -->
   <div class="panel" id="panel-audio" style="bottom:48px;right:18px;width:265px;">
     <span class="c tl"></span><span class="c tr"></span>
     <span class="c bl"></span><span class="c br"></span>
@@ -656,9 +662,6 @@
     </div>
   </div>
 
-  <!-- ================================================================
-       88x31 TICKER
-       ================================================================ -->
   <div id="ticker">
     <div class="ticker-track">
       <a href="index.html">         <img src="88x31/anihome112g.gif"       class="eighty-eight" alt="Home"></a>
@@ -681,7 +684,6 @@
       <a href="">                   <img src="88x31/classicgaming.gif"      class="eighty-eight" alt="ClassicGaming"></a>
       <a href="whoops.html">        <img src="88x31/candybarsnow.gif"       class="eighty-eight" alt="Whoops"></a>
       <a href="dungeon.html">       <img src="88x31/blizzlogo.gif"          class="eighty-eight" alt="Dungeon"></a>
-      <!-- duplicate for seamless loop -->
       <a href="index.html">         <img src="88x31/anihome112g.gif"       class="eighty-eight" alt="Home"></a>
       <a href="gallery.html">       <img src="88x31/anybrowser3.gif"       class="eighty-eight" alt="Gallery"></a>
       <a href="https://nerfthespire.com"><img src="88x31/ban-button.gif"   class="eighty-eight" alt="NerfSpire"></a>
@@ -705,14 +707,6 @@
     </div>
   </div>
 
-  <!-- ================================================================
-       AMBIENT GIFS  (40 total, spread across all zones)
-       data-type: "url" | "internal" | "image" | "video"
-       data-src:  the destination
-       Leave data-type="" for decoration only.
-       ================================================================ -->
-
-  <!-- LEFT EDGE -->
   <img class="ambient-gif" src="assets/24UD63M6TCNQYC2XHMES5WM3HQPJWTAX.gif"   style="left:2%;top:8%;width:55px;animation:bob 3.8s ease-in-out infinite;"         data-type="video" data-src="assets/videos/STEAMBOAT.mp4" alt="steamboat Mickey">
   <img class="ambient-gif" src="assets/2AGVRENGK6V2EPUFGA4YBRQWGBPBOJBV.gif"   style="left:8%;top:32%;width:48px;animation:sway 5.2s ease-in-out infinite;"       data-type="image" data-src="assets/memes/Screenshot_20260203-102047_1.png" alt="DR. Phil M&M">
   <img class="ambient-gif" src="assets/34XGTZ3CIBYF4QL73QNVLTGRG64CCVUY.gif"   style="left:1%;top:54%;width:62px;animation:floatRotate 6.5s ease-in-out infinite;" data-type="" data-src="" alt="">
@@ -720,57 +714,46 @@
   <img class="ambient-gif" src="assets/C23ZKN7DSV27MXL4QUREFPX2CM6OUOQJ.gif"   style="left:2%;bottom:25%;width:64px;animation:floatRotate 5.5s ease-in-out infinite;" data-type="" data-src="" alt="">
   <img class="ambient-gif" src="assets/3ACUULKM6GDD2Z7OWSGUSYDXDI6KDVNK.gif"   style="left:5%;top:70%;width:46px;animation:pulse 3s ease-in-out infinite;"         data-type="" data-src="" alt="">
 
-  <!-- LEFT-MID -->
   <img class="ambient-gif" src="assets/A6XP3WM6LYXIM3RJW7MSFAGERO4DEPJW.gif"   style="left:14%;top:10%;width:44px;animation:blinkBob 2.4s steps(3,end) infinite;" data-type="" data-src="" alt="">
   <img class="ambient-gif" src="assets/BBVHEJHOQUN7UQSBZ6MRDNFAXUMIAH2H.gif"   style="left:17%;top:28%;width:42px;animation:pulse 2.8s ease-in-out infinite;"     data-type="" data-src="" alt="">
   <img class="ambient-gif" src="assets/HAS2X7MCZOZLZYMJTR4F2KY2C7AT5A2S.gif"   style="left:12%;top:48%;width:50px;animation:bob 5s ease-in-out infinite;"          data-type="" data-src="" alt="">
   <img class="ambient-gif" src="assets/AM66FLEZPGS6ZEK6BWJ544SHQYNPB7KV.gif"   style="left:18%;bottom:70px;width:46px;animation:spinDrift 9s linear infinite;"    data-type="" data-src="" alt="">
   <img class="ambient-gif" src="assets/DEWML33HOZ74TY74CY6QT7R27WCHOKTH.gif"   style="left:11%;bottom:56px;width:52px;animation:shake 0.7s steps(2,end) infinite;" data-type="" data-src="" alt="">
 
-  <!-- CENTER-LEFT -->
   <img class="ambient-gif" src="assets/56A4GNTUOCGZUOUYMNNKZFFUSB6E562W.gif"   style="left:29%;top:14%;width:50px;animation:sway 4.6s ease-in-out infinite;"       data-type="" data-src="" alt="">
   <img class="ambient-gif" src="assets/I64HUZ4CTE2HQMKC24U6NEEERYDIUS5Q.gif"   style="left:30%;top:42%;width:54px;animation:floatRotate 8s ease-in-out infinite;"  data-type="" data-src="" alt="">
   <img class="ambient-gif" src="assets/CC537IJB7Y7TUFF4DD3FPDMI2MEUJLVP.gif"   style="left:33%;bottom:60px;width:54px;animation:bounce 1.6s ease-in-out infinite alternate;" data-type="" data-src="" alt="">
   <img class="ambient-gif" src="assets/EAXKMT4RGPGYDG66ZNVK53L4EPYPMF6R.gif"   style="left:26%;top:62%;width:46px;animation:bob 4s ease-in-out infinite;"           data-type="" data-src="" alt="">
 
-  <!-- CENTER -->
   <img class="ambient-gif" src="assets/62IT3VUZ3642V7FS6W2Y65V644XX3GAB.gif"   style="left:44%;top:5%;width:52px;animation:bob 4.4s ease-in-out infinite;"          data-type="" data-src="" alt="">
   <img class="ambient-gif" src="assets/5DYFYYV3DB3AJDOK7L5WQ5C4HHL6MWPD.gif"   style="left:46%;bottom:68px;width:44px;animation:shake 0.6s steps(2,end) infinite;" data-type="" data-src="" alt="">
   <img class="ambient-gif" src="assets/EGFGSRTNMY5PWKNDWDEJ4BGMJBTCUX4J.gif"   style="left:50%;top:55%;width:48px;animation:pulse 3.5s ease-in-out infinite;"       data-type="" data-src="" alt="">
   <img class="ambient-gif" src="assets/DJSQISDEJJFP3HJONYWDNWUPWK42HSQ3.gif"   style="left:41%;top:34%;width:42px;animation:blinkBob 3s steps(3,end) infinite;"    data-type="" data-src="" alt="">
 
-  <!-- CENTER-RIGHT -->
   <img class="ambient-gif" src="assets/BDYHJMTSOTTZVFBW34SQZVFLZMNSFEBY.gif"   style="right:30%;top:12%;width:50px;animation:sway 5.8s ease-in-out infinite;"      data-type="" data-src="" alt="">
   <img class="ambient-gif" src="assets/6FDF5KMVPIL3FKBE22IISTVSLCZVNUAO.gif"   style="right:28%;bottom:60px;width:60px;animation:sway 4.8s ease-in-out infinite;"  data-type="" data-src="" alt="">
   <img class="ambient-gif" src="assets/GHDI53C6NKNWWUOWLM26TURXNHV5S5SG.gif"   style="right:27%;top:46%;width:46px;animation:spinDrift 11s linear infinite;"       data-type="" data-src="" alt="">
   <img class="ambient-gif" src="assets/KLUHWSTRLTM2XXMNTZ46AEGQBVQBN5NB.gif"   style="right:22%;bottom:58px;width:58px;animation:blinkBob 3.2s steps(3,end) infinite;" data-type="" data-src="" alt="">
   <img class="ambient-gif" src="assets/D4IV2TKGLW74BCDV2LEYAIU4DYMUTRDR.gif"   style="right:24%;top:28%;width:48px;animation:blinkBob 2.8s steps(3,end) infinite;" data-type="" data-src="" alt="">
 
-  <!-- RIGHT-MID -->
   <img class="ambient-gif" src="assets/B4NYIWNXZNCK2DPEUCPOV4PULMAIBWCL.gif"   style="right:16%;top:7%;width:58px;animation:bob 3.5s ease-in-out infinite;"         data-type="" data-src="" alt="">
   <img class="ambient-gif" src="assets/EMD334Z4VHZ33VX6SCKI2LUBFXWKAYBY.gif"   style="right:14%;bottom:60px;width:44px;animation:pulse 4s ease-in-out infinite;"   data-type="" data-src="" alt="">
   <img class="ambient-gif" src="assets/7HZ7TOPVEPXZ3U2JQQH76SLDCNTWQATB.gif"   style="right:13%;top:55%;width:50px;animation:pulse 3.8s ease-in-out infinite;"     data-type="" data-src="" alt="">
   <img class="ambient-gif" src="assets/F2HQ5KKLRWVGDWGJP7FBTWPFZTHRLTKA.gif"   style="right:16%;top:38%;width:52px;animation:sway 6s ease-in-out infinite;"         data-type="" data-src="" alt="">
 
-  <!-- RIGHT EDGE -->
   <img class="ambient-gif" src="assets/75QWGYALJL5ULRJWI3CYGUUNGCARJR56.gif"   style="right:2%;top:28%;width:66px;animation:floatRotate 7s ease-in-out infinite;"  data-type="" data-src="" alt="">
   <img class="ambient-gif" src="assets/E3OSNY65COVOWMIJTPG46PTWW2BT6EFH.gif"   style="right:2%;top:48%;width:60px;animation:bob 4.2s ease-in-out infinite;"         data-type="" data-src="" alt="">
   <img class="ambient-gif" src="assets/F2HQ5KKLRWVGDWGJP7FBTWPFZTHRLTKA.gif"   style="right:2%;bottom:56px;width:68px;animation:sway 5.2s ease-in-out infinite;"   data-type="" data-src="" alt="">
   <img class="ambient-gif" src="assets/BCZYT5GDAOMUMV5XRIS7K6LHKMWVTLU6.gif"   style="right:3%;top:10%;width:50px;animation:blinkBob 2.6s steps(3,end) infinite;"  data-type="" data-src="" alt="">
   <img class="ambient-gif" src="assets/COTEMQJCDRBVW7UD34OUFSGMNMZ3TU6D.gif"   style="right:4%;top:70%;width:44px;animation:shake 0.55s steps(2,end) infinite;"    data-type="" data-src="" alt="">
 
-  <!-- TOP ROW (gaps between panels) -->
   <img class="ambient-gif" src="assets/4MAZUWF522OK23JR5KHWQQHZOJMYJDYG.gif"   style="left:38%;top:3%;width:42px;animation:bob 3s ease-in-out infinite;"            data-type="" data-src="" alt="">
   <img class="ambient-gif" src="assets/FBCTCFUQASRIHJI42WZK2ZYEGKFIVPWU.gif"   style="left:57%;top:4%;width:46px;animation:pulse 4.5s ease-in-out infinite;"        data-type="" data-src="" alt="">
   <img class="ambient-gif" src="assets/GD2IANV2WFHZWLPJCOXRNYB53ZJQ2G3V.gif"   style="left:70%;top:6%;width:44px;animation:floatRotate 7.5s ease-in-out infinite;" data-type="" data-src="" alt="">
 
-  <!-- BOTTOM ROW FILL -->
   <img class="ambient-gif" src="assets/4RUWWAJVF5F7SQ5HUUYJ5HSVDGOJMXWZ.gif"   style="left:55%;bottom:56px;width:50px;animation:bounce 1.8s ease-in-out infinite alternate;" data-type="" data-src="" alt="">
   <img class="ambient-gif" src="assets/MNJTADIRWVPQ57RI7YOCJITMKVZ75Q4U.gif"   style="left:66%;bottom:58px;width:46px;animation:sway 5s ease-in-out infinite;"     data-type="" data-src="" alt="">
 
-  <!-- ================================================================
-       VIDEO POPUP
-       ================================================================ -->
   <div id="video-popup">
     <span class="c tl"></span><span class="c tr"></span>
     <span class="c bl"></span><span class="c br"></span>
@@ -781,7 +764,6 @@
     <div class="vp-screen" id="vp-screen"></div>
   </div>
 
-  <!-- IMAGE LIGHTBOX -->
   <div id="img-lightbox">
     <div class="lb-frame">
       <div class="lb-toolbar">
