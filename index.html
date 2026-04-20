@@ -794,18 +794,6 @@
   </div>
 
   <script>
-    // Check if the user specifically requested the desktop version
-    const urlParams = new URLSearchParams(window.location.search);
-    const forceDesktop = urlParams.has('desktop');
-
-    if (!forceDesktop) {
-    // Detect mobile devices based on User-Agent OR very small screen widths
-      const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      const isSmallScreen = window.innerWidth <= 768;
-
-    if (isMobileDevice || isSmallScreen) {
-      // Redirect them to the new mobile page
-      window.location.replace("mobile.html");
     // ── MEME DATE ──────────────────────────────────────────────
     (function() {
       const opts = { weekday:'short', year:'numeric', month:'short', day:'numeric' };
